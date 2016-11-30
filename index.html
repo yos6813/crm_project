@@ -1,0 +1,139 @@
+<!--
+* INSPINIA - Responsive Admin Theme
+* Version 2.6
+*
+-->
+
+<!DOCTYPE html>
+<html ng-app="inspinia">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Page title set in pageTitle directive -->
+    <title page-title></title>
+
+    <!-- Font awesome -->
+    <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
+
+    <!-- Bootstrap and Fonts -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Main Inspinia CSS files -->
+    <link href="css/animate.css" rel="stylesheet">
+    <link id="loadBefore" href="css/style.css" rel="stylesheet">
+	<link href="css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+	<link href="css/plugins/bootstrap-tagsinput/bootstrap-tagsinput.css" rel="stylesheet">
+	<!-- FooTable -->
+	<link href="css/plugins/footable/footable.core.css" rel="stylesheet">
+	<link href="css/plugins/summernote/summernote.css" rel="stylesheet">
+	<link href="css/plugins/summernote/summernote-bs3.css" rel="stylesheet">
+	<link href="css/plugins/jasny/jasny-bootstrap.min.css" rel="stylesheet">
+
+</head>
+
+<!-- ControllerAs syntax -->
+<!-- Main controller with serveral data used in Inspinia theme on diferent view -->
+<body ng-controller="MainCtrl as main">
+
+<!-- Main view  -->
+<div ui-view></div>
+
+<!-- jQuery and Bootstrap -->
+<script src="js/jquery/jquery-2.1.1.min.js"></script>
+<script src="js/plugins/jquery-ui/jquery-ui.js"></script>
+<script src="js/bootstrap/bootstrap.min.js"></script>
+
+<!-- MetsiMenu -->
+<script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
+
+<!-- SlimScroll -->
+<script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+
+<!-- Peace JS -->
+<script src="js/plugins/pace/pace.min.js"></script>
+
+<!-- Custom and plugin javascript -->
+<script src="js/inspinia.js"></script>
+<script src="js/plugins/company/company.js"></script>
+<script src="js/plugins/customer/customer.js"></script>
+<!-- <script src="js/plugins/call_list/call_list.js"></script> -->
+<script src="js/plugins/form_call_record/form_call_record.js"></script>
+
+<!-- Main Angular scripts-->
+<script src="js/angular/angular.min.js"></script>
+<script src="js/plugins/oclazyload/dist/ocLazyLoad.min.js"></script>
+<script src="js/ui-router/angular-ui-router.min.js"></script>
+<script src="js/bootstrap/ui-bootstrap-tpls-1.1.2.min.js"></script>
+<script src="js/angular/angular-route.js"></script>
+
+
+<!-- Anglar App Script -->
+<script src="js/app.js"></script>
+<script src="js/config.js"></script>
+<script src="js/directives.js"></script>
+<script src="js/controllers.js"></script>
+
+<script src="https://spi.maps.daum.net/imap/map_js_init/postcode.v2.js"></script>
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+
+<!-- <script src="https://cdn.firebase.com/libs/angularfire/2.1.0/angularfire.min.js"></script>  -->
+
+<script src="js/call_view.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/3.6.1/firebase.js"></script>
+<!-- <script> -->
+// var config = {
+// 	    apiKey: "AIzaSyBSXRDrVzqppOGW-eZZN5IyHdeZcKjUxR8",
+// 	    authDomain: "crmapp-32675.firebaseapp.com",
+// 	    databaseURL: "https://crmapp-32675.firebaseio.com",
+// 	    storageBucket: "crmapp-32675.appspot.com",
+// 	    messagingSenderId: "805712434179"
+// 	  };
+// 	  firebase.initializeApp(config);
+<!-- </script> -->
+
+<!-- Typehead -->
+<script src="js/plugins/typeahead/bootstrap3-typeahead.min.js"></script>
+
+<script>
+	var comName = [];
+	firebase.database().ref("company/").orderByKey().on("child_added", function(snapshot){
+		firebase.database().ref("company/" + snapshot.key + '/name').on('value', function(snapshot1){
+			comName.push(snapshot1.val());
+			$(".typeahead_2").typeahead({ source: comName});
+		});
+	});
+</script>
+<!-- FooTable -->
+<script src="js/plugins/footable/footable.all.min.js"></script>
+<script>
+$('.footable').footable();
+$('.footable2').footable();
+</script>
+<!-- iCheck -->
+<script src="js/plugins/iCheck/icheck.min.js"></script>
+<script>
+$('.i-checks').iCheck({
+    checkboxClass: 'icheckbox_square-green',
+    radioClass: 'iradio_square-green',
+});
+</script>
+<!-- SUMMERNOTE -->
+<script src="js/plugins/summernote/summernote.min.js"></script>
+<script>
+$('.summernote').summernote();
+</script>
+<script src="js/plugins/bootstrap-tagsinput/bootstrap-tagsinput.js"></script>
+<script>
+$('.tagsinput').tagsinput({
+    tagClass: 'label label-primary'
+});
+</script>
+<!-- Jasny -->
+<script src="js/plugins/jasny/jasny-bootstrap.min.js"></script>
+</body>
+</html>

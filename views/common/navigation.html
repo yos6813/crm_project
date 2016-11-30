@@ -1,0 +1,49 @@
+<meta charset="utf-8">
+<nav class="navbar-default navbar-static-side" role="navigation">
+    <div class="sidebar-collapse">
+        <ul side-navigation class="nav metismenu" id="side-menu">
+            <li class="nav-header">
+
+                <div class="profile-element" uib-dropdown>
+                    <a uib-dropdown-toggle href>
+                            <span class="clear">
+                                <span class="block m-t-xs">
+                                    <strong class="font-bold">{{main.userName}}</strong>
+                             </span>
+                                <span class="text-muted text-xs block">Example menu<b class="caret"></b></span>
+                            </span>
+                    </a>
+                    <ul uib-dropdown-menu="" class="animated fadeInRight m-t-xs">
+                        <li><a href="">Logout</a></li>
+                    </ul>
+                </div>
+                <div class="logo-element">
+                    CRM
+                </div>
+
+            </li>
+           		<li ui-sref-active="active"><a ui-sref="index.main"><span class="nav-label">Home</span></a></li>
+				<li ui-sref-active="active"><a><i class="fa fa-users"></i> <span class="nav-label">CRM</span><span class="fa arrow"></span></a>
+                   	<ul class="nav nav-second-level collapse">
+                        <li><a>CR Dashboard</a></li>
+                        <li>
+                            <a>YETA 고객상담 <span class="fa arrow"></span></a>
+                            <ul class="nav nav-third-level">
+                                <li>
+                                    <a ui-sref="index.call_list">2016</a>
+                                </li>
+                                <li>
+                                    <a>2017</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li><a><span class="nav-label">CR 활동</span></a></li>
+                        <li><a ui-sref="index.company"><span class="nav-label">회사관리</span></a></li>
+                        <li><a ui-sref="index.customer"><span class="nav-label">고객관리</span></a></li>
+                        <li><a href="graph_flot.html">계약서관리</a></li>
+                   	</ul>
+        		</li>
+        </ul>
+
+    </div>
+</nav>
