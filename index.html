@@ -60,8 +60,7 @@
 <script src="js/inspinia.js"></script>
 <script src="js/plugins/company/company.js"></script>
 <script src="js/plugins/customer/customer.js"></script>
-<!-- <script src="js/plugins/call_list/call_list.js"></script> -->
-<script src="js/plugins/form_call_record/form_call_record.js"></script>
+<script src="js/plugins/call_list/call_list.js"></script>
 
 <!-- Main Angular scripts-->
 <script src="js/angular/angular.min.js"></script>
@@ -82,32 +81,22 @@
 
 <!-- <script src="https://cdn.firebase.com/libs/angularfire/2.1.0/angularfire.min.js"></script>  -->
 
-<script src="js/call_view.js"></script>
 
 <script src="https://www.gstatic.com/firebasejs/3.6.1/firebase.js"></script>
-<!-- <script> -->
-// var config = {
-// 	    apiKey: "AIzaSyBSXRDrVzqppOGW-eZZN5IyHdeZcKjUxR8",
-// 	    authDomain: "crmapp-32675.firebaseapp.com",
-// 	    databaseURL: "https://crmapp-32675.firebaseio.com",
-// 	    storageBucket: "crmapp-32675.appspot.com",
-// 	    messagingSenderId: "805712434179"
-// 	  };
-// 	  firebase.initializeApp(config);
-<!-- </script> -->
+<script>
+var config = {
+	    apiKey: "AIzaSyBSXRDrVzqppOGW-eZZN5IyHdeZcKjUxR8",
+	    authDomain: "crmapp-32675.firebaseapp.com",
+	    databaseURL: "https://crmapp-32675.firebaseio.com",
+	    storageBucket: "crmapp-32675.appspot.com",
+	    messagingSenderId: "805712434179"
+	  };
+	  firebase.initializeApp(config);
+</script>
 
 <!-- Typehead -->
 <script src="js/plugins/typeahead/bootstrap3-typeahead.min.js"></script>
 
-<script>
-	var comName = [];
-	firebase.database().ref("company/").orderByKey().on("child_added", function(snapshot){
-		firebase.database().ref("company/" + snapshot.key + '/name').on('value', function(snapshot1){
-			comName.push(snapshot1.val());
-			$(".typeahead_2").typeahead({ source: comName});
-		});
-	});
-</script>
 <!-- FooTable -->
 <script src="js/plugins/footable/footable.all.min.js"></script>
 <script>

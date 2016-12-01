@@ -53,3 +53,11 @@ function phoneSectionRemove(){
 	$('.phoneInput').last().remove();
 	$('.phoneDrop').last().remove();
 }
+
+var comName = [];
+firebase.database().ref("company/").orderByKey().on("child_added", function(snapshot){
+	firebase.database().ref("company/" + snapshot.key + '/name').on('value', function(snapshot1){
+		comName.push(snapshot1.val());
+		$(".typeahead_2").typeahead({ source: comName});
+	});
+});

@@ -29,7 +29,7 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
         .state('index.call_list', {
             url: "/call_list",
             templateUrl: "views/call_list.html",
-            data: { pageTitle: 'Call List' }
+            data: { pageTitle: 'Call List' },
         })
         .state('index.company', {
             url: "/company",
@@ -48,7 +48,7 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
         })
 }
 angular
-    .module('inspinia', ['ngRoute', 'firebase'])
+    .module('inspinia')
     .config(config)
     .run(function($rootScope, $state) {
         $rootScope.$state = $state;
