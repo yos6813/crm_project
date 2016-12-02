@@ -7,7 +7,7 @@ firebase.database().ref("types/").orderByKey().endAt("type").on("child_added", f
 	})
 })
 
-$("#customerIn").keyup(function(){
+$("#customerIn").blur(function(){
 	var phoneSel = $('.customerSel').val();
 	var phoneSel2 = [];
 	
@@ -20,7 +20,7 @@ $("#customerIn").keyup(function(){
 			$('#phoneSec').children().remove();
 			for(var i=0; i<=phoneSel2.length; i++){
 				$('#phoneSec').append('<tr>' +
-						'<td><input type="radio" value="' + phoneSel2[i] + '" class="optionContact" name="optionsContact"></td>' +
+						'<td><input type="radio" value="' + phoneSel2[i][1] + '" class="optionContact" name="optionsContact"></td>' +
 						'<td>'+ phoneSel2[i][0] + '</td>' +
 						'<td>'+ phoneSel2[i][1] + '</td>' +
 						'<td class="text-right">' +
@@ -257,6 +257,8 @@ $('#postSave').click(function(){
 	uploadfile = $('#fileName').val();
 	
 	addPost(uid, title, text, tags, postCompany, postCustomer, postType, postCusPhone, postState, username, postDate, userImg, companyType, uploadfile);
-	$('#bodyPage').load("call_list.html");
 })
-
+$('.tagsinput').tagsinput({
+    tagClass: 'label label-primary'
+});
+$('.summernote').summernote();

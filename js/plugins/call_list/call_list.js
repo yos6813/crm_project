@@ -1,40 +1,21 @@
-
-	$("#writebtn").click(function(){
-		$('#bodyPage').load("form_call_record.html");
-	});
+//call list
 	
-	function readView(){
-		$('#bodyPage').load("view_call_record.html");
-	}
+    firebase.database().ref("types/").orderByKey().endAt("type").on("child_added", function(snapshot){
+    	snapshot.forEach(function(data){
+    		$('#typeSelect').append('<option value="'+ snapshot.key +'">' + data.val()
+    				+ '</option>');
+    	})
+    })
+    
+    $('.yeta').hide();
+	$('.academy').hide();
+	$('.consulting').hide();
 	
-	
-	
-
-/* 유형 드롭다운 옵션 추가 */
-
-firebase.database().ref("types/").orderByKey().endAt("type").on("child_added", function(snapshot){
-	snapshot.forEach(function(data){
-		$('#typeSelect').append('<option value="'+ snapshot.key +'">' + data.val()
-				+ '</option>');
-	})
-})
-
-//넘버링에 필요한 변수
-//		var listNumber, n = 0;
-//		for(var i=0; i<list.size(); i++) {
-//			listNumber = totalcount - (start + n)+1 ;
-//			System.out.println("페이지번호:"+listNumber);
-//			n++;
-//		}
-
-$(document).ready(function(){
-//	$('#postList').children().remove();
 	firebase.database().ref("posts/").orderByKey().endAt("title").on("child_added", function(snapshot){
 		firebase.database().ref('posts/' + snapshot.key).on('value', function(snapshot1){
 			$('#postList').each(function(i){
 				$('#postList').append('<tr>' +
 						'<td class="project-title">' +
-//						'<span>' + i + '</span>' +
 						'</td>' +
 						'<td class="project-status">' +
 						'<span class="label label-default">' + snapshot1.val().postState + '</span>' +
@@ -43,7 +24,7 @@ $(document).ready(function(){
 						'<span>' + snapshot1.val().postType + '</span>' +
 						'</td>' +
 						'<td class="title project-title">' +
-						'<a onclick="viewPage()" value="' + snapshot.key + '">' + snapshot1.val().title + '</a>' +
+						'<a href="#/index/view_call_record?no='+ snapshot.key +'">' + snapshot1.val().title + '</a>' +
 						'</td>' +
 						'<td class="project-title">' +
 						'<a id="titleCom">' + snapshot1.val().postCompany + '</a>' +
@@ -73,4 +54,3 @@ $(document).ready(function(){
 			})
 		});
 	});
-})

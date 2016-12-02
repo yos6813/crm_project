@@ -68,7 +68,7 @@ function submitCompany(){
 	var client = [];
 	
 	$('input[class=checkbox]:checked').each(function(){
-		client.push($(this).text());
+		client.push($(this).val());
 	})
 	
 	addCompany(name, addr, license, corporate, client);

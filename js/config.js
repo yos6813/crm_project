@@ -44,6 +44,23 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
         .state('index.form_call_record', {
         	url: "/form_call_record",
         	templateUrl: "views/form_call_record.html",
+        	data: { pageTitle: 'Form Call Record'},
+        	resolve: {
+        		loadPlugin: function ($ocLazyLoad) {
+                    return $ocLazyLoad.load([
+                    		{
+                    			files: ["js/inspinia.js"]
+                    		}
+            		])
+        		}
+        	}
+        })
+        .state('index.view_call_record',{
+        	url:"/view_call_record?no",
+        	templateUrl: "views/view_call_record.html",
+        	controller: function($scope, $stateParams){
+        		$scope.no = $stateParams.no;
+        	},
         	data: { pageTitle: 'Form Call Record'}
         })
 }
