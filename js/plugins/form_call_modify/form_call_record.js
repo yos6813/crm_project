@@ -1,3 +1,12 @@
+function getParameterByName(name) {
+	name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+	var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+	results = regex.exec(location.hash);
+	return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
+var modifyPageno = getParameterByName('no');
+
 /* 유형 드롭다운 옵션 추가 */
 
 firebase.database().ref("types/").orderByKey().endAt("type").on("child_added", function(snapshot){
@@ -115,55 +124,9 @@ $('.companySel').blur(function(){
 	})
 })
 
-
-
-// 글 등록
-
-function addPost(uid, title, text, tags, postCompany, postCustomer, postType, postCusPhone, postState, username, postDate, userImg, companyType, uploadfile){
-	var postData = {
-		uid: uid,
-		title: title,
-		text: text,
-		tags: tags,
-		postCompany: postCompany,
-		postCustomer: postCustomer,
-		postType: postType,
-		postCusPhone: postCusPhone,
-		postState: postState,
-		username: username,
-		postDate: postDate,
-		userImg: userImg,
-		companyType: companyType,
-		uploadfile: uploadfile
-};
-	
-	var newPostKey = firebase.database().ref().child('posts').push().key;
-	
-	var updates = {};
-	updates['/posts/' + newPostKey] = postData;
-	updates['/user-posts/' + uid + '/' + newPostKey] = postData;
-	
-	return firebase.database().ref().update(updates);
-}
-
-// 태그 등록
-
-function addtags(tag){
-	var tagData = {
-			tag: tag
-	}
-	
-	var newTagKey = firebase.database().ref().child('tags').push().key;
-	
-	var updates = {};
-	updates['/tags/' + newTagKey] = tagData;
-	
-	return firebase.database().ref().update(updates);
-}
-
 $('#postCancel').click(function () {
     swal({
-        title: "글 작성을 취소하시겠습니까?",
+        title: "글 수정을 취소하시겠습니까?",
         text: "",
         type: "warning",
         showCancelButton: true,
@@ -207,33 +170,38 @@ function handleFileSelect(evt) {
 
   document.getElementById('fileButton').addEventListener('change', handleFileSelect, false);
 
-// 글 저장
+$('.tagsinput').tagsinput({
+    tagClass: 'label label-primary'
+});
+
+$('.summernote').summernote();
+
+firebase.database().ref('posts/' + modifyPageno).on('value', function(snapshot){
+	$('.companySel').val(snapshot.val().postCompany);
+	$('.customerSel').val(snapshot.val().postCustomer);
+	$('#title').val(snapshot.val().title);
+	$('#postText').summernote('code', snapshot.val().text);
+})
+var companyType = [];
+var tags = [];
+var tag = '';
+var postState = '';
+var postCusPhone = '';
 
 $('#postSave').click(function(){
-	var title = $('#title').val();
-	var text = $('#postText').summernote('code');
-	var tags = [];
-	var tagList = [];
-	var tag = '';
-	var tagOverlap = '';
-	var postCompany = $('.companySel').val();
-	var postCustomer = $('.customerSel').val();
-	var postType = $('#writeTypeSelect').val();
-	var postCusPhone = '';
-	var postState = '';
-	var today = new Date();
-	var postDate = today.getFullYear() + "." + (today.getMonth()+1) + "." + today.getDate() + " " + today.getHours() + ":" + today.getMinutes();
-	var userImg = firebase.auth().currentUser.photoURL;
-	var uid = firebase.auth().currentUser.uid;
-	var username = firebase.auth().currentUser.displayName;
-	var uploadfile = '';
+	firebase.database().ref("company/" + modifyPageno + "/client").on('value', function(snapshot1){
+		companyType.push(snapshot1.val());
+	})
 	
-	var companyType = [];
-	var comClient = $('.companySel').val();
-	firebase.database().ref("company/").orderByChild('name').equalTo(comClient).on('child_added', function(snapshot){
-		firebase.database().ref("company/" + snapshot.key + "/client").on('value', function(snapshot1){
-			companyType.push(snapshot1.val());
-		})
+	for(var j=0; j<=tags.length; j++){
+		if(tags[j] != undefined){
+			tag = tags[j]
+			addtags(tag);
+		}
+	}
+	
+	$('.tagSel').each(function(){
+		tags.push($(this).text());
 	})
 	
 	$('input[type=radio][name="optionsRadios"]:checked').each(function(){
@@ -244,23 +212,21 @@ $('#postSave').click(function(){
 		postCusPhone = $(this).val();
 	})
 	
-	$('.tagSel').each(function(){
-		tags.push($(this).text());
-	})
-	
-	for(var j=0; j<=tags.length; j++){
-		if(tags[j] != undefined){
-			tag = tags[j]
-			addtags(tag);
-		}
-	}
-	uploadfile = $('#fileName').val();
-	
-	addPost(uid, title, text, tags, postCompany, postCustomer, postType, postCusPhone, postState, username, postDate, userImg, companyType, uploadfile);
-	
-	window.location.hash = 'index/call_list';
-})
-$('.tagsinput').tagsinput({
-    tagClass: 'label label-primary'
+	console.log(companyType);
+	firebase.database().ref('posts/' + modifyPageno).set({
+		postCompany: $('.companySel').val(),
+		postCustomer: $('.customerSel').val(),
+		title: $('#title').val(),
+		text: $('#postText').summernote('code'),
+		postType: $('#writeTypeSelect').val(),
+		companyType: companyType,
+		tags: tags,
+		postCusPhone: postCusPhone,
+		postState: postState,
+		userImg: firebase.auth().currentUser.photoURL,
+		username: firebase.auth().currentUser.displayName,
+		uid: firebase.auth().currentUser.uid,
+		uploadfile: $('#fileName').val()
+	});
+	window.location.hash = 'index/view_call_record?no=' + modifyPageno;
 });
-$('.summernote').summernote();

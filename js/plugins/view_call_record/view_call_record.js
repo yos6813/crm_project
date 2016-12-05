@@ -205,9 +205,26 @@ $(document).ready(function(){
 		})
 	});
 	
-	$('#viewDelete').click(function(){
-	firebase.database().ref('posts/' + viewPageno).remove(function(snapshot){
-			console.log('삭제');
-		})
-	})
+	$(document).on('click','#viewDelete', function(){
+		window.location.hash = 'index/call_list';
+		var uid = firebase.auth().currentUser.uid;
+		var postRef = firebase.database().ref('posts/' + viewPageno);
+		var userPostRef = firebase.database().ref('user-posts/' + uid + '/' + viewPageno);
+		alert('클릭');
+		postRef.remove()
+		  .then(function() {
+		    console.log("Remove succeeded.")
+		  })
+		  .catch(function(error) {
+		    console.log("Remove failed: " + error.message)
+		  });
+		
+		userPostRef.remove()
+		.then(function() {
+		    console.log("Remove succeeded.")
+		  })
+		  .catch(function(error) {
+		    console.log("Remove failed: " + error.message)
+		  });
+	});
 })
