@@ -204,4 +204,10 @@ $(document).ready(function(){
 			console.log(snapshot.val());
 		})
 	});
+	
+	$('#viewDelete').click(function(){
+	firebase.database().ref('posts/' + viewPageno).remove(function(snapshot){
+			console.log('삭제');
+		})
+	})
 })

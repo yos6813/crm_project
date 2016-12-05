@@ -7,7 +7,7 @@
  *
  */
 function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
-    $urlRouterProvider.otherwise("/index/main");
+    $urlRouterProvider.otherwise("login");
 
     $ocLazyLoadProvider.config({
         // Set to true if you want to see what and when is dynamically loaded
@@ -25,6 +25,16 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
             url: "/main",
             templateUrl: "views/main.html",
             data: { pageTitle: 'Example view' }
+        })
+        .state('login', {
+            url: "/login",
+            templateUrl: "views/login.html",
+            data: { pageTitle: 'Login' }
+        })
+        .state('register', {
+            url: "/register",
+            templateUrl: "views/register.html",
+            data: { pageTitle: 'register' }
         })
         .state('index.call_list', {
             url: "/call_list",

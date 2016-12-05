@@ -6,8 +6,31 @@
  */
 
 $(document).ready(function () {
-
-
+	
+	if(firebase.auth().currentUser == null){
+		$('#loginBtn').text('login');
+	} else {
+		$('#loginBtn').text('logout');
+	}
+	
+	$('#login').click(function(){
+		var provider = new firebase.auth.GoogleAuthProvider();
+		firebase.auth().signInWithPopup(provider);
+		
+		var host = window.location.host;
+		firebase.auth().onAuthStateChanged(function(user) {
+			if(user){
+				firebase.database().ref('user-infos/' + user.uid).on('value', function(snapshot){
+					if(snapshot.val() != null){
+						window.location.hash = 'index/main';
+					} else {
+						window.location.hash = 'register';
+					}
+				})
+			}
+		});
+	})
+	
     // Full height of sidebar
     function fix_height() {
         var heightWithoutNavbar = $("body > #wrapper").height() - 61;
@@ -63,7 +86,6 @@ $(document).ready(function () {
 	        }
 	    })
 	});
-	
 });
 	
 	

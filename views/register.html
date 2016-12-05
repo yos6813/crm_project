@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+  <script src="https://apis.google.com/js/platform.js" async defer></script>
+  <link href="../css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+
+  <!-- Sweet Alert -->
+  <link href="../css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+  <link href="../css/plugins/iCheck/custom.css" rel="stylesheet">
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+
+  <title>At&amp;P Partners Intranet | Main view</title>
+
+  <link href="../css/bootstrap.min.css" rel="stylesheet">
+  <link href="../font-awesome/css/font-awesome.css" rel="stylesheet">
+
+  <link href="../css/animate.css" rel="stylesheet">
+  <link href="../css/style.css" rel="stylesheet">
+
+
+</head>
+
+<body class="gray-bg">
+    <div class="registerBox animated fadeInDown">
+        <div class="row">
+            <img class="logo-register" id="profileImg" src="/img/logo_color.png" alt="">
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <!-- <h2 class="font-bold">기초정보 입력</h2> -->
+                        <h3>기초정보 입력 <small>아래 폼에 맞춰 입력해 주세요</small></h3>
+                        <button onclick="signIn()" class="btn btn-primary block full-width m-b"><i class="fa fa-google"></i>oogle Login</button>
+                    </div>
+                    <div class="ibox-content">
+                        <fieldset class="form-horizontal">
+                            <form id="registerForm" class="m-t" role="form">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label"></label>
+                                    <div class="col-sm-10"><img src="/img/profile_temp.jpg" id="profileImgsmall" class="img-circle"></div>
+                                </div>
+
+                                <div class="form-group"><label class="col-sm-2 control-label">성명:</label>
+                                    <div class="col-sm-10"><input id="usernameInput" type="text" class="form-control" readonly></div>
+                                </div>
+                                <div class="form-group"><label class="col-sm-2 control-label">이메일:</label>
+                                    <div class="col-sm-10"><input id="emailInput" type="email" class="form-control" readonly></div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">닉네임:</label>
+                                    <div class="col-sm-10"><input id="nickname" type="text" class="form-control" required>
+                                        <p><small>불리고 싶은 이름을 입력하세요</small></p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">부서:</label>
+                                    <div class="col-sm-10">
+                                        <div class="btn-group">
+                                            <button data-toggle="dropdown" class="btn btn-default dropdown-toggle">선택 <span class="caret"></span></button>
+                                            <ul id="department1" class="dropdown-menu"></ul>
+                                            <input id="department" type="text" class="form-control" readonly required>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">직책:</label>
+                                    <div class="col-sm-10">
+                                        <div class="btn-group">
+                                            <button data-toggle="dropdown" class="btn btn-default dropdown-toggle">선택 <span class="caret"></span></button>
+                                            <ul id="job1" class="dropdown-menu"></ul>
+                                            <input id="job" type="text" class="form-control" readonly required>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">내선번호:</label>
+                                    <div class="col-sm-10"><input id="extension" type="text" class="form-control" data-mask="(999)" required>
+                                        <p><small>업무전화기 화면에 표시되는 번호 중 뒤 3자리를 입력하세요</small></p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">업무전화:</label>
+                                    <div class="col-sm-10"><input id="call" type="text" class="form-control" data-mask="999-9999-9999" required>
+                                        <p><small>업무전화기 화면에 표시되는 번호 중 앞 11자리를 입력하세요</small></p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">휴대전화:</label>
+                                    <div class="col-sm-10"><input id="phone" type="text" class="form-control" data-mask="999-9999-9999" required></div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">비상연락처:</label>
+                                    <div class="col-sm-10"><input id="emergency" type="text" class="form-control" data-mask="(999) 9999-9999">
+                                        <p><small>비상시에 연락할 수 있는 연락처를 입력하세요</small></p>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">주소:</label>
+                                    <div class="col-sm-10">
+                                        <button id="address" onclick="sample6_execDaumPostcode()" class="btn btn-default" type="button"><i class="fa fa-search"></i>&nbsp;&nbsp;주소검색</button>
+                                        <input type="text" class="form-control" id="sample6_address" placeholder="주소" readonly>
+                                        <input type="text" class="form-control" id="sample6_address2" placeholder="상세주소">
+                                    </div>
+                                </div>
+
+                                <div class="form-group" id="data_1">
+                                    <label class="col-sm-2 control-label">입사일:</label>
+                                    <div class="col-sm-10">
+                                        <div class="input-group date" id="calendar">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input id="join" type="text" class="form-control" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">생년월일:</label>
+                                    <div class="col-sm-10">
+                                        <div class="btn-group">
+                                            <input type="text" class="w-50 form-control" id="birth1" placeholder="년" value="" readonly>
+                                            <button data-toggle="dropdown" class="w-50 btn btn-default dropdown-toggle" id="year1"> <span class="caret"></span></button>
+                                            <ul id="year" class="dropdown-menu">
+                                            </ul>
+                                        </div>
+                                        <div class="btn-group">
+                                            <input type="text" class="w-50 form-control" id="birth2" placeholder="월" value="" readonly>
+                                            <button data-toggle="dropdown" class="w-50 btn btn-default dropdown-toggle" id="month1"> <span class="caret"></span></button>
+                                            <ul id="month" class="dropdown-menu">
+                                            </ul>
+                                        </div>
+                                        <div class="btn-group">
+                                            <input type="text" class="w-50 form-control" id="birth3" placeholder="일" value="" readonly>
+                                            <button data-toggle="dropdown" class="w-50 btn btn-default dropdown-toggle" id="day1"> <span class="caret"></span></button>
+                                            <ul id="day" class="dropdown-menu">
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label"></label>
+                                    <div class="col-sm-10"><input type="button" id="registerBtn" class="btn btn-primary block full-width m-b" value="가입하기">
+                                        <p>
+                                            입력하신 정보는 내부 관리 목적으로 사용되며, 이 이외의 목적으로 사용되지 않습니다.
+                                        </p>
+                                    </div>
+                                </div>
+                            </form>
+                        </fieldset>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                Copyright At&amp;P Partners Inc.
+            </div>
+            <div class="col-md-6 text-right">
+                <small>© 2015-2016</small>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Mainly scripts -->
+    <script src="../js/bootstrap/bootstrap.min.js"></script>
+    <script src="../js/plugins/metisMenu/jquery.metisMenu.js"></script>
+    <script src="../js/plugins/pace/pace.min.js"></script>
+    <script src="../js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+    <script src="../js/jquery/jquery-ui.custom.min.js"></script>
+    <script src="../js/jquery/jquery-ui-1.10.4.min.js"></script>
+
+    <!-- Custom and plugin javascript -->
+    <script src="../js/inspinia.js"></script>
+    <script src="../js/plugins/pace/pace.min.js"></script>
+
+    <!-- datepicker -->
+    <script src="../js/plugins/datapicker/angular-datepicker.js"></script>
+
+    <!-- Date range use moment.js same as full calendar plugin -->
+    <script src="../js/plugins/fullcalendar/moment.min.js"></script>
+
+    <!-- Date range picker -->
+    <script src="../js/plugins/daterangepicker/angular-daterangepicker.js"></script>
+
+    <script type="text/javascript">
+        $('#data_1 .input-group.date').datepicker({
+            todayBtn: "linked",
+            keyboardNavigation: false,
+            forceParse: false,
+            calendarWeeks: true,
+            autoclose: true
+        });
+    </script>
+
+    <!-- daum 주소찾기 -->
+    <script src="https://spi.maps.daum.net/imap/map_js_init/postcode.v2.js"></script>
+
+    <!-- input mask -->
+    <script src="../js/plugins/jasny/jasny-bootstrap.min.js"></script>
+
+    <!-- Sweet alert -->
+    <script src="../js/plugins/sweetalert/sweetalert.min.js"></script>
+
+    <!-- iCheck -->
+    <script src="../js/plugins/iCheck/icheck.min.js"></script>
+
+    <!-- Peity -->
+    <script src="../js/plugins/peity/jquery.peity.min.js"></script>
+
+</body>
+
+</html>
