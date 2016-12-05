@@ -1895,7 +1895,7 @@ div.dt-button-info {
   display: block;
   padding: 6px 12px;
   transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
-  width: 100%;
+/*   width: 100%; */
   font-size: 14px;
 }
 .form-control:focus,
@@ -5004,7 +5004,6 @@ a.compose-mail {
 .mail-box-header {
   background-color: #ffffff;
   border: 1px solid #e7eaec;
-  border-bottom: 0;
   padding: 30px 20px 20px 20px;
 }
 .mail-box-header h2 {
@@ -5014,7 +5013,7 @@ a.compose-mail {
   background: #ffffff;
 }
 .mail-body {
-  border-top: 1px solid #e7eaec;
+/*   border-top: 1px solid #e7eaec; */
   padding: 20px;
 }
 .mail-text {
@@ -5045,11 +5044,11 @@ a.compose-mail {
 /* PROJECTS */
 .project-people,
 .project-actions {
-  text-align: right;
+  text-align: center;
   vertical-align: middle;
 }
 dd.project-people {
-  text-align: left;
+  text-align: center;
   margin-top: 5px;
 }
 .project-people img {

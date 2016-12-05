@@ -63,6 +63,14 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
         	},
         	data: { pageTitle: 'Form Call Record'}
         })
+        .state('index.form_call_record_modify',{
+        	url:"/form_call_record_modify?no",
+        	templateUrl: "views/form_call_record_modify.html",
+        	controller: function($scope, $stateParams){
+        		$scope.no = $stateParams.no;
+        	},
+        data: { pageTitle: 'Form Call Record Modify'}
+        })
 }
 angular
     .module('inspinia')
