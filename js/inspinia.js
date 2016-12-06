@@ -6,13 +6,6 @@
  */
 
 $(document).ready(function () {
-	
-	if(firebase.auth().currentUser == null){
-		$('#loginBtn').text('login');
-	} else {
-		$('#loginBtn').text('logout');
-	}
-	
 	$('#login').click(function(){
 		var provider = new firebase.auth.GoogleAuthProvider();
 		firebase.auth().signInWithPopup(provider);
@@ -23,6 +16,8 @@ $(document).ready(function () {
 				firebase.database().ref('user-infos/' + user.uid).on('value', function(snapshot){
 					if(snapshot.val() != null){
 						window.location.hash = 'index/main';
+						$('#navUserName').text(user.displayName);
+						$('#navUserEMail').text(user.email);
 					} else {
 						window.location.hash = 'register';
 					}
@@ -30,6 +25,28 @@ $(document).ready(function () {
 			}
 		});
 	})
+	
+	firebase.auth().onAuthStateChanged(function(user) {
+		var user = firebase.auth().currentUser;
+		
+		$('#navUserName').text(user.displayName);
+		$('#navUserEMail').text(user.email);
+		
+		$('#logout').click(function(){
+			firebase.auth().signOut();
+			window.location.hash = 'login';
+			$('#navUserName').text('');
+			$('#navUserEMail').text('');
+		})
+		
+		$('#navlogout').click(function(){
+			firebase.auth().signOut();
+			window.location.hash = 'login';
+			$('#navUserName').text('');
+			$('#navUserEMail').text('');
+		})
+		
+	});
 	
     // Full height of sidebar
     function fix_height() {

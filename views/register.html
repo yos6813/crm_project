@@ -14,7 +14,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
 
-  <title>At&amp;P Partners Intranet | Main view</title>
+  <title>At&amp;P Partners Intranet | register</title>
 
   <link href="../css/bootstrap.min.css" rel="stylesheet">
   <link href="../font-awesome/css/font-awesome.css" rel="stylesheet">
@@ -36,18 +36,17 @@
                     <div class="ibox-title">
                         <!-- <h2 class="font-bold">기초정보 입력</h2> -->
                         <h3>기초정보 입력 <small>아래 폼에 맞춰 입력해 주세요</small></h3>
-                        <button onclick="signIn()" class="btn btn-primary block full-width m-b"><i class="fa fa-google"></i>oogle Login</button>
                     </div>
                     <div class="ibox-content">
                         <fieldset class="form-horizontal">
                             <form id="registerForm" class="m-t" role="form">
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label"></label>
-                                    <div class="col-sm-10"><img src="/img/profile_temp.jpg" id="profileImgsmall" class="img-circle"></div>
+                                    <div class="col-sm-10"><img src="" alt="img" id="registerprofileImg" class="img-circle"></div>
                                 </div>
 
                                 <div class="form-group"><label class="col-sm-2 control-label">성명:</label>
-                                    <div class="col-sm-10"><input id="usernameInput" type="text" class="form-control" readonly></div>
+                                    <div class="col-sm-10"><input id="registerUsername" type="text" class="form-control" readonly></div>
                                 </div>
                                 <div class="form-group"><label class="col-sm-2 control-label">이메일:</label>
                                     <div class="col-sm-10"><input id="emailInput" type="email" class="form-control" readonly></div>
@@ -63,7 +62,9 @@
                                     <div class="col-sm-10">
                                         <div class="btn-group">
                                             <button data-toggle="dropdown" class="btn btn-default dropdown-toggle">선택 <span class="caret"></span></button>
-                                            <ul id="department1" class="dropdown-menu"></ul>
+                                            <ul id="department1" class="dropdown-menu">
+                                            	
+                                            </ul>
                                             <input id="department" type="text" class="form-control" readonly required>
                                         </div>
                                     </div>
@@ -74,7 +75,9 @@
                                     <div class="col-sm-10">
                                         <div class="btn-group">
                                             <button data-toggle="dropdown" class="btn btn-default dropdown-toggle">선택 <span class="caret"></span></button>
-                                            <ul id="job1" class="dropdown-menu"></ul>
+                                            <ul id="job1" class="dropdown-menu">
+                                            
+                                            </ul>
                                             <input id="job" type="text" class="form-control" readonly required>
 
                                         </div>
@@ -113,15 +116,16 @@
                                         <input type="text" class="form-control" id="sample6_address2" placeholder="상세주소">
                                     </div>
                                 </div>
-
-                                <div class="form-group" id="data_1">
-                                    <label class="col-sm-2 control-label">입사일:</label>
-                                    <div class="col-sm-10">
-                                        <div class="input-group date" id="calendar">
-                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input id="join" type="text" class="form-control" readonly>
-                                        </div>
-                                    </div>
-                                </div>
+								
+								<div class="form-group" id="data_1">
+						            <label class="col-sm-2 control-label">입사일:</label>
+						            <div class="col-sm-10">
+							            <div class="input-group date">
+							                <input type="datetime" class="form-control join" date-time ng-model="sampleDate" view="date" auto-close="true" min-view="date" format="YYYY-MM-DD">
+							                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+							            </div>
+						            </div>
+						        </div>
 
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label">생년월일:</label>
@@ -186,21 +190,10 @@
     <!-- datepicker -->
     <script src="../js/plugins/datapicker/angular-datepicker.js"></script>
 
-    <!-- Date range use moment.js same as full calendar plugin -->
-    <script src="../js/plugins/fullcalendar/moment.min.js"></script>
 
     <!-- Date range picker -->
     <script src="../js/plugins/daterangepicker/angular-daterangepicker.js"></script>
 
-    <script type="text/javascript">
-        $('#data_1 .input-group.date').datepicker({
-            todayBtn: "linked",
-            keyboardNavigation: false,
-            forceParse: false,
-            calendarWeeks: true,
-            autoclose: true
-        });
-    </script>
 
     <!-- daum 주소찾기 -->
     <script src="https://spi.maps.daum.net/imap/map_js_init/postcode.v2.js"></script>
@@ -216,7 +209,7 @@
 
     <!-- Peity -->
     <script src="../js/plugins/peity/jquery.peity.min.js"></script>
-
+	
+	<script src="../js/plugins/register/register.js"></script>
 </body>
-
 </html>

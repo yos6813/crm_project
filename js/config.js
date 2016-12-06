@@ -34,7 +34,27 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
         .state('register', {
             url: "/register",
             templateUrl: "views/register.html",
-            data: { pageTitle: 'register' }
+            data: { pageTitle: 'register' },
+            resolve: {
+                loadPlugin: function ($ocLazyLoad) {
+                    return $ocLazyLoad.load([
+                        {
+                            files: ['js/plugins/moment/moment.min.js']
+                        },
+                        {
+                            name: 'datePicker',
+                            files: ['css/plugins/datapicker/angular-datapicker.css','js/plugins/datapicker/angular-datepicker.js']
+                        },
+                        {
+                            files: ['js/plugins/jasny/jasny-bootstrap.min.js']
+                        },
+                        {
+                            name: 'daterangepicker',
+                            files: ['js/plugins/daterangepicker/angular-daterangepicker.js']
+                        }
+                    ]);
+                }
+            }
         })
         .state('index.call_list', {
             url: "/call_list",

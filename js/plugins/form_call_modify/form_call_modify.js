@@ -25,7 +25,6 @@ $("#customerIn").blur(function(){
 			snapshot2.forEach(function(){
 				phoneSel2 = snapshot2.val();
 			})
-			console.log(phoneSel2)
 			$('#phoneSec').children().remove();
 			for(var i=0; i<=phoneSel2.length; i++){
 				$('#phoneSec').append('<tr>' +
@@ -33,10 +32,8 @@ $("#customerIn").blur(function(){
 						'<td>'+ phoneSel2[i][0] + '</td>' +
 						'<td>'+ phoneSel2[i][1] + '</td>' +
 						'<td class="text-right">' +
-//						'<div class="btn-group">' +
 						'<button type="button" class="mod btn-white btn btn-xs" value="' + snapshot.key + '">수정</button>' +
 						'<button type="button" class="del btn-white btn btn-xs" value="' + snapshot.key + '">삭제</button>' +
-//						'</div>' +
 						'</td>' +
 						'</tr>');
 			}
@@ -182,15 +179,19 @@ firebase.database().ref('posts/' + modifyPageno).on('value', function(snapshot){
 	$('#title').val(snapshot.val().title);
 	$('#postText').summernote('code', snapshot.val().text);
 })
-var companyType = [];
 var tags = [];
 var tag = '';
 var postState = '';
 var postCusPhone = '';
 
 $('#postSave').click(function(){
-	firebase.database().ref("company/" + modifyPageno + "/client").on('value', function(snapshot1){
-		companyType.push(snapshot1.val());
+	var today = new Date();
+	var companyType = [];
+	var comClient = $('.companySel').val();
+	firebase.database().ref("company/").orderByChild('name').equalTo(comClient).on('child_added', function(snapshot){
+		firebase.database().ref("company/" + snapshot.key + "/client").on('value', function(snapshot1){
+			companyType.push(snapshot1.val());
+		})	
 	})
 	
 	for(var j=0; j<=tags.length; j++){
@@ -226,7 +227,52 @@ $('#postSave').click(function(){
 		userImg: firebase.auth().currentUser.photoURL,
 		username: firebase.auth().currentUser.displayName,
 		uid: firebase.auth().currentUser.uid,
-		uploadfile: $('#fileName').val()
+		uploadfile: $('#fileName').val(),
+		postDate: today.getFullYear() + "." + (today.getMonth()+1) + "." + today.getDate() + " " + today.getHours() + ":" + today.getMinutes()
 	});
 	window.location.hash = 'index/view_call_record?no=' + modifyPageno;
 });
+
+// 회사 유형 로드
+firebase.database().ref('posts/' + modifyPageno + '/companyType').on('value', function(snapshot){
+	var comType = snapshot.val();
+	for(var i=0; i<=comType[0].length; i++){
+		if(comType[0][i] == 'yeta'){
+			$('.yeta').show();
+		} else if(comType[0][i] == 'academy'){
+			$('.academy').show();
+		} else if(comType[0][i] == 'consulting'){
+			$('.consulting').show();
+		}
+	}
+});
+
+// 연락처 로드
+$(document).ready(function(){
+	var phoneSel = '';
+	firebase.database().ref('posts/' + modifyPageno + '/postCustomer').on('value', function(snapshot){
+			phoneSel = snapshot.val();
+		console.log(phoneSel);
+		var phoneSel2 = [];
+		
+		firebase.database().ref('customer').orderByChild('cusName').equalTo(phoneSel).on('child_added',function(snapshot){
+			firebase.database().ref('customer/' + snapshot.key + '/cusPhone').on('value', function(snapshot2){
+				snapshot2.forEach(function(){
+					phoneSel2 = snapshot2.val();
+				})
+				$('#phoneSec').children().remove();
+				for(var i=0; i<=phoneSel2.length; i++){
+					$('#phoneSec').append('<tr>' +
+							'<td><input type="radio" value="' + phoneSel2[i][1] + '" class="optionContact" name="optionsContact"></td>' +
+							'<td>'+ phoneSel2[i][0] + '</td>' +
+							'<td>'+ phoneSel2[i][1] + '</td>' +
+							'<td class="text-right">' +
+							'<button type="button" class="mod btn-white btn btn-xs" value="' + snapshot.key + '">수정</button>' +
+							'<button type="button" class="del btn-white btn btn-xs" value="' + snapshot.key + '">삭제</button>' +
+							'</td>' +
+					'</tr>');
+				}
+			})
+		});
+	})
+})

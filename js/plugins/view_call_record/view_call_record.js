@@ -185,7 +185,7 @@ $(document).ready(function(){
 	                                 '</a>' +
 	                                 '<div class="media-body">' +
 	                                 '<a>' + snapshot1.val().commentName +
-	                                 '</a>' +
+	                                 '</a>&nbsp;' +
 	                                 '<small class="text-muted">'+ snapshot1.val().commentDate +'</small>' +
 	                                 '<br/>' + snapshot1.val().comment +
 	                                 '<br/>' +

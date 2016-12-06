@@ -8449,3 +8449,6 @@ body.md-skin {
     margin-bottom: 30px;
 }
 
+#searchSelect{
+	float: left;
+}

@@ -184,30 +184,23 @@ function handleFileSelect(evt) {
   evt.stopPropagation();
   evt.preventDefault();
   var file = evt.target.files[0];
-  var uploadfile = '';
 
   var metadata = {
     'contentType': file.type
   };
-
-  // Push to child path.
-  // [START oncomplete]
   storageRef.child('files/' + file.name).put(file, metadata).then(function(snapshot) {
-    console.log('Uploaded', snapshot.totalBytes, 'bytes.');
-    console.log(snapshot.metadata);
-    var url = snapshot.metadata.downloadURLs[0];
-    console.log('File available at', url);
-   $('#fileInput').append('<input type="text" id="fileName" value="' +  file.name + '">');
+	  var url = snapshot.metadata.downloadURLs[0];
+	  $('#fileInput').append('<input type="text" id="fileName" value="' +  file.name + '">');
+	  alert('파일 업로드');
   }).catch(function(error) {
-    console.error('Upload failed:', error);
+	  alert('파일 업로드 실패');
   });
 }
 	
 	$('#fileInput').hide();
+	  document.getElementById('fileButton').addEventListener('change', handleFileSelect, false);
 
-  document.getElementById('fileButton').addEventListener('change', handleFileSelect, false);
-
-// 글 저장
+ // 글 저장
 
 $('#postSave').click(function(){
 	var title = $('#title').val();
@@ -226,7 +219,7 @@ $('#postSave').click(function(){
 	var userImg = firebase.auth().currentUser.photoURL;
 	var uid = firebase.auth().currentUser.uid;
 	var username = firebase.auth().currentUser.displayName;
-	var uploadfile = '';
+	var uploadfile = $('#fileName').val();
 	
 	var companyType = [];
 	var comClient = $('.companySel').val();
@@ -254,7 +247,10 @@ $('#postSave').click(function(){
 			addtags(tag);
 		}
 	}
-	uploadfile = $('#fileName').val();
+	
+	if($('#fileName').val() == null){
+		uploadfile = 'x';
+	}
 	
 	addPost(uid, title, text, tags, postCompany, postCustomer, postType, postCusPhone, postState, username, postDate, userImg, companyType, uploadfile);
 	
