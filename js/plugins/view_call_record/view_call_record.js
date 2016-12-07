@@ -69,34 +69,50 @@ $(document).ready(function(){
 	firebase.database().ref('posts/' + viewPageno + '/tags').on('value', function(snapshot){
 		var tags = [];
 		tags.push(snapshot.val());
-		for(var i=0; i<=tags[0].length; i++){
-			if(tags[0][i] != undefined)
-			$('.tag-list').append('<li><a href=""><i class="fa fa-tag"></i>' + tags[0][i] + '</a></li>');
+		if(tags[0] == null){
+			$('.tag-list').append('<li><a href=""><i class="fa fa-tag"></i>No tags</a></li>');
+		} else {
+			for(var i=0; i<=tags[0].length; i++){
+				if(tags[0][i] != undefined)
+					$('.tag-list').append('<li><a href=""><i class="fa fa-tag"></i>' + tags[0][i] + '</a></li>');
+			}
 		}
 	})
 	
 	firebase.database().ref('posts/' + viewPageno + '/text').on('value', function(snapshot){
-		$('#viewText').text(snapshot.val());
+		$('#viewText').append(snapshot.val());
 	})
 	
-	firebase.database().ref('posts/' + viewPageno).on('value', function(snapshot){
-		firebase.storage().ref('files/' + snapshot.val().uploadfile).getDownloadURL().then(function(url){
-			$('#viewFile').append('<div class="file-box">' +
-                                  '<div class="file">' + 
-                                  '<a href="' + url + '">' + 
-                                  '<span class="corner"></span>' + 
-                                  '<div class="image">' + 
-                                  	'<img alt="file" class="img-responsive" src="' + url + '">' + 
-                                  '</div>' + 
-                                  '<div class="file-name">' + snapshot.val().uploadfile +
-                                  '<br/>' +
-                                  '<small>Added: ' + snapshot.val().postDate + '</small>' +
-                                  '</div>' +
-                                  '</a>' +
-                                  '<div>' +
-                                  '</div>' +
-                                  '<div class="clearfix"></div>');
-		});
+	firebase.database().ref('reply/' + viewPageno + '/' + viewPageno + '/replyText').on('value', function(snapshot){
+		$('#ReplyText').append(snapshot.val());
+	})
+	
+	firebase.database().ref('posts/' + viewPageno + '/uploadfile').on('value', function(snapshot){
+		firebase.database().ref('posts/' + viewPageno).on('value', function(snapshot1){
+			if(snapshot.val() == 'x'){
+				$('#viewFile').append('<div class="file-box"><small>no file</small></div>');
+			} else {
+				snapshot.forEach(function(data){
+					firebase.storage().ref('files/' + data.val()).getDownloadURL().then(function(url){
+						$('#viewFile').append('<div class="file-box">' +
+								'<div class="file">' + 
+								'<a href="' + url + '">' + 
+								'<span class="corner"></span>' + 
+								'<div class="image">' + 
+								'<img alt="file" class="img-responsive" src="' + url + '">' + 
+								'</div>' + 
+								'<div class="file-name">' + data.val() +
+								'<br/>' +
+								'<small>Added: ' + snapshot1.val().postDate + '</small>' +
+								'</div>' +
+								'</a>' +
+								'<div>' +
+								'</div>' +
+						'<div class="clearfix"></div>');
+					})
+				})
+			}
+		})
 	})
 	
 	function addAccept(name, post, date){
@@ -138,6 +154,13 @@ $(document).ready(function(){
 					$('#postAccept').unbind('click');
 				}
 			})
+		})
+		
+		firebase.database().ref("reply/" + viewPageno + '/' + viewPageno).on('value', function(snapshot1){
+			if(snapshot1.val().replyText != ''){
+				$('#viewReply').text('처리: ' + snapshot1.val().replyName +
+									 ' (' + snapshot1.val().replyDate + ')');
+			}
 		})
 	})
 	
@@ -201,7 +224,6 @@ $(document).ready(function(){
 				$('#viewButton').append('<a href="#/index/form_call_record_modify?no=' + viewPageno + '" id="viewModify" class="btn btn-white btn-sm" title="Reply"><i class="fa fa-pencil"></i> 수정</a>' +
 										'<a id="viewDelete" class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Move to trash"><i class="fa fa-trash-o"></i> 삭제</a>');
 			}
-			console.log(snapshot.val());
 		})
 	});
 	
@@ -210,8 +232,17 @@ $(document).ready(function(){
 		var uid = firebase.auth().currentUser.uid;
 		var postRef = firebase.database().ref('posts/' + viewPageno);
 		var userPostRef = firebase.database().ref('user-posts/' + uid + '/' + viewPageno);
-		alert('클릭');
+		var replyRef = firebase.database().ref('reply/' + viewPageno + '/' + viewPageno);
+		
 		postRef.remove()
+		  .then(function() {
+		    console.log("Remove succeeded.")
+		  })
+		  .catch(function(error) {
+		    console.log("Remove failed: " + error.message)
+		  });
+		
+		replyRef.remove()
 		  .then(function() {
 		    console.log("Remove succeeded.")
 		  })

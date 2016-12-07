@@ -16,45 +16,45 @@ $("#customerIn").blur(function(){
 			snapshot2.forEach(function(){
 				phoneSel2 = snapshot2.val();
 			})
-			console.log(phoneSel2)
 			$('#phoneSec').children().remove();
 			for(var i=0; i<=phoneSel2.length; i++){
-				$('#phoneSec').append('<tr>' +
-						'<td><input type="radio" value="' + phoneSel2[i][1] + '" class="optionContact" name="optionsContact"></td>' +
-						'<td>'+ phoneSel2[i][0] + '</td>' +
-						'<td>'+ phoneSel2[i][1] + '</td>' +
-						'<td class="text-right">' +
-//						'<div class="btn-group">' +
-						'<button type="button" class="mod btn-white btn btn-xs" value="' + snapshot.key + '">수정</button>' +
-						'<button type="button" class="del btn-white btn btn-xs" value="' + snapshot.key + '">삭제</button>' +
-//						'</div>' +
-						'</td>' +
-						'</tr>');
+				if(phoneSel2[i] != null && phoneSel2[i] != undefined){
+					$('#phoneSec').append('<tr>' +
+							'<td><input type="radio" value="' + phoneSel2[i][1] + '" class="optionContact" name="optionsContact"></td>' +
+							'<td>'+ phoneSel2[i][0] + '</td>' +
+							'<td>'+ phoneSel2[i][1] + '</td>' +
+							'<td class="text-right">' +
+							'<button type="button" class="mod btn-white btn btn-xs" value="' + snapshot.key + '">수정</button>' +
+							'<button type="button" class="del btn-white btn btn-xs" value="' + snapshot.key + '">삭제</button>' +
+							'</td>' +
+							'</tr>');
+				} else {
+					$('#phoneSec').append('<tr></tr>');
+				}
 			}
 		})
 	});
 });
 
-$('.del').click(function(){
-	$(this).parent().remove();
-	alert("삭제");
-	firebase.database().ref('customer/' + $(this).val() + '/cusPhone').equalTo($(this).parent().children('td').text()).remove();
+$(document).on('click','.del', function(){
+	$(this).parents('tr').remove();
+	firebase.database().ref('customer/' + $(this).val() + '/cusPhone').child().eq($(this).closest('tr').index() + 1).remove();
 })
 
 // 고객 autocomplete 
-if($(".companySel").val() == null){
-	var cusSel3 = [];
+$(document).ready(function(){
 	firebase.database().ref("customer/").orderByKey().on("child_added", function(snapshot){
+		var cusSel2 = [];
 		firebase.database().ref("customer/" + snapshot.key + '/cusName').on('value', function(snapshot1){
-			cusSel3.push(snapshot1.val());
-			$(".customerSel").typeahead({ source: cusSel3});
+			cusSel2.push(snapshot1.val());
+			$(".customerSel").typeahead({ source: cusSel2});
 		});
 	});
-} else {
+	
 	$(".companySel").blur(function(){
+		typeahead = [];
 		var cusSel = $('.companySel').val();
 		var cusSel2 = [];
-		
 		firebase.database().ref('customer').orderByChild('cusCompany').equalTo(cusSel).on('child_added',function(snapshot){
 			firebase.database().ref('customer/' + snapshot.key + '/cusName').on('value', function(snapshot2){
 				cusSel2.push(snapshot2.val());
@@ -62,8 +62,7 @@ if($(".companySel").val() == null){
 			})
 		});
 	});
-}
-
+})
 
 // 회사 autocomplete 
 $(document).ready(function(){
@@ -100,7 +99,6 @@ $('.companySel').blur(function(){
 		firebase.database().ref("company/" + snapshot.key + "/client").on('value', function(snapshot1){
 			client.push(snapshot1.val());
 			for(var i=0; i<=client[0].length; i++){
-				console.log(client[0][i]);
 				if(client[0][i] == 'yeta'){
 					$('.yeta').show();
 				}
@@ -119,7 +117,8 @@ $('.companySel').blur(function(){
 
 // 글 등록
 
-function addPost(uid, title, text, tags, postCompany, postCustomer, postType, postCusPhone, postState, username, postDate, userImg, companyType, uploadfile){
+function addPost(uid, title, text, tags, postCompany, postCustomer, postType, postCusPhone,
+				 postState, username, postDate, userImg, companyType, uploadfile, replyDate, replyName, replyText, replyImg){
 	var postData = {
 		uid: uid,
 		title: title,
@@ -135,16 +134,27 @@ function addPost(uid, title, text, tags, postCompany, postCustomer, postType, po
 		userImg: userImg,
 		companyType: companyType,
 		uploadfile: uploadfile
-};
+	};
 	
+	var replyData = {
+			uid: uid,
+			replyDate: replyDate,
+			replyName: replyName,
+			replyText: replyText,
+			replyImg: replyImg
+	};
+		
 	var newPostKey = firebase.database().ref().child('posts').push().key;
 	
 	var updates = {};
 	updates['/posts/' + newPostKey] = postData;
 	updates['/user-posts/' + uid + '/' + newPostKey] = postData;
+	updates['/reply/' + newPostKey + '/' + newPostKey] = replyData;
 	
 	return firebase.database().ref().update(updates);
 }
+
+
 
 // 태그 등록
 
@@ -162,46 +172,56 @@ function addtags(tag){
 }
 
 $('#postCancel').click(function () {
-    swal({
-        title: "글 작성을 취소하시겠습니까?",
-        text: "",
-        type: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#DD6B55",
-        confirmButtonText: "Yes",
-        closeOnConfirm: true
-    }, function () {
-        $('#bodyPage').load("call_list.html");
-    });
+        window.location.hash = '#/index/call_list'
 });
 
 // 파일 업로드
 
 var auth = firebase.auth();
 var storageRef = firebase.storage().ref();
+var file = [];
 
 function handleFileSelect(evt) {
   evt.stopPropagation();
   evt.preventDefault();
-  var file = evt.target.files[0];
-
-  var metadata = {
-    'contentType': file.type
-  };
-  storageRef.child('files/' + file.name).put(file, metadata).then(function(snapshot) {
-	  var url = snapshot.metadata.downloadURLs[0];
-	  $('#fileInput').append('<input type="text" id="fileName" value="' +  file.name + '">');
-	  alert('파일 업로드');
-  }).catch(function(error) {
-	  alert('파일 업로드 실패');
-  });
+  
+  for(var i=0; i<=evt.target.files.length; i++){
+	  if(evt.target.files[i] != undefined && evt.target.files.length > 0){
+		  file = evt.target.files[i];
+		  
+		  var metadata = {
+			  'contentType': file.type,
+			  'name': file.name
+		  };
+		  
+		  storageRef.child('files/' + file.name).put(file, metadata).then(function(snapshot) {
+			  var url = snapshot.metadata.downloadURLs[i];
+			  $('#fileInput').append('<span class="fileName">' +  snapshot.metadata.name + '</span>&nbsp;&nbsp;&nbsp;&nbsp;');
+		  }).catch(function(error) {
+			  console.log(error)
+		  });
+	  } else if(evt.target.files[i] != undefined && evt.target.files.length == 0){
+		  file = evt.target.files[0];
+		  
+		  var metadata = {
+				  'contentType': file.type
+		  };
+		  
+		  storageRef.child('files/' + file.name).put(file, metadata).then(function(snapshot) {
+			  var url = snapshot.metadata.downloadURLs[0];
+			  $('#fileInput').append('<span class="fileName">' +  file.name + '</span>&nbsp;&nbsp;&nbsp;&nbsp;');
+		  }).catch(function(error) {
+			  console.log(error)
+		  });
+	  }
+  }
 }
-	
-	$('#fileInput').hide();
 	  document.getElementById('fileButton').addEventListener('change', handleFileSelect, false);
 
  // 글 저장
 
+	 $('#replyText').val($('#replyText').val().replace(/^\s*|\s*$/g,''));
+	  
 $('#postSave').click(function(){
 	var title = $('#title').val();
 	var text = $('#postText').summernote('code');
@@ -219,7 +239,19 @@ $('#postSave').click(function(){
 	var userImg = firebase.auth().currentUser.photoURL;
 	var uid = firebase.auth().currentUser.uid;
 	var username = firebase.auth().currentUser.displayName;
-	var uploadfile = $('#fileName').val();
+	var uploadfile = [];
+	var replyText = $('#replyText').val();
+	var replyName = '';
+	var replydate = '';
+	var post = '';
+	var replyImg = '';
+	
+	for(var i=0; i<=$('#fileInput').children().length; i++){
+		if($('#fileInput').children().eq(i).text() != undefined && $('#fileInput').children().eq(i).text() != null){
+			uploadfile.push($('#fileInput').children().eq(i).text());
+		}
+	}
+	
 	
 	var companyType = [];
 	var comClient = $('.companySel').val();
@@ -248,13 +280,27 @@ $('#postSave').click(function(){
 		}
 	}
 	
-	if($('#fileName').val() == null){
+	if($('.fileName').val() == null){
 		uploadfile = 'x';
 	}
+	if(replyText == ''){
+		replyName = '';
+		replyDate = '';
+		replyText = '';
+		uid = '';
+		replyImg = '';
+	} else {
+		replyName = username;
+		replyDate = postDate;
+		replyText = $('#replyText').summernote('code');
+		replyImg = userImg;
+	}
 	
-	addPost(uid, title, text, tags, postCompany, postCustomer, postType, postCusPhone, postState, username, postDate, userImg, companyType, uploadfile);
-	
-	window.location.hash = 'index/call_list';
+	if(title != '' && postCustomer != ''){
+		addPost(uid, title, text, tags, postCompany, postCustomer, postType, postCusPhone, postState, username, postDate,
+				userImg, companyType, uploadfile, replyDate, replyName, replyText, replyImg);
+		window.location.hash = 'index/call_list';
+	}
 })
 $('.tagsinput').tagsinput({
     tagClass: 'label label-primary'

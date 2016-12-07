@@ -27,15 +27,17 @@ $("#customerIn").blur(function(){
 			})
 			$('#phoneSec').children().remove();
 			for(var i=0; i<=phoneSel2.length; i++){
-				$('#phoneSec').append('<tr>' +
-						'<td><input type="radio" value="' + phoneSel2[i][1] + '" class="optionContact" name="optionsContact"></td>' +
-						'<td>'+ phoneSel2[i][0] + '</td>' +
-						'<td>'+ phoneSel2[i][1] + '</td>' +
-						'<td class="text-right">' +
-						'<button type="button" class="mod btn-white btn btn-xs" value="' + snapshot.key + '">수정</button>' +
-						'<button type="button" class="del btn-white btn btn-xs" value="' + snapshot.key + '">삭제</button>' +
-						'</td>' +
-						'</tr>');
+				if(phoneSel2[i] != null || phoneSel2[i] != undefined){
+					$('#phoneSec').append('<tr>' +
+							'<td><input type="radio" value="' + phoneSel2[i][1] + '" class="optionContact" name="optionsContact"></td>' +
+							'<td>'+ phoneSel2[i][0] + '</td>' +
+							'<td>'+ phoneSel2[i][1] + '</td>' +
+							'<td class="text-right">' +
+							'<button type="button" class="mod btn-white btn btn-xs" value="' + snapshot.key + '">수정</button>' +
+							'<button type="button" class="del btn-white btn btn-xs" value="' + snapshot.key + '">삭제</button>' +
+							'</td>' +
+							'</tr>');
+				}
 			}
 		})
 	});
@@ -106,7 +108,6 @@ $('.companySel').blur(function(){
 		firebase.database().ref("company/" + snapshot.key + "/client").on('value', function(snapshot1){
 			client.push(snapshot1.val());
 			for(var i=0; i<=client[0].length; i++){
-				console.log(client[0][i]);
 				if(client[0][i] == 'yeta'){
 					$('.yeta').show();
 				}
@@ -139,31 +140,43 @@ $('#postCancel').click(function () {
 
 var auth = firebase.auth();
 var storageRef = firebase.storage().ref();
+var file = [];
 
 function handleFileSelect(evt) {
   evt.stopPropagation();
   evt.preventDefault();
-  var file = evt.target.files[0];
-  var uploadfile = '';
-
-  var metadata = {
-    'contentType': file.type
-  };
-
-  // Push to child path.
-  // [START oncomplete]
-  storageRef.child('files/' + file.name).put(file, metadata).then(function(snapshot) {
-    console.log('Uploaded', snapshot.totalBytes, 'bytes.');
-    console.log(snapshot.metadata);
-    var url = snapshot.metadata.downloadURLs[0];
-    console.log('File available at', url);
-   $('#fileInput').append('<input type="text" id="fileName" value="' +  file.name + '">');
-  }).catch(function(error) {
-    console.error('Upload failed:', error);
-  });
+  
+  for(var i=0; i<=evt.target.files.length; i++){
+	  if(evt.target.files[i] != undefined && evt.target.files.length > 0){
+		  file = evt.target.files[i];
+		  
+		  var metadata = {
+			  'contentType': file.type,
+			  'name': file.name
+		  };
+		  
+		  storageRef.child('files/' + file.name).put(file, metadata).then(function(snapshot) {
+			  var url = snapshot.metadata.downloadURLs[i];
+			  $('#fileInput').append('<span class="fileName">' +  snapshot.metadata.name + '</span>&nbsp;&nbsp;&nbsp;&nbsp;');
+		  }).catch(function(error) {
+			  console.log(error)
+		  });
+	  } else if(evt.target.files[i] != undefined && evt.target.files.length == 0){
+		  file = evt.target.files[0];
+		  
+		  var metadata = {
+				  'contentType': file.type
+		  };
+		  
+		  storageRef.child('files/' + file.name).put(file, metadata).then(function(snapshot) {
+			  var url = snapshot.metadata.downloadURLs[0];
+			  $('#fileInput').append('<span class="fileName">' +  file.name + '</span>&nbsp;&nbsp;&nbsp;&nbsp;');
+		  }).catch(function(error) {
+			  console.log(error)
+		  });
+	  }
+  }
 }
-	
-	$('#fileInput').hide();
 
   document.getElementById('fileButton').addEventListener('change', handleFileSelect, false);
 
@@ -213,7 +226,31 @@ $('#postSave').click(function(){
 		postCusPhone = $(this).val();
 	})
 	
-	console.log(companyType);
+	var uploadfile = [];
+	
+	for(var i=0; i<=$('#fileInput').children().length; i++){
+		if($('#fileInput').children().eq(i).text() != undefined && $('#fileInput').children().eq(i).text() != null){
+			uploadfile.push($('#fileInput').children().eq(i).text());
+		}
+	}
+	
+	$('#replyText').val($('#replyText').val().replace(/^\s*|\s*$/g,''));
+	var replyText = $('#replyText').summernote('code');
+	
+	if(replyText != ''){
+		replyText = $('#replyText').summernote('code');
+		replydate = today.getFullYear() + "." + (today.getMonth()+1) + "." + today.getDate() + " " + today.getHours() + ":" + today.getMinutes();
+		replyName = firebase.auth().currentUser.displayName;
+		uid = firebase.auth().currentUser.uid;
+		replyImg = firebase.auth().currentUser.photoURL;
+	} else {
+		replyText = '';
+		replydate = '';
+		replyName = '';
+		uid = '';
+		replyImg = ''
+	}
+	
 	firebase.database().ref('posts/' + modifyPageno).set({
 		postCompany: $('.companySel').val(),
 		postCustomer: $('.customerSel').val(),
@@ -227,9 +264,18 @@ $('#postSave').click(function(){
 		userImg: firebase.auth().currentUser.photoURL,
 		username: firebase.auth().currentUser.displayName,
 		uid: firebase.auth().currentUser.uid,
-		uploadfile: $('#fileName').val(),
+		uploadfile: uploadfile,
 		postDate: today.getFullYear() + "." + (today.getMonth()+1) + "." + today.getDate() + " " + today.getHours() + ":" + today.getMinutes()
 	});
+	
+	firebase.database().ref('reply/' + modifyPageno + '/' + modifyPageno).set({
+		replyText: replyText,
+		replyDate: replydate,
+		replyName: replyName,
+		uid: uid,
+		replyImg: replyImg
+	})
+	
 	window.location.hash = 'index/view_call_record?no=' + modifyPageno;
 });
 
@@ -252,7 +298,6 @@ $(document).ready(function(){
 	var phoneSel = '';
 	firebase.database().ref('posts/' + modifyPageno + '/postCustomer').on('value', function(snapshot){
 			phoneSel = snapshot.val();
-		console.log(phoneSel);
 		var phoneSel2 = [];
 		
 		firebase.database().ref('customer').orderByChild('cusName').equalTo(phoneSel).on('child_added',function(snapshot){
@@ -262,15 +307,17 @@ $(document).ready(function(){
 				})
 				$('#phoneSec').children().remove();
 				for(var i=0; i<=phoneSel2.length; i++){
-					$('#phoneSec').append('<tr>' +
-							'<td><input type="radio" value="' + phoneSel2[i][1] + '" class="optionContact" name="optionsContact"></td>' +
-							'<td>'+ phoneSel2[i][0] + '</td>' +
-							'<td>'+ phoneSel2[i][1] + '</td>' +
-							'<td class="text-right">' +
-							'<button type="button" class="mod btn-white btn btn-xs" value="' + snapshot.key + '">수정</button>' +
-							'<button type="button" class="del btn-white btn btn-xs" value="' + snapshot.key + '">삭제</button>' +
-							'</td>' +
-					'</tr>');
+					if(phoneSel2[i] != null && phoneSel2[i] != undefined){
+						$('#phoneSec').append('<tr>' +
+								'<td><input type="radio" value="' + phoneSel2[i][1] + '" class="optionContact" name="optionsContact"></td>' +
+								'<td>'+ phoneSel2[i][0] + '</td>' +
+								'<td>'+ phoneSel2[i][1] + '</td>' +
+								'<td class="text-right">' +
+								'<button type="button" class="mod btn-white btn btn-xs" value="' + snapshot.key + '">수정</button>' +
+								'<button type="button" class="del btn-white btn btn-xs" value="' + snapshot.key + '">삭제</button>' +
+								'</td>' +
+						'</tr>');
+					}
 				}
 			})
 		});
