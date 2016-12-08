@@ -241,15 +241,20 @@ $('#postSave').click(function(){
 		replyText = $('#replyText').summernote('code');
 		replydate = today.getFullYear() + "." + (today.getMonth()+1) + "." + today.getDate() + " " + today.getHours() + ":" + today.getMinutes();
 		replyName = firebase.auth().currentUser.displayName;
-		uid = firebase.auth().currentUser.uid;
+		userId = firebase.auth().currentUser.uid;
 		replyImg = firebase.auth().currentUser.photoURL;
 	} else {
 		replyText = '';
 		replydate = '';
 		replyName = '';
-		uid = '';
+		userId = '';
 		replyImg = ''
 	}
+	
+	var postday;
+	firebase.database().ref('posts/' + modifyPageno + '/postDate').on('value', function(snapshot){
+		postday = snapshot.val();
+	})
 	
 	firebase.database().ref('posts/' + modifyPageno).set({
 		postCompany: $('.companySel').val(),
@@ -265,14 +270,14 @@ $('#postSave').click(function(){
 		username: firebase.auth().currentUser.displayName,
 		uid: firebase.auth().currentUser.uid,
 		uploadfile: uploadfile,
-		postDate: today.getFullYear() + "." + (today.getMonth()+1) + "." + today.getDate() + " " + today.getHours() + ":" + today.getMinutes()
+		postDate: postday
 	});
 	
 	firebase.database().ref('reply/' + modifyPageno + '/' + modifyPageno).set({
 		replyText: replyText,
 		replyDate: replydate,
 		replyName: replyName,
-		uid: uid,
+		userId: userId,
 		replyImg: replyImg
 	})
 	

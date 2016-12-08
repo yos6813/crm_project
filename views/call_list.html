@@ -50,15 +50,15 @@
                	  	   </select>
                        <div class="input-group">
 	                       <input id="searchInput" type="text" placeholder="검색어 입력" class="input-sm form-control"> <span class="input-group-btn">
-	                       <button type="submit" class="btn btn-sm btn-primary"> 검색</button> </span>
+	                       <button id="searchBtn" class="btn btn-sm btn-primary"> 검색</button> </span>
                        </div>
                    </form>
                    <div class="col-md-2">
                        <div class="input-group m-b"><span class="input-group-addon">표시</span>
-                           <select class="input-sm form-control input-s-sm inline">
-                           <option value="0">25</option>
-                           <option value="1">50</option>
-                           <option value="2">100</option>
+                           <select id="sizeSel" class="input-sm form-control input-s-sm inline">
+                           <option value="25">25</option>
+                           <option value="50">50</option>
+                           <option value="100">100</option>
                        </select>
                        </div>
                    </div>
@@ -79,9 +79,11 @@
                                 </thead>
                             </tbody>
                         </table>
+                        <uib-pagination total-items="" ng-model="main.bigCurrentPage" max-size="main.maxSize" class="pagination-sm" boundary-links="true"></uib-pagination>
                     </div>
                 </div>
             </div>
         </div>
     </div>
     <script src="../js/plugins/call_list/call_list.js"></script>
+    <script src="../js/searchList.js"></script>

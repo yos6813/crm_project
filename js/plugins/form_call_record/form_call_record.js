@@ -43,24 +43,26 @@ $(document).on('click','.del', function(){
 
 // 고객 autocomplete 
 $(document).ready(function(){
-	firebase.database().ref("customer/").orderByKey().on("child_added", function(snapshot){
+	$(".customerSel").focus(function(){
+		var cusSel3 = [];
 		var cusSel2 = [];
-		firebase.database().ref("customer/" + snapshot.key + '/cusName').on('value', function(snapshot1){
-			cusSel2.push(snapshot1.val());
-			$(".customerSel").typeahead({ source: cusSel2});
-		});
-	});
-	
-	$(".companySel").blur(function(){
-		typeahead = [];
-		var cusSel = $('.companySel').val();
-		var cusSel2 = [];
-		firebase.database().ref('customer').orderByChild('cusCompany').equalTo(cusSel).on('child_added',function(snapshot){
-			firebase.database().ref('customer/' + snapshot.key + '/cusName').on('value', function(snapshot2){
-				cusSel2.push(snapshot2.val());
-				$(".customerSel").typeahead({source: cusSel2});
-			})
-		});
+		console.log($('.companySel').val());
+		if($('.companySel').val() == null || $('.companySel').val() == undefined || $('.companySel').val() == ''){
+			firebase.database().ref("customer/").orderByKey().on("child_added", function(snapshot){
+				firebase.database().ref("customer/" + snapshot.key + '/cusName').on('value', function(snapshot1){
+					cusSel3.push(snapshot1.val());
+					$(".customerSel").typeahead({source: cusSel3});
+				});
+			});
+		} else {
+			var cusSel = $('.companySel').val();
+			firebase.database().ref('customer').orderByChild('cusCompany').equalTo(cusSel).on('child_added',function(snapshot){
+				firebase.database().ref('customer/' + snapshot.key + '/cusName').on('value', function(snapshot2){
+					cusSel2.push(snapshot2.val());
+					$(".customerSel").typeahead({source: cusSel2});
+				})
+			});
+		}
 	});
 })
 
@@ -75,11 +77,17 @@ $(document).ready(function(){
 	});
 	
 	var tagSel = [];
+	var uniqueNames = [];
 	firebase.database().ref("tags/").orderByKey().endAt("tag").on("child_added", function(snapshot){
 		snapshot.forEach(function(data){
 			tagSel.push(data.val());
 		})
-		$(".tagAuto").typeahead({source: tagSel});
+		
+		$.each(tagSel, function(i, el){
+			if($.inArray(el, uniqueNames) === -1) uniqueNames.push(el);
+		});
+		
+		$(".tagAuto").typeahead({source: uniqueNames});
 	});
 });
 
@@ -118,7 +126,7 @@ $('.companySel').blur(function(){
 // 글 등록
 
 function addPost(uid, title, text, tags, postCompany, postCustomer, postType, postCusPhone,
-				 postState, username, postDate, userImg, companyType, uploadfile, replyDate, replyName, replyText, replyImg){
+				 postState, username, postDate, userImg, companyType, uploadfile, userId, replyDate, replyName, replyText, replyImg){
 	var postData = {
 		uid: uid,
 		title: title,
@@ -137,7 +145,7 @@ function addPost(uid, title, text, tags, postCompany, postCustomer, postType, po
 	};
 	
 	var replyData = {
-			uid: uid,
+			userId: userId,
 			replyDate: replyDate,
 			replyName: replyName,
 			replyText: replyText,
@@ -245,6 +253,7 @@ $('#postSave').click(function(){
 	var replydate = '';
 	var post = '';
 	var replyImg = '';
+	var userId = '';
 	
 	for(var i=0; i<=$('#fileInput').children().length; i++){
 		if($('#fileInput').children().eq(i).text() != undefined && $('#fileInput').children().eq(i).text() != null){
@@ -283,22 +292,24 @@ $('#postSave').click(function(){
 	if($('.fileName').val() == null){
 		uploadfile = 'x';
 	}
+	
 	if(replyText == ''){
 		replyName = '';
 		replyDate = '';
 		replyText = '';
-		uid = '';
+		userId = '';
 		replyImg = '';
 	} else {
+		userId = firebase.auth().currentUser.uid;
 		replyName = username;
 		replyDate = postDate;
 		replyText = $('#replyText').summernote('code');
-		replyImg = userImg;
+		replyImg = firebase.auth().currentUser.photoURL;
 	}
 	
 	if(title != '' && postCustomer != ''){
 		addPost(uid, title, text, tags, postCompany, postCustomer, postType, postCusPhone, postState, username, postDate,
-				userImg, companyType, uploadfile, replyDate, replyName, replyText, replyImg);
+				userImg, companyType, uploadfile, userId, replyDate, replyName, replyText, replyImg);
 		window.location.hash = 'index/call_list';
 	}
 })

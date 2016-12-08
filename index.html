@@ -60,15 +60,15 @@
 <script src="js/inspinia.js"></script>
 
 <!-- Main Angular scripts-->
-<script src="js/angular/angular.min.js"></script>
+
+<!-- AngularJS -->
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+<!-- AngularFire -->
+<script src="https://cdn.firebase.com/libs/angularfire/2.1.0/angularfire.min.js"></script>
 <script src="js/plugins/oclazyload/dist/ocLazyLoad.min.js"></script>
 <script src="js/ui-router/angular-ui-router.min.js"></script>
 <script src="js/bootstrap/ui-bootstrap-tpls-1.1.2.min.js"></script>
 <script src="js/angular/angular-route.js"></script>
-
-<!-- AngularFire -->
-<script src="https://cdn.firebase.com/libs/angularfire/2.1.0/angularfire.min.js"></script>
-
 
 <!-- Anglar App Script -->
 <script src="js/app.js"></script>
@@ -109,21 +109,26 @@ firebase.database().ref("company/").orderByKey().on("child_added", function(snap
 
 <!-- FooTable -->
 <script src="js/plugins/footable/footable.all.min.js"></script>
+
 <script>
 $('.footable').footable();
 $('.footable2').footable();
 </script>
+
 <!-- iCheck -->
 <script src="js/plugins/iCheck/icheck.min.js"></script>
+
 <script>
 $('.i-checks').iCheck({
     checkboxClass: 'icheckbox_square-green',
     radioClass: 'iradio_square-green',
 });
 </script>
+
 <!-- SUMMERNOTE -->
 <script src="js/plugins/summernote/summernote.min.js"></script>
 <script src="js/plugins/bootstrap-tagsinput/bootstrap-tagsinput.js"></script>
+
 <!-- Jasny -->
 <script src="js/plugins/jasny/jasny-bootstrap.min.js"></script>
 </body>

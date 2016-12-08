@@ -219,7 +219,9 @@ $(document).ready(function(){
 	
 	firebase.auth().onAuthStateChanged(function(user) {
 		var userId = firebase.auth().currentUser;
+		console.log(userId.uid);
 		firebase.database().ref('user-posts/' + userId.uid + '/' + viewPageno).on('value', function(snapshot){
+			console.log(snapshot.uid);
 			if(snapshot.val() != null){
 				$('#viewButton').append('<a href="#/index/form_call_record_modify?no=' + viewPageno + '" id="viewModify" class="btn btn-white btn-sm" title="Reply"><i class="fa fa-pencil"></i> 수정</a>' +
 										'<a id="viewDelete" class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Move to trash"><i class="fa fa-trash-o"></i> 삭제</a>');
