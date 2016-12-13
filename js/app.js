@@ -5,10 +5,13 @@
 (function () {
 	
 	
-    angular.module('inspinia', [
+    angular
+    .module('inspinia', [
         'ui.router',                    // Routing
         'oc.lazyLoad',                  // ocLazyLoad
         'ui.bootstrap',                 // Ui Bootstrap
+        'ngRoute',
+        'firebase'
     ])
 })();
 

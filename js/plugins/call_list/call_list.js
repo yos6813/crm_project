@@ -5,7 +5,16 @@ firebase.database().ref("types/").orderByKey().endAt("type").on("child_added", f
 	})
 })
 
-var arr = [];
+function getParameterByName(name) {
+	name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+	var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+	results = regex.exec(location.hash);
+	return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
+var start = getParameterByName('startPage');
+var end = getParameterByName('endPage');
+
 
 function postList(snapshot){ 
 	firebase.database().ref('posts/' + snapshot.key).on('value', function(snapshot1){
@@ -40,10 +49,8 @@ function postList(snapshot){
 				minutegap = '-';
 				hourgap = '-';
 			}
-			pagination(snapshot);
 			var comType = snapshot1.val().companyType;
 			$('#postList').each(function(){
-				arr.push(snapshot.key);
 				$('#postList').append('<tr class="call_list">' +
 									'<td class="project-status">' +
 									'<span class="label label-default">' + snapshot1.val().postState + '</span>' +
@@ -74,10 +81,6 @@ function postList(snapshot){
 									'</td>' +
 									'</tr>');
 				
-				if($('.replyImgli').src == null || $('.replyImgli').src == undefined){
-					
-				}
-				
 				for(var i=0; i<=comType[0].length; i++){
 					if(comType[0][i] == 'yeta'){
 						$('#' + snapshot.key).append('<span class="badge badge-success yeta"> YETA </span>');
@@ -91,10 +94,9 @@ function postList(snapshot){
 			})
 		});
 	});}
-var pageSize1 = 0; // startAt
-var pageSize2 = 4; // endAt
-var pageSize3; // limitToFirst
 
+var pageSize1;
+var pageSize2;
 
 function pagination(snapshot) {
 	console.log(snapshot.numChildren());
@@ -104,37 +106,16 @@ function pagination(snapshot) {
 		$('#pagination').show();
 		if(snapshot.numChildren() % pageSize3 >= 1){
 			var obj = $('#pagination').twbsPagination({
-				totalPages: (snapshot.numChildren() % pageSize3) + 1,
+				totalPages: Math.ceil(snapshot.numChildren() / pageSize3),
 				visiblePages: 5,
 				onPageClick: function (event, page) {
 					for(var i=0; i<=$(this).children().length; i++){
 						$(this).children().eq(i).click(function(){
-						if($(this).text() == "Previous"){
-							pageSize1 = pageSize1 - parseInt($('#sizeSel option:selected').val());
-							pageSize2 = pageSize2 - parseInt($('#sizeSel option:selected').val());
-							console.log("작아짐");
-							console.log(page, $(this).text());
-							console.info(pageSize1);
-							console.info(pageSize2);
-						} else if(page > $(this).text()) {
-							pageSize1 = pageSize1 - parseInt($('#sizeSel option:selected').val());
-							pageSize2 = pageSize2 - parseInt($('#sizeSel option:selected').val());
-							console.log("작아짐");
-							console.log(page, $(this).text());
-							console.info(pageSize1);
-							console.info(pageSize2);
-						} else {
-							pageSize1 = parseInt($('#sizeSel option:selected').val())  + pageSize1;
-							pageSize2 = parseInt($('#sizeSel option:selected').val()) + pageSize2;
-							console.log("커짐");
-							console.log(page, $(this).text());
-							console.info(pageSize1);
-							console.info(pageSize2);
-						}
+							alert($(this).text());
 						})
 					}
 				}
-			});
+			})
 		} else {
 			var obj = $('#pagination').twbsPagination({
 				totalPages: snapshot.numChildren() / pageSize3,
@@ -142,151 +123,76 @@ function pagination(snapshot) {
 				onPageClick: function (event, page) {
 					for(var i=0; i<=$(this).children().length; i++){
 						$(this).children().eq(i).click(function(){
-							if(page > parseInt($(this).text())){
-								pageSize1 = pageSize1 - parseInt($('#sizeSel option:selected').val());
-								pageSize2 = pageSize2 - parseInt($('#sizeSel option:selected').val());
-								console.log("작아짐");
-								console.log(page, $(this).text());
-								console.info(pageSize1);
-								console.info(pageSize2);
-							} else {
-								pageSize1 = parseInt($('#sizeSel option:selected').val())  + pageSize1;
-								pageSize2 = parseInt($('#sizeSel option:selected').val()) + pageSize2;
-								console.log("커짐");
-								console.log(page, $(this).text());
-								console.info(pageSize1);
-								console.info(pageSize2);
-							}
+							
 						})
 					}
 				}
-			});
+			})
 		}
 	} else {
 		$('#pagination').hide();
 	}
 };
 
-var start;
-var end;
-pageSize3 = parseInt($('#sizeSel option:selected').val()); // limitToFirst
+
+
 $(document).ready(function(){
 	
+//	this.bigTotalItems = 175;
+//    this.bigCurrentPage = 1;
+//    this.maxSize = 5;
+	
+    pageSize3 = parseInt($('#sizeSel option:selected').val()); // limitToFirst
 	$('#sizeSel').change(function(){
-		arr = [];
 		pageSize3 = parseInt($('#sizeSel option:selected').val()); // limitToFirst
 		$('#postList').children('.call_list').remove();
 		
-		// pagination
-		firebase.database().ref("posts/").on("child_added", function(snapshot){
-			pagination(snapshot);
-			console.log(arr);
-		})
-		
 		// call_list
-		firebase.database().ref("posts/").orderByKey().limitToFirst(pageSize2).on("child_added", function(snapshot){
+		firebase.database().ref("posts/").orderByKey().on("child_added", function(snapshot){
 			postList(snapshot);
 		});
 	})
-		
-		//전체 리스트
-		arr = [];
-		firebase.database().ref("posts/").on("value", function(snapshot){
-			arr.push(snapshot.key);
-			pagination(snapshot);
-		})
-		
-		firebase.database().ref("posts/").orderByKey().limitToFirst(pageSize3).on("child_added", function(snapshot){
-			postList(snapshot);
-		});
+	//전체 리스트
+	firebase.database().ref("posts/").on("child_added", function(snapshot){
+		postList(snapshot);
+	});
 		
 	$('#typeSelect').change(function(){
 		$('#postList').children('.call_list').remove();
-		arr = [];
 		var select = $(this).children("option:selected").text();
 		if(select == '전체'){
-			arr = [];
-			firebase.database().ref("posts/").on("value", function(snapshot){
-				pagination(snapshot);
-			});
-
 			firebase.database().ref("posts/").on("child_added", function(snapshot){
-				arr.push(snapshot.key);
-			})
-			
-			start = arr[pageSize1];
-			end = arr[pageSize2-1];
-			console.log(arr);
-			console.log(typeof(end), typeof(start));
-			console.log(start, end);
-			firebase.database().ref("posts/").orderByKey().startAt(start).limitToFirst(pageSize3).on("child_added", function(snapshot){
 				postList(snapshot);
 			});
 		} else {
-			arr = [];
-			firebase.database().ref("posts/").orderByChild('postType').equalTo(select).on('value', function(snapshot){
-				pagination(snapshot);
-			})
-			
 			firebase.database().ref("posts/").orderByChild('postType').equalTo(select).on('child_added', function(snapshot){
-				arr.push(snapshot.key);
-			})
-			
-			start = arr[pageSize1];
-			console.log(arr);
-			console.log(typeof(start));
-			console.log(start);
-			firebase.database().ref("posts/").orderByChild('postType').equalTo(select).startAt(start).limitToFirst(pageSize3).on('child_added', function(snapshot){
 				postList(snapshot);
 			})
 		}
 	})
 	
 	$("#radio1").click(function(){
-		arr = [];
-		firebase.database().ref("posts/").on("child_added", function(snapshot){
-			arr.push(snapshot.key);
-		})
-		start = arr[pageSize1];
-		end = arr[pageSize2-1];
 		$('#postList').children('.call_list').remove();
-		firebase.database().ref("posts/").endAt("title").on("value", function(snapshot){
-			pagination(snapshot);
-		})
-		
-		firebase.database().ref("posts/").orderByKey().startAt(start).limitToFirst(pageSize3).on("child_added", function(snapshot){
+		firebase.database().ref("posts/").on("child_added", function(snapshot){
 			postList(snapshot);
 		});
 	})
 	
 	$('#radio2').click(function() {
-		arr = [];
 		$('#postList').children('.call_list').remove();
-		firebase.database().ref('posts/').orderByChild('postState').equalTo('접수').on('value', function(snapshot){
-			pagination(snapshot);
-		})
-		firebase.database().ref('posts/').orderByChild('postState').equalTo('접수').limitToLast(pageSize3).on('child_added', function(snapshot){
+		firebase.database().ref('posts/').orderByChild('postState').equalTo('접수').on('child_added', function(snapshot){
 			postList(snapshot);
 		});
 	})
 	$('#radio3').click(function() {
-		arr = [];
 		$('#postList').children('.call_list').remove();
-		firebase.database().ref('posts/').equalTo('해결').on('child_added', function(snapshot){
-			pagination(snapshot);
-			console.log(snapshot.numChildren());
-		})
-		firebase.database().ref('posts/').orderByChild('postState').equalTo('해결').limitToLast(pageSize3).on('child_added', function(snapshot){
+		firebase.database().ref('posts/').orderByChild('postState').equalTo('해결').on('child_added', function(snapshot){
 			postList(snapshot);
 		})
 	})
 	$('#radio4').click(function() {
-		arr = [];
 		$('#postList').children('.call_list').remove();
-		firebase.database().ref('posts/').orderByChild('postState').equalTo('보류').on('value', function(snapshot){
-			pagination(snapshot);
-		})
-		firebase.database().ref('posts/').orderByChild('postState').equalTo('보류').limitToLast(pageSize3).on('child_added', function(snapshot){
+		firebase.database().ref('posts/').orderByChild('postState').equalTo('보류').on('child_added', function(snapshot){
 			postList(snapshot);
 		})
 	})
@@ -296,13 +202,31 @@ $(document).ready(function(){
 		$('#postList').children('.call_list').remove();
 		var searchType = $('#searchSelect').children("option:selected").val();
 		var searchWord = $('#searchInput').val();
-//		console.log(searchType, searchWord);
-		firebase.database().ref('posts/').orderByChild(searchType).equalTo(searchWord).limitToLast(pageSize2).on('child_added', function(snapshot){
-			if(snapshot.key == null || snapshot.key == undefined){
-				$('#postList').append('<span>NO RESULT</span>');
-			} else {
+		firebase.database().ref('posts/').orderByChild(searchType).equalTo(searchWord).on('child_added', function(snapshot){
 				postList(snapshot);
-			}
 		})
 	})
+	
+	$('#pagination').after('<div id="nav" class="text-center container"></div>');
+	var rowsShown = 5;
+	var rowsTotal = $('#postList').children('.call_list').length;
+	var numPages = Math.ceil(rowsTotal/rowsShown);
+	console.log(rowsShown);
+	for(i = 0;i < numPages;i++) {
+		var pageNum = i + 1;
+		$('#nav').append('<a href="#" rel="'+i+'">'+pageNum+'</a> ');
+	}
+	$('#postList').children('.call_list').hide();
+	$('#postList').children('.call_list').slice(0, rowsShown).show();
+	$('#nav a:first').addClass('active');
+	$('#nav a').bind('click', function(){
+		
+		$('#nav a').removeClass('active');
+		$(this).addClass('active');
+		var currPage = $(this).attr('rel');
+		var startItem = currPage * rowsShown;
+		var endItem = startItem + rowsShown;
+		$('#postList').children('tr').css('opacity','0.0').hide().slice(startItem, endItem).
+		css('display','table-row').animate({opacity:1}, 300);
+	});
 })
