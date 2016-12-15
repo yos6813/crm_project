@@ -49,8 +49,10 @@
                        		<option value="username">작성자</option>
                	  	   </select>
                        <div class="input-group">
-	                       <input id="searchInput" type="text" placeholder="검색어 입력" class="input-sm form-control"> <span class="input-group-btn">
+	                       <input id="searchInput" type="text" placeholder="검색어 입력" data-list=".searchUl" class="input-sm form-control"> <span class="input-group-btn">
 	                       <button id="searchBtn" class="btn btn-sm btn-primary"> 검색</button> </span>
+	                       <ul class="searchUl">
+	                       </ul>
                        </div>
                    </form>
                    <div class="col-md-2">
@@ -66,7 +68,7 @@
                        </div>
                    </div>
                </div>
-                   <table class="table table-hover">
+                   <table id="postTbl" class="table table-hover">
                             <tbody>
                                 <thead id="postList">
                                     <tr>
@@ -82,17 +84,13 @@
                                 </thead>
                             </tbody>
                         </table>
-                        <div id="pagination">
+                        <div class="text-center" id="pagination">
+                        	<ul class="pagination pagination-sm" id="nav">
+                        	</ul>
                         </div>
-<!-- 						<div class="container text-center"> -->
-<!-- 					<uib-pagination total-items="main.bigTotalItems" ng-model="main.bigCurrentPage" max-size="main.maxSize" class="pagination-sm" boundary-links="true"></uib-pagination> -->
-<!-- 					        <ul class="pagination" id="pagination"></ul> -->
-<!-- 						</div> -->
                     </div>
                 </div>
             </div>
         </div>
     </div>
     <script src="../js/plugins/call_list/call_list.js"></script>
-    <script src="../js/searchList.js"></script>
-    <script src="../js/plugins/paging/paging.js"></script>

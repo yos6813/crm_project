@@ -191,6 +191,7 @@ firebase.database().ref('posts/' + modifyPageno).on('value', function(snapshot){
 	$('.customerSel').val(snapshot.val().postCustomer);
 	$('#title').val(snapshot.val().title);
 	$('#postText').summernote('code', snapshot.val().text);
+//		$('#fileInput').append('<span class="fileName">' +  snapshot.val().uploadfile + '</span>&nbsp;&nbsp;&nbsp;&nbsp;');
 })
 var tags = [];
 var tag = '';
