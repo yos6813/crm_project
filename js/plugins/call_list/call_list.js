@@ -5,9 +5,15 @@ firebase.database().ref("types/").orderByKey().endAt("type").on("child_added", f
 	})
 })
 
-function postList(snapshot){ 
-	firebase.database().ref('posts/' + snapshot.key).on('value', function(snapshot1){
-			firebase.database().ref('reply/' + snapshot.key + '/' + snapshot.key).on('value', function(snapshot2){
+window.onpageshow = function(event) {
+if (event.persisted) {
+    window.location.reload() 
+}
+};
+
+function postList(key){ 
+	firebase.database().ref('posts/' + key).on('value', function(snapshot1){
+			firebase.database().ref('reply/' + key + '/' + key).on('value', function(snapshot2){
 			var old = snapshot2.val().replyDate;
 			if(old != ''){
 				var replyDate1 = old.split(' ');
@@ -38,24 +44,34 @@ function postList(snapshot){
 				minutegap = '-';
 				hourgap = '-';
 			}
+			
+			
 			var comType = snapshot1.val().companyType;
 			$('#postList').each(function(){
+				var state;
+				if(snapshot1.val().postState == '해결'){
+					state = 'label-default';
+				} else if(snapshot1.val().postState == '보류'){
+					state = 'label-warning';
+				} else{
+					state = 'label-primary';
+				}
 				$('#postList').append('<tr class="call_list">' +
 									'<td class="project-status">' +
-									'<span class="label label-default">' + snapshot1.val().postState + '</span>' +
+									'<span class="label ' + state + '">' + snapshot1.val().postState + '</span>' +
 									'</td>' +
 									'<td class="project-category">' +
 									'<span>' + snapshot1.val().postType + '</span>' +
 									'</td>' +
 									'<td class="title project-title">' +
-									'<a href="#/index/view_call_record?no='+ snapshot.key +'" id="listTitle">' + snapshot1.val().title + '</a>' +
+									'<a href="#/index/view_call_record?no='+ key +'" id="listTitle">' + snapshot1.val().title + '</a>' +
 									'</td>' +
 									'<td class="project-title">' +
 									'<a id="titleCom">' + snapshot1.val().postCompany + '</a>' +
 									'<br/>' +
-									'<small>' + snapshot1.val().username + '</small>' +
+									'<small>' + snapshot1.val().postCustomer + '</small>' +
 									'</td>' +
-									'<td class="project-clientcategory" id="' + snapshot.key + '">' + 
+									'<td class="project-clientcategory" id="' + key + '">' + 
 									'</td>' +
 									'<td class="project-people">' +
 									'<a><img alt="image" class="img-circle" src="' + snapshot1.val().userImg + '"></a>' +
@@ -72,11 +88,11 @@ function postList(snapshot){
 				
 				for(var i=0; i<=comType[0].length; i++){
 					if(comType[0][i] == 'yeta'){
-						$('#' + snapshot.key).append('<span class="badge badge-success yeta"> YETA </span>');
+						$('#' + key).append('<span class="badge badge-success yeta"> YETA </span>');
 					} else if(comType[0][i] == 'academy'){
-						$('#' + snapshot.key).append('<span class="badge badge-info academy"> ACADEMY </span>');
+						$('#' + key).append('<span class="badge badge-info academy"> ACADEMY </span>');
 					} else if(comType[0][i] == 'consulting'){
-						$('#' + snapshot.key).append('<span class="badge badge-warning consulting"> CONSULTING </span>');
+						$('#' + key).append('<span class="badge badge-warning consulting"> CONSULTING </span>');
 					}
 				}
 			})
@@ -112,28 +128,25 @@ $(document).ready(function(){
 		
 		// call_list
 		firebase.database().ref("posts/").orderByKey().on("child_added", function(snapshot){
-			postList(snapshot);
+			postList(snapshot.key);
 		});
 	})
-	//전체 리스트
-	firebase.database().ref("posts/").on("child_added", function(snapshot){
-		postList(snapshot);
-		
-		$('#testbtn').click(function(){
-			console.log($('#postList').children('.call_list').size());
-		})
-	});
-		
+	$(document).ready(function(){
+		//전체 리스트
+		firebase.database().ref("posts/").on("child_added", function(snapshot){
+			postList(snapshot.key);
+		});
+	})
 	$('#typeSelect').change(function(){
 		$('#postList').children('.call_list').remove();
 		var select = $(this).children("option:selected").text();
 		if(select == '전체'){
 			firebase.database().ref("posts/").on("child_added", function(snapshot){
-				postList(snapshot);
+				postList(snapshot.key);
 			});
 		} else {
 			firebase.database().ref("posts/").orderByChild('postType').equalTo(select).on('child_added', function(snapshot){
-				postList(snapshot);
+				postList(snapshot.key);
 			})
 		}
 	})
@@ -141,37 +154,42 @@ $(document).ready(function(){
 	$("#radio1").click(function(){
 		$('#postList').children('.call_list').remove();
 		firebase.database().ref("posts/").on("child_added", function(snapshot){
-			postList(snapshot);
+			postList(snapshot.key);
 		});
 	})
 	
 	$('#radio2').click(function() {
 		$('#postList').children('.call_list').remove();
 		firebase.database().ref('posts/').orderByChild('postState').equalTo('접수').on('child_added', function(snapshot){
-			postList(snapshot);
+			postList(snapshot.key);
 		});
 	})
 	$('#radio3').click(function() {
 		$('#postList').children('.call_list').remove();
 		firebase.database().ref('posts/').orderByChild('postState').equalTo('해결').on('child_added', function(snapshot){
-			postList(snapshot);
+			postList(snapshot.key);
 		})
 	})
 	$('#radio4').click(function() {
 		$('#postList').children('.call_list').remove();
 		firebase.database().ref('posts/').orderByChild('postState').equalTo('보류').on('child_added', function(snapshot){
-			postList(snapshot);
+			postList(snapshot.key);
 		})
 	})
 	
 })
 // 검색
 $(document).ready(function(){
+	$('#searchBtn').click(function(){
+		$('#postList').children('.call_list').remove();
+		firebase.database().ref("posts/").on("child_added", function(snapshot){
+			postList(snapshot.key);
+		});
+	});
 	typeSelect();
 
 	$('#searchInput').hideseek({
 		  hidden_mode: true,
-		  highlight: true
 	});
 	
 	$('#searchSelect').change(function(){
@@ -183,7 +201,6 @@ $(document).ready(function(){
 $('.searchUl').hide();
 
 function typeSelect(){
-	console.log($('#searchSelect option:selected').val());
 	if($('#searchSelect option:selected').val() == 'title'){
 		firebase.database().ref('posts/').on('child_added', function(snapshot){
 			$('.searchUl').append('<li>' + snapshot.val().title + '</li>');
@@ -207,23 +224,69 @@ function typeSelect(){
 	var searchInput = []; 
 	var searchInput1 = [];
 	$('#searchBtn').click(function(){
-		searchInput = [];
+		$('#postList').children('.call_list').remove();
+		searchInput =[];
 		searchInput1 = [];
 		var searchType = $('#searchSelect option:selected').val();
-		searchInput.push($('.searchUl .highlight').parent().text());
-//		searchInput.push($('.searchUl .highlight').parents().html());
-		
-		console.log(searchInput);
-//		console.log(searchInput1);
-		
-		$('#postList').children('.call_list').remove();
-		for(var i=0; i<=searchInput.length; i++){
-			if(searchInput[i] != undefined || searchInput[i] != null){
-				firebase.database().ref('posts/').orderByChild(searchType).equalTo(searchInput[i]).on('child_added', function(snapshot){
-					console.log(snapshot.key);
-					postList(snapshot);
-				})
+		if($('#searchInput').val() != ''){
+			if($('.searchUl').children().not($('.hideLi')).length > 0){
+				for(var i=0; i<=$('.searchUl').children().not($('.hideLi')).length; i ++){
+					searchInput.push($('.searchUl').children().not($('.hideLi')).eq(i).text());
+					searchInput1.push($('.searchUl').children().not($('.hideLi')).eq(i).html());
+				}
 			}
+			switch(searchType){
+			case 'text':
+				$('#postList').children('.call_list').remove();
+				for(var i=0; i<=searchInput1.length; i++){
+					if(searchInput1[i] != undefined || searchInput1[i] != null){
+						firebase.database().ref('posts/').orderByChild(searchType).equalTo(searchInput1[i]).on('child_added', function(snapshot){
+							postList(snapshot.key);
+						})
+					}
+				}
+				break;
+			case 'tags':
+				$('#postList').children('.call_list').remove();
+				var tagsIndex = [];
+				firebase.database().ref('posts/').on('child_added', function(snapshot){
+					if(snapshot.val().tags != undefined){
+						for(var i=0; i<=searchInput.length; i++){
+							if(searchInput[i] != undefined || searchInput[i] != null || searchInput[i] != " "){
+								if(snapshot.val().tags == searchInput[i]){
+									postList(snapshot.key);
+								}
+							}
+						}
+					} 
+				})
+				break;
+			case 'username':
+				$('#postList').children('.call_list').remove();
+				$('.searchUl').each(function(i, e){
+					if(searchInput[i] != undefined || searchInput[i] != null){
+						firebase.database().ref('posts/').orderByChild(searchType).equalTo(searchInput[i]).on('child_added', function(snapshot){
+							postList(snapshot.key);
+						})
+					}
+				});
+				break;
+			default:
+				$('#postList').children('.call_list').remove();
+				for(var i=0; i<=searchInput.length; i++){
+					if(searchInput[i] != undefined || searchInput[i] != null){
+						firebase.database().ref('posts/').orderByChild(searchType).equalTo(searchInput[i]).on('child_added', function(snapshot){
+							postList(snapshot.key);
+						})
+					}
+				}
+			break;
+			}	
+		} else {
+			$('#postList').children('.call_list').remove();
+			firebase.database().ref("posts/").on("child_added", function(snapshot){
+				postList(snapshot.key);
+			});
 		}
 	});
 }

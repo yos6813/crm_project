@@ -72,7 +72,7 @@
 
       if ($this.opts.hidden_mode) $list.children().hide();
 
-      $this.keypress(function(e) {
+      $this.keydown(function(e) {
 
         if (e.keyCode != 38 && e.keyCode != 40 && e.keyCode != 13 && ( e.keyCode != 8 ? $this.val().length >= $this.opts.min_chars : true ) ) {
 
@@ -91,12 +91,14 @@
             if (treaty) {
 
               $(this).hide();
+              $(this).addClass('hideLi');
 
               $this.trigger('_after_each');
 
             } else {
 
               $this.opts.highlight ? $(this).removeHighlight().highlight(q).show() : $(this).show();
+              $(this).removeClass('hideLi');
 
               $this.trigger('_after_each');
 
