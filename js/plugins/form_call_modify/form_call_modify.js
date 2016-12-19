@@ -185,13 +185,18 @@ $('.tagsinput').tagsinput({
 });
 
 $('.summernote').summernote();
-
+$('#fileInput').hide();
 firebase.database().ref('posts/' + modifyPageno).on('value', function(snapshot){
 	$('.companySel').val(snapshot.val().postCompany);
 	$('.customerSel').val(snapshot.val().postCustomer);
 	$('#title').val(snapshot.val().title);
 	$('#postText').summernote('code', snapshot.val().text);
-//		$('#fileInput').append('<span class="fileName">' +  snapshot.val().uploadfile + '</span>&nbsp;&nbsp;&nbsp;&nbsp;');
+	if(snapshot.val().uploadfile != '' || snapshot.val().uploadfile != 'x' || snapshot.val().uploadfile != undefined){
+		console.log(snapshot.val().uploadfile.length);
+		for(var i=0; i<snapshot.val().uploadfile.length; i++){
+			$('#fileInput').append('<span class="fileName">' +  snapshot.val().uploadfile[i] + '</span>');
+		}
+	}
 })
 var tags = [];
 var tag = '';
@@ -257,7 +262,7 @@ $('#postSave').click(function(){
 		postday = snapshot.val();
 	})
 	
-	firebase.database().ref('posts/' + modifyPageno).set({
+	firebase.database().ref('posts/' + modifyPageno).update({
 		postCompany: $('.companySel').val(),
 		postCustomer: $('.customerSel').val(),
 		title: $('#title').val(),
@@ -274,7 +279,7 @@ $('#postSave').click(function(){
 		postDate: postday
 	});
 	
-	firebase.database().ref('reply/' + modifyPageno + '/' + modifyPageno).set({
+	firebase.database().ref('reply/' + modifyPageno + '/' + modifyPageno).update({
 		replyText: replyText,
 		replyDate: replydate,
 		replyName: replyName,

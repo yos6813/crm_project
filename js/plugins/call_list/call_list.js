@@ -77,7 +77,7 @@ function postList(key){
 									'<a><img alt="image" class="img-circle" src="' + snapshot1.val().userImg + '"></a>' +
 									'</td>' +
 									'<td class="project-people">' +
-									'<a><img alt="image" class="replyImgli img-circle" src="' + snapshot2.val().replyImg + '"></a>' +
+									'<a><img alt="" class="replyImgli img-circle" src="' + snapshot2.val().replyImg + '"></a>' +
 									'</td>' +
 									'<td class="project-title">' +
 									'<small>접수: ' + snapshot1.val().postDate + '</small>' +
@@ -131,12 +131,14 @@ $(document).ready(function(){
 			postList(snapshot.key);
 		});
 	})
+	
 	$(document).ready(function(){
 		//전체 리스트
 		firebase.database().ref("posts/").on("child_added", function(snapshot){
 			postList(snapshot.key);
 		});
 	})
+	
 	$('#typeSelect').change(function(){
 		$('#postList').children('.call_list').remove();
 		var select = $(this).children("option:selected").text();

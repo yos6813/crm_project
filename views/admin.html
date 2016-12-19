@@ -1,0 +1,91 @@
+<meta charset="utf-8">
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-sm-4">
+        <h2>Admin</h2>
+        <ol class="breadcrumb">
+            <li>
+                Home
+            </li>
+            <li class="active">
+                <strong>Admin </strong>
+            </li>
+
+        </ol>
+    </div>
+</div>
+<div class="wrapper wrapper-content animated fadeInRight">
+	<div class="tabs-container">
+	    <uib-tabset>
+	        <uib-tab heading="부서 리스트">
+	        	<div class="panel-body">
+		            <div class="ibox float-e-margins">
+		                 <div class="ibox-content no-padding">
+		                     <ul class="list-group" id="departmentList1">
+		                     </ul>
+		                 </div>
+		             </div>
+		             <div class="ibox float-e-margins">
+		                <div class="ibox-title">
+		                    <h5>부서 추가</h5>
+		                </div>
+		                <div class="ibox-content">
+		                    <form id="departmentForm" class="form-inline">
+		                            <input type="text" placeholder="Enter Text" class="form-control" id="departmentInput" required>
+			                        <input class="btn btn-white" onclick="depart()" type="button" value="Add">
+		                    </form>
+		                </div>
+		            </div>
+				</div>
+	        </uib-tab>
+	        <uib-tab heading="직책 리스트">
+	       		<div class="panel-body">
+		            <div class="ibox float-e-margins">
+		                 <div class="ibox-content no-padding">
+		                     <ul class="list-group" id="jobList1">
+		                     </ul>
+		                 </div>
+		             </div>
+		             <div class="ibox float-e-margins">
+		                <div class="ibox-title">
+		                    <h5>직책 추가</h5>
+		                </div>
+		                <div class="ibox-content">
+		                    <form id="jobForm" class="form-inline">
+		                        <div class="form-group">
+		                            <input type="text" placeholder="Enter Text" class="form-control" id="jobInput" required>
+			                        <input class="btn btn-white" type="button" onclick="job()" value="Add">
+		                        </div>
+		                    </form>
+		                </div>
+		            </div>
+	            </div>
+	       	</uib-tab>
+	        <uib-tab heading="유형 리스트">
+	       		<div class="panel-body">
+		            <div class="ibox float-e-margins">
+		                 <div class="ibox-content no-padding">
+		                     <ul class="list-group" id="typeList1">
+		                     </ul>
+		                 </div>
+		             </div>
+		             <div class="ibox float-e-margins">
+		                <div class="ibox-title">
+		                    <h5>질문유형 추가</h5>
+		                </div>
+		                <div class="ibox-content">
+		                    <form id="typeForm" class="form-inline">
+		                        <div class="form-group">
+		                            <input type="text" placeholder="Enter Text" class="form-control" id="typeInput" required>
+			                        <input class="btn btn-white" type="button" onclick="adminType()" value="Add">
+		                        </div>
+		                    </form>
+		                </div>
+		            </div>
+	            </div>
+			</uib-tab>
+	    </uib-tabset>
+	</div>
+</div>
+
+<script src="../js/plugins/admin/admin.js"></script>
+

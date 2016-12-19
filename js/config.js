@@ -36,6 +36,11 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
             templateUrl: "views/test.html",
             data: { pageTitle: 'Test' }
         })
+        .state('index.admin', {
+            url: "/admin",
+            templateUrl: "views/admin.html",
+            data: { pageTitle: 'Admin' }
+        })
         .state('register', {
             url: "/register",
             templateUrl: "views/register.html",

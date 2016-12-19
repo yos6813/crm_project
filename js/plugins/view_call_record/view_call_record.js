@@ -89,7 +89,7 @@ $(document).ready(function(){
 	
 	firebase.database().ref('posts/' + viewPageno + '/uploadfile').on('value', function(snapshot){
 		firebase.database().ref('posts/' + viewPageno).on('value', function(snapshot1){
-			if(snapshot.val() == 'x'){
+			if(snapshot.val() == 'x' || snapshot.val() == '' || snapshot.val() == undefined){
 				$('#viewFile').append('<div class="file-box"><small>no file</small></div>');
 			} else {
 				snapshot.forEach(function(data){
@@ -130,6 +130,7 @@ $(document).ready(function(){
 		return firebase.database().ref().update(updates);
 	}
 	
+	
 	$('#postAccept').click(function(){
 		var name = firebase.auth().currentUser.displayName;
 		var today = new Date();
@@ -140,8 +141,42 @@ $(document).ready(function(){
 		var minutes = today.getMinutes();
 		var date = year + '.' + month + '.' + day + ' ' + hour + ':' + minutes;
 		var post = viewPageno;
-
+		
 		addAccept(name, post, date);
+		$('#acceptSel1').show();
+	})
+	
+	$('#acceptSel1').hide();
+	
+	$('#acceptSel1').change(function(){
+		var name = firebase.auth().currentUser.displayName;
+		var today = new Date();
+		var year = today.getFullYear();
+		var month = today.getMonth()+1;
+		var day = today.getDate();
+		var hour = today.getHours();
+		var minutes = today.getMinutes();
+		var date = year + '.' + month + '.' + day + ' ' + hour + ':' + minutes;
+		var post = viewPageno;
+		var state = $(this).children("option:selected").val();
+
+		if(state == 'accept'){
+			addAccept(name, post, date);
+		} else if(state == 'defer'){
+			location.reload();
+			firebase.database().ref("accept/").orderByChild('post').equalTo(viewPageno).on('child_added', function(snapshot){
+				firebase.database().ref("accept/" + snapshot.key).remove();
+			})
+			firebase.database().ref('posts/' + viewPageno).update({
+				postState: '보류',
+				postDate: ''
+			})
+		} else {
+			location.reload();
+			firebase.database().ref('posts/' + viewPageno).update({
+				postState: '해결'
+			})
+		}
 	})
 	
 	$(document).ready(function(){
@@ -150,8 +185,8 @@ $(document).ready(function(){
 				if(snapshot.key != null){
 					$('#viewAccept').text('접수: ' + snapshot1.val().name +
 										  ' (' + snapshot1.val().date + ')');
-					$("#postAccept").attr( "disabled", "disabled" );
-					$('#postAccept').unbind('click');
+					$('#postAccept').hide();
+					$('#acceptSel1').show();
 				}
 			})
 		})
@@ -234,28 +269,10 @@ $(document).ready(function(){
 		var userPostRef = firebase.database().ref('user-posts/' + uid + '/' + viewPageno);
 		var replyRef = firebase.database().ref('reply/' + viewPageno + '/' + viewPageno);
 		
-		postRef.remove()
-		  .then(function() {
-		    console.log("Remove succeeded.")
-		  })
-		  .catch(function(error) {
-		    console.log("Remove failed: " + error.message)
-		  });
+		postRef.remove();
 		
-		replyRef.remove()
-		  .then(function() {
-		    console.log("Remove succeeded.")
-		  })
-		  .catch(function(error) {
-		    console.log("Remove failed: " + error.message)
-		  });
+		replyRef.remove();
 		
-		userPostRef.remove()
-		.then(function() {
-		    console.log("Remove succeeded.")
-		  })
-		  .catch(function(error) {
-		    console.log("Remove failed: " + error.message)
-		  });
+		userPostRef.remove();
 	});
 })
