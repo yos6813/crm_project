@@ -86,6 +86,20 @@ function addType(type){
 						+ '</li><button class="typeA btn btn-white btn-xs" value="' + snapshot.key + '">삭제</button>');
 			})
 		})	
+		
+		/* 회원 리스트 */
+		firebase.database().ref('user-infos/').orderByKey().endAt('username').on('child_added', function(snapshot){
+			snapshot.forEach(function(data){
+				$('#userList').append('<tr><td><img class="img-circle adminUser" src="' + data.val().picture + '"></td>' +
+									  '<td>' + data.val().username + '</td>' +
+									  '<td>' + data.val().department + '</td>' +
+									  '<td>' + data.val().job + '</td>' +
+									  '<td>' + data.val().phone + '</td>' +
+									  '<td>' + data.val().extension + '</td>' +
+									  '<td><button class="userA btn btn-white btn-xs" value="' + snapshot.key + '">수정</button>' +
+									  '<button class="userA btn btn-primary btn-xs" value="' + snapshot.key + '">삭제</button></td></tr>');
+			})
+		})
 	})
 	
 	/* 리스트 삭제 */

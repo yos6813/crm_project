@@ -50,6 +50,24 @@ $('#viewEtc').hide();
 $('#viewType4').hide();
 
 $(document).ready(function(){
+	
+	firebase.database().ref('posts/' + viewPageno + '/postState').on('value', function(snapshot){
+		if(snapshot.val() == '보류'){
+			$('#acceptSel1').children().remove();
+			$('#acceptSel1').append('<option value="defer">보류</option>' +
+	                       		   '<option value="resolve">해결</option>' + 
+	                       		   '<option value="accept">접수</option>');
+		} else if(snapshot.val() == '해결'){
+			$('#acceptSel1').children().remove();
+			$('#acceptSel1').append('<option value="resolve">해결</option>' +
+			            		   '<option value="accept">접수</option>' + 
+			            		   '<option value="defer">보류</option>');
+		} else {
+			$('#acceptSel1').hide();
+			$('#postAccept').show();
+		}
+	})
+	
 	firebase.database().ref('posts/' + viewPageno + '/postType').on('value', function(snapshot){
 		if(snapshot.val() == '세법'){
 			$('#viewTaxLaw').show();
@@ -89,10 +107,10 @@ $(document).ready(function(){
 	
 	firebase.database().ref('posts/' + viewPageno + '/uploadfile').on('value', function(snapshot){
 		firebase.database().ref('posts/' + viewPageno).on('value', function(snapshot1){
-			if(snapshot.val() == 'x' || snapshot.val() == '' || snapshot.val() == undefined){
+			snapshot.forEach(function(data){
+			if(data.val() == 'x'){
 				$('#viewFile').append('<div class="file-box"><small>no file</small></div>');
 			} else {
-				snapshot.forEach(function(data){
 					firebase.storage().ref('files/' + data.val()).getDownloadURL().then(function(url){
 						$('#viewFile').append('<div class="file-box">' +
 								'<div class="file">' + 
@@ -110,8 +128,8 @@ $(document).ready(function(){
 								'</div>' +
 						'<div class="clearfix"></div>');
 					})
-				})
-			}
+				}
+			})
 		})
 	})
 	
@@ -129,7 +147,6 @@ $(document).ready(function(){
 		
 		return firebase.database().ref().update(updates);
 	}
-	
 	
 	$('#postAccept').click(function(){
 		var name = firebase.auth().currentUser.displayName;
@@ -161,34 +178,38 @@ $(document).ready(function(){
 		var state = $(this).children("option:selected").val();
 
 		if(state == 'accept'){
-			addAccept(name, post, date);
-		} else if(state == 'defer'){
+			firebase.database().ref('reply/' + viewPageno).remove();
+			console.log(snapshot.key);
 			location.reload();
+			firebase.database().ref('posts/' + viewPageno).update({
+				postState:'접수'
+			})
+			location.reload();
+		} else if(state == 'defer'){
 			firebase.database().ref("accept/").orderByChild('post').equalTo(viewPageno).on('child_added', function(snapshot){
+				console.log(snapshot.key);
 				firebase.database().ref("accept/" + snapshot.key).remove();
 			})
 			firebase.database().ref('posts/' + viewPageno).update({
-				postState: '보류',
-				postDate: ''
+				postState: '보류'
 			})
-		} else {
 			location.reload();
-			firebase.database().ref('posts/' + viewPageno).update({
-				postState: '해결'
-			})
+		} else {
+					firebase.database().ref('posts/' + viewPageno).update({
+						postState: '해결'
+					})
+			location.reload();
 		}
 	})
 	
 	$(document).ready(function(){
 		firebase.database().ref("accept/").orderByChild('post').equalTo(viewPageno).on('child_added', function(snapshot){
-			firebase.database().ref("accept/" + snapshot.key).on('value', function(snapshot1){
 				if(snapshot.key != null){
-					$('#viewAccept').text('접수: ' + snapshot1.val().name +
-										  ' (' + snapshot1.val().date + ')');
+					$('#viewAccept').text('접수: ' + snapshot.val().name +
+										  ' (' + snapshot.val().date + ')');
 					$('#postAccept').hide();
 					$('#acceptSel1').show();
 				}
-			})
 		})
 		
 		firebase.database().ref("reply/" + viewPageno + '/' + viewPageno).on('value', function(snapshot1){

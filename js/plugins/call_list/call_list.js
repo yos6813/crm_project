@@ -11,116 +11,123 @@ if (event.persisted) {
 }
 };
 
-function postList(key){ 
+function postList(key){
 	firebase.database().ref('posts/' + key).on('value', function(snapshot1){
-			firebase.database().ref('reply/' + key + '/' + key).on('value', function(snapshot2){
-			var old = snapshot2.val().replyDate;
-			if(old != ''){
-				var replyDate1 = old.split(' ');
-				var replyDate = replyDate1[0].split('.');
-				var replyDate2 = replyDate1[1].split(':');
-				
-				var now = snapshot1.val().postDate;
-				var postDate = now.split(' ');
-				var postDate1 = postDate[0].split('.');
-				var postDate2 = postDate[1].split(':');
-				
-				var replyminute = replyDate2[0] * 60 + parseInt(replyDate2[1]);
-				var postminute = postDate2[0] * 60 + parseInt(postDate2[1]);
-				
-				var postday = (postDate1[1] * 30) + parseInt(postDate1[2]);
-				var replyday = (replyDate[1] * 30) + parseInt(replyDate[2]);
-				
-				var daygap;
-				var minutegap;
-				var hourgap;
+		firebase.database().ref('reply/' + key + '/' + key).on('value', function(snapshot2){
+		
+		var old = snapshot2.val().replyDate;
+		if(old != ''){
+			var replyDate1 = old.split(' ');
+			var replyDate = replyDate1[0].split('.');
+			var replyDate2 = replyDate1[1].split(':');
 			
-				minutegap = (replyminute - postminute) % 60;
-				hourgap = Math.floor((replyminute - postminute) / 60);
-				daygap = Math.floor(replyday - postday);
-				
-			} else {
-				daygap = '-';
-				minutegap = '-';
-				hourgap = '-';
+			var now = snapshot1.val().postDate;
+			var postDate = now.split(' ');
+			var postDate1 = postDate[0].split('.');
+			var postDate2 = postDate[1].split(':');
+			
+			var replyminute = replyDate2[0] * 60 + parseInt(replyDate2[1]);
+			var postminute = postDate2[0] * 60 + parseInt(postDate2[1]);
+			
+			var postday = (postDate1[1] * 30) + parseInt(postDate1[2]);
+			var replyday = (replyDate[1] * 30) + parseInt(replyDate[2]);
+			
+			var daygap;
+			var minutegap;
+			var hourgap;
+		
+			minutegap = (replyminute - postminute) % 60;
+			hourgap = Math.floor((replyminute - postminute) / 60);
+			daygap = Math.floor(replyday - postday);
+			
+		} else {
+			daygap = '-';
+			minutegap = '-';
+			hourgap = '-';
+		}
+		
+		
+		var comType = snapshot1.val().companyType;
+		$('#postList').each(function(){
+			var state;
+			if(snapshot1.val().postState == '해결'){
+				state = 'label-default';
+			} else if(snapshot1.val().postState == '보류'){
+				state = 'label-warning';
+			} else{
+				state = 'label-primary';
 			}
+			$('#postList').append('<tr class="call_list">' +
+								'<td class="project-status">' +
+								'<span class="label ' + state + '">' + snapshot1.val().postState + '</span>' +
+								'</td>' +
+								'<td class="project-category">' +
+								'<span>' + snapshot1.val().postType + '</span>' +
+								'</td>' +
+								'<td class="title project-title">' +
+								'<a href="#/index/view_call_record?no='+ key +'" id="listTitle">' + snapshot1.val().title + '</a>' +
+								'</td>' +
+								'<td class="project-title">' +
+								'<a id="titleCom">' + snapshot1.val().postCompany + '</a>' +
+								'<br/>' +
+								'<small>' + snapshot1.val().postCustomer + '</small>' +
+								'</td>' +
+								'<td class="project-clientcategory" id="' + key + '">' + 
+								'</td>' +
+								'<td class="project-people">' +
+								'<a><img alt="image" class="img-circle" src="' + snapshot1.val().userImg + '"></a>' +
+								'<br/>' +
+								'<small>' + snapshot1.val().username + '</small>' +
+								'<br/>' +
+								'</td>' +
+								'<td class="project-people">' +
+								'<a><img alt="" class="replyImgli img-circle" src="' + snapshot2.val().replyImg + '"></a>' +
+								'<br/>' +
+								'<small>' + snapshot2.val().replyName + '</small>' +
+								'<br/>' +
+								'</td>' +
+								'<td class="project-title">' +
+								'<small>접수: ' + snapshot1.val().postDate + '</small>' +
+								'<br/>' +
+								'<small>처리: ' + daygap + '일  ' + hourgap + '시간 ' + minutegap + '분</small>' +
+								'</td>' +
+								'</tr>');
 			
-			
-			var comType = snapshot1.val().companyType;
-			$('#postList').each(function(){
-				var state;
-				if(snapshot1.val().postState == '해결'){
-					state = 'label-default';
-				} else if(snapshot1.val().postState == '보류'){
-					state = 'label-warning';
-				} else{
-					state = 'label-primary';
+			for(var i=0; i<=comType[0].length; i++){
+				if(comType[0][i] == 'yeta'){
+					$('#' + key).append('<span class="badge badge-success yeta"> YETA </span>');
+				} else if(comType[0][i] == 'academy'){
+					$('#' + key).append('<span class="badge badge-info academy"> ACADEMY </span>');
+				} else if(comType[0][i] == 'consulting'){
+					$('#' + key).append('<span class="badge badge-warning consulting"> CONSULTING </span>');
 				}
-				$('#postList').append('<tr class="call_list">' +
-									'<td class="project-status">' +
-									'<span class="label ' + state + '">' + snapshot1.val().postState + '</span>' +
-									'</td>' +
-									'<td class="project-category">' +
-									'<span>' + snapshot1.val().postType + '</span>' +
-									'</td>' +
-									'<td class="title project-title">' +
-									'<a href="#/index/view_call_record?no='+ key +'" id="listTitle">' + snapshot1.val().title + '</a>' +
-									'</td>' +
-									'<td class="project-title">' +
-									'<a id="titleCom">' + snapshot1.val().postCompany + '</a>' +
-									'<br/>' +
-									'<small>' + snapshot1.val().postCustomer + '</small>' +
-									'</td>' +
-									'<td class="project-clientcategory" id="' + key + '">' + 
-									'</td>' +
-									'<td class="project-people">' +
-									'<a><img alt="image" class="img-circle" src="' + snapshot1.val().userImg + '"></a>' +
-									'</td>' +
-									'<td class="project-people">' +
-									'<a><img alt="" class="replyImgli img-circle" src="' + snapshot2.val().replyImg + '"></a>' +
-									'</td>' +
-									'<td class="project-title">' +
-									'<small>접수: ' + snapshot1.val().postDate + '</small>' +
-									'<br/>' +
-									'<small>처리: ' + daygap + '일  ' + hourgap + '시간 ' + minutegap + '분</small>' +
-									'</td>' +
-									'</tr>');
-				
-				for(var i=0; i<=comType[0].length; i++){
-					if(comType[0][i] == 'yeta'){
-						$('#' + key).append('<span class="badge badge-success yeta"> YETA </span>');
-					} else if(comType[0][i] == 'academy'){
-						$('#' + key).append('<span class="badge badge-info academy"> ACADEMY </span>');
-					} else if(comType[0][i] == 'consulting'){
-						$('#' + key).append('<span class="badge badge-warning consulting"> CONSULTING </span>');
-					}
-				}
-			})
-			
-			//pagination
-			$('#nav a').remove();
-			var rowsShown = parseInt($('#sizeSel option:selected').val());
-			var rowsTotal = $('#postList').children('.call_list').size();
-			var numPages = Math.ceil(rowsTotal/rowsShown);
-			for(i = 0;i < numPages;i++) {
-				var pageNum = i + 1;
-				$('#nav').append('<li><a rel="'+i+'">'+pageNum+'</a></li>');
 			}
-			$('#postList').children('.call_list').hide();
-			$('#postList').children('.call_list').slice(0, rowsShown).show();
-			$('#nav a:first').addClass('active');
-			$('#nav a').bind('click', function(){
-				
-				$('#nav a').removeClass('active');
-				$(this).addClass('active');
-				var currPage = $(this).attr('rel');
-				var startItem = currPage * rowsShown;
-				var endItem = startItem + rowsShown;
-				$('#postList').children('.call_list').css('opacity','0.0').hide().slice(startItem, endItem).
-				css('display','table-row').animate({opacity:1}, 300);
-			});
+		})
+		
+		//pagination
+		$('#nav a').remove();
+		var rowsShown = parseInt($('#sizeSel option:selected').val());
+		var rowsTotal = $('#postList').children('.call_list').size();
+		var numPages = Math.ceil(rowsTotal/rowsShown);
+		for(i = 0;i < numPages;i++) {
+			var pageNum = i + 1;
+			$('#nav').append('<li><a rel="'+i+'">'+pageNum+'</a></li>');
+		}
+		$('#postList').children('.call_list').hide();
+		$('#postList').children('.call_list').slice(0, rowsShown).show();
+		$('#nav a:first').addClass('active');
+		$('#nav a').bind('click', function(){
+			
+			$('#nav a').removeClass('active');
+			$(this).addClass('active');
+			var currPage = $(this).attr('rel');
+			var startItem = currPage * rowsShown;
+			var endItem = startItem + rowsShown;
+			$('#postList').children('.call_list').css('opacity','0.0').hide().slice(startItem, endItem).
+			css('display','table-row').animate({opacity:1}, 300);
 		});
-	});}
+	});
+});}
 
 $(document).ready(function(){
 	$('#sizeSel').change(function(){

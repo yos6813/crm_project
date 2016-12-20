@@ -10,14 +10,16 @@ $(document).ready(function () {
 		var provider = new firebase.auth.GoogleAuthProvider();
 		firebase.auth().signInWithPopup(provider);
 		
-		var host = window.location.host;
 		firebase.auth().onAuthStateChanged(function(user) {
 			if(user){
-				firebase.database().ref('user-infos/' + user.uid).on('value', function(snapshot){
+				firebase.database().ref('user-infos/' + user.uid).on('child_added', function(snapshot){
 					if(snapshot.val() != null){
 						window.location.hash = 'index/main';
 						$('#navUserName').text(user.displayName);
-						$('#navUserEMail').text(user.email);
+						$('#navprofileImg').attr('src', user.photoURL);
+						firebase.database().ref('user-infos/' + user.uid + '/' + snapshot.key).on('value', function(snapshot2){
+							$('#navjob').text(snapshot2.val().department + ' / ' + snapshot2.val().job);
+						})
 					} else {
 						window.location.hash = 'register';
 					}
@@ -26,11 +28,17 @@ $(document).ready(function () {
 		});
 	})
 	
+	
 	firebase.auth().onAuthStateChanged(function(user) {
-		var user = firebase.auth().currentUser;
+		
+		$('#navprofileImg').attr('src', user.photoURL);
+		firebase.database().ref('user-infos/' + user.uid).on('child_added', function(snapshot){
+			firebase.database().ref('user-infos/' + user.uid + '/' + snapshot.key).on('value', function(snapshot2){
+				$('#navjob').text(snapshot2.val().department + ' / ' + snapshot2.val().job);
+			});
+		});
 		
 		$('#navUserName').text(user.displayName);
-		$('#navUserEMail').text(user.email);
 		
 		$('#logout').click(function(){
 			firebase.auth().signOut();
