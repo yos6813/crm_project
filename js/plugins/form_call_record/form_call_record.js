@@ -151,7 +151,7 @@ function addPost(uid, title, text, tags, postCompany, postCustomer, postType, po
 			replyText: replyText,
 			replyImg: replyImg
 	};
-		
+	
 	var newPostKey = firebase.database().ref().child('posts').push().key;
 	
 	var updates = {};
@@ -310,8 +310,8 @@ $('#postSave').click(function(){
 	if(title != '' && postCustomer != ''){
 		addPost(uid, title, text, tags, postCompany, postCustomer, postType, postCusPhone, postState, username, postDate,
 				userImg, companyType, uploadfile, userId, replyDate, replyName, replyText, replyImg);
+		}
 		window.location.hash = 'index/call_list';
-	}
 })
 $('.tagsinput').tagsinput({
     tagClass: 'label label-primary'

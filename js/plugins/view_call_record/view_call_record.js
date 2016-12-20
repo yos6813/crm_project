@@ -14,29 +14,33 @@ $('#viewConsulting').hide();
 
 $(document).ready(function(){
 	firebase.database().ref('posts/' + viewPageno).on('value', function(snapshot){
-		$('#viewCompany').text(snapshot.val().postCompany);
 		$('#viewTitle').text(snapshot.val().title);
 		$('#viewCustomer').text(snapshot.val().postCustomer);
 		$('#viewCall').text(snapshot.val().postCusPhone);
-		
-		var client = [];
-		var comClient = $('#viewCompany').text();
-		firebase.database().ref("company/").orderByChild('name').equalTo(comClient).on('child_added', function(snapshot){
-			firebase.database().ref("company/" + snapshot.key + "/client").on('value', function(snapshot1){
-				client.push(snapshot1.val());
-				for(var i=0; i<=client[0].length; i++){
-					if(client[0][i] == 'yeta'){
-						$('#viewYeta').show();
+
+		if(snapshot.val().postCompany == ''){
+			$('#viewCompany').text(snapshot.val().postCompany);
+			var client = [];
+			var comClient = $('#viewCompany').text();
+			firebase.database().ref("company/").orderByChild('name').equalTo(comClient).on('child_added', function(snapshot){
+				firebase.database().ref("company/" + snapshot.key + "/client").on('value', function(snapshot1){
+					client.push(snapshot1.val());
+					for(var i=0; i<=client[0].length; i++){
+						if(client[0][i] == 'yeta'){
+							$('#viewYeta').show();
+						}
+						else if(client[0][i] == 'academy'){
+							$('#viewAcademy').show();
+						}
+						else if(client[0][i] == 'consulting'){
+							$('#viewConsulting').show();
+						} 
 					}
-					else if(client[0][i] == 'academy'){
-						$('#viewAcademy').show();
-					}
-					else if(client[0][i] == 'consulting'){
-						$('#viewConsulting').show();
-					} 
-				}
+				})
 			})
-		})
+		} else {
+			$('#viewCompany').text();
+		}
 	})
 })
 
@@ -52,19 +56,28 @@ $('#viewType4').hide();
 $(document).ready(function(){
 	
 	firebase.database().ref('posts/' + viewPageno + '/postState').on('value', function(snapshot){
-		if(snapshot.val() == '보류'){
-			$('#acceptSel1').children().remove();
-			$('#acceptSel1').append('<option value="defer">보류</option>' +
-	                       		   '<option value="resolve">해결</option>' + 
-	                       		   '<option value="accept">접수</option>');
-		} else if(snapshot.val() == '해결'){
+		console.log(snapshot.val());
+		if(snapshot.val() == '해결'){
+			$('#acceptSel1').show();
+			$('#postAccept').hide();
 			$('#acceptSel1').children().remove();
 			$('#acceptSel1').append('<option value="resolve">해결</option>' +
-			            		   '<option value="accept">접수</option>' + 
+			            		   '<option value="accept1">접수</option>' + 
 			            		   '<option value="defer">보류</option>');
-		} else {
-			$('#acceptSel1').hide();
-			$('#postAccept').show();
+		} else if(snapshot.val() == '접수'){
+			$('#acceptSel1').show();
+			$('#postAccept').hide();
+			$('#acceptSel1').children().remove();
+			$('#acceptSel1').append('<option value="accept">접수</option>' + 
+									'<option value="resolve">해결</option>' +
+			            		   	'<option value="defer">보류</option>');
+		} else if(snapshot.val() == '보류'){
+			$('#acceptSel1').show();
+			$('#postAccept').hide();
+			$('#acceptSel1').children().remove();
+			$('#acceptSel1').append('<option value="defer">보류</option>' + 
+									'<option value="resolve">해결</option>' +
+			            		   	'<option value="accept">접수</option>');
 		}
 	})
 	
@@ -163,8 +176,6 @@ $(document).ready(function(){
 		$('#acceptSel1').show();
 	})
 	
-	$('#acceptSel1').hide();
-	
 	$('#acceptSel1').change(function(){
 		var name = firebase.auth().currentUser.displayName;
 		var today = new Date();
@@ -178,26 +189,37 @@ $(document).ready(function(){
 		var state = $(this).children("option:selected").val();
 
 		if(state == 'accept'){
-			firebase.database().ref('reply/' + viewPageno).remove();
-			console.log(snapshot.key);
-			location.reload();
 			firebase.database().ref('posts/' + viewPageno).update({
 				postState:'접수'
 			})
 			location.reload();
 		} else if(state == 'defer'){
 			firebase.database().ref("accept/").orderByChild('post').equalTo(viewPageno).on('child_added', function(snapshot){
-				console.log(snapshot.key);
 				firebase.database().ref("accept/" + snapshot.key).remove();
 			})
 			firebase.database().ref('posts/' + viewPageno).update({
 				postState: '보류'
 			})
 			location.reload();
+		} else if(state == 'accept1'){
+			firebase.database().ref('reply/' + viewPageno + '/' + viewPageno).set({
+				replyDate: '',
+				replyImg: '',
+				replyName: '',
+				replyText: '',
+				userId: ''
+			});
+			firebase.database().ref('posts/' + viewPageno).update({
+				postState:'접수'
+			})
+			location.reload();
 		} else {
-					firebase.database().ref('posts/' + viewPageno).update({
-						postState: '해결'
-					})
+			firebase.database().ref('posts/' + viewPageno).update({
+				postState: '해결'
+			})
+			firebase.database().ref('reply/' + viewPageno + '/' + viewPageno).update({
+				replyDate: date
+			})
 			location.reload();
 		}
 	})
@@ -205,10 +227,10 @@ $(document).ready(function(){
 	$(document).ready(function(){
 		firebase.database().ref("accept/").orderByChild('post').equalTo(viewPageno).on('child_added', function(snapshot){
 				if(snapshot.key != null){
+					$('#acceptSel1').show();
+					$('#postAccept').hide();
 					$('#viewAccept').text('접수: ' + snapshot.val().name +
 										  ' (' + snapshot.val().date + ')');
-					$('#postAccept').hide();
-					$('#acceptSel1').show();
 				}
 		})
 		

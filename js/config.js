@@ -36,6 +36,26 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
             templateUrl: "views/admin.html",
             data: { pageTitle: 'Admin' }
         })
+        .state('index.userList', {
+            url: "/userList",
+            templateUrl: "views/userList.html",
+            data: { pageTitle: 'userList' }
+        })
+        .state('index.typeList', {
+            url: "/typeList",
+            templateUrl: "views/typeList.html",
+            data: { pageTitle: 'typeList' }
+        })
+        .state('index.jobList', {
+            url: "/jobList",
+            templateUrl: "views/jobList.html",
+            data: { pageTitle: 'jobList' }
+        })
+        .state('index.departmentList', {
+            url: "/departmentList",
+            templateUrl: "views/departmentList.html",
+            data: { pageTitle: 'departmentList' }
+        })
         .state('register', {
             url: "/register",
             templateUrl: "views/register.html",
