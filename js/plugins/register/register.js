@@ -1,5 +1,5 @@
 firebase.auth().onAuthStateChanged(function(user) {
-	$('#registerprofileImg').src = user.photoURL; 
+	$('#registerprofileImg').attr('src', user.photoUrl); 
 	$('#registerUsername').val(user.displayName);
 	$('#emailInput').val(user.email);
 })
@@ -45,7 +45,7 @@ function sample6_execDaumPostcode() {
     }).open();
 }
 
-	/* 부서  */
+		/* 부서  */
 		firebase.database().ref("departments/").orderByKey().endAt("department").on("child_added", function(snapshot){
 			snapshot.forEach(function(data){
 				$('#department1').append('<li><a value="' + data.val() + '">' + data.val()

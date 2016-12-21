@@ -1680,6 +1680,8 @@ div.dt-button-info {
 /* CIRCLE */
 .img-circle {
   border-radius: 50%;
+  height: 36px;
+  width: 36px;
 }
 .btn-circle {
   width: 30px;
@@ -3380,6 +3382,9 @@ body {
 html,
 body {
   height: 100%;
+  width: 700px;
+  vertical-align: middle;
+  margin: 0 auto;
 }
 body.full-height-layout #wrapper,
 body.full-height-layout #page-wrapper {
@@ -7270,7 +7275,7 @@ body.landing-page {
     margin-top: 120px;
   }
 }
-@media (max-width: 768px) {
+@media (max-: 768px) {
   .landing-page .navbar .navbar-header {
     display: block;
     float: none;
@@ -8431,19 +8436,34 @@ body.md-skin {
 	width: 80px;
 }
 
-.text-center .img-circle{
-	border-radius: 50%;
-	width: 118px;
-	height: 118px;
+#year1Mo, #month1Mo, #day1Mo{
+	float: left;
 }
 
-#jobA, #departmentA{
+#birth2Mo, #birth3Mo{
+	float: left;
+	width: 50px;
+}
+#birth1Mo{
+	float: left;
+	width: 80px;
+}
+
+#jobMo, #departmentMo{
 	font-size: 10px;
 }
 
-#year, #month, #day{
+#yearMo, #monthMo, #dayMo{
 	height: 100px;
 	overflow: auto;
+}
+
+.logo-register{
+	display: block;
+    margin: auto;
+    width: 30%;
+    margin-top: 30px;
+    margin-bottom: 30px;
 }
 
 .logo-login {
@@ -8455,12 +8475,12 @@ body.md-skin {
     margin-bottom: 30px;
 }
 
-#searchSelect{
-	float: left;
+#navprofileImg{
+	width: 36px;
+	height: 36px;
 }
 
-
-#navprofileImg{
+#modifyprofileImg{
 	width: 36px;
 	height: 36px;
 }

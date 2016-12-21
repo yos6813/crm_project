@@ -1,23 +1,44 @@
-<meta charset="UTF-8">
+<meta charset="utf-8">
+<div class="row wrapper border-bottom white-bg page-heading">
+	<div class="col-sm-4">
+		<h2>글 유형관리</h2>
+		<ol class="breadcrumb">
+			<li>
+				<a href="index.html">Home</a>
+			</li>
+			<li class="active">
+				<strong>관리자페이지</strong>
+			</li>
+		</ol>
+	</div>
+</div>
 <div class="panel-body">
-	<div class="ibox float-e-margins">
-	     <div class="ibox-content no-padding">
-	         <ul class="list-group" id="typeList1">
-	         </ul>
-	     </div>
-	 </div>
-	 <div class="ibox float-e-margins">
-	    <div class="ibox-title">
-	        <h5>질문유형 추가</h5>
-	    </div>
-	    <div class="ibox-content">
-	        <form id="typeForm" class="form-inline">
-	            <div class="form-group">
-	                <input type="text" placeholder="Enter Text" class="form-control" id="typeInput" required>
-	             <input class="btn btn-white" type="button" onclick="adminType()" value="Add">
-	            </div>
-	        </form>
-	    </div>
+	<div class="wrapper wrapper-content animated fadeInUp">
+		<div class="col-lg-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-title">
+					<h5>질문유형</h5>
+				</div>
+				<div class="ibox-content">
+					<div class="row m-b-sm m-t-sm">
+						<div class="col-md-12">
+							<div class="input-group">
+								<input type="text" placeholder="생성하고자 하는 질문유형을 입력하세요" class="input-sm form-control" id="typeInput" required>
+								<span class="input-group-btn">
+                                    <button type="button" id="typeInputBtn" class="btn btn-sm btn-primary" value="Add"> 생성</button> 
+                                </span>
+							</div>
+						</div>
+					</div>
+					<div class="project-list">
+						<table class="table table-hover">
+							<tbody id="typeList1">
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
 </div>
 <script src="../js/plugins/admin/admin.js"></script>
