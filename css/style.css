@@ -5045,7 +5045,7 @@ a.compose-mail {
 /* PROJECTS */
 .project-people,
 .project-actions {
-  text-align: center;
+  text-align: left;
   vertical-align: middle;
 }
 dd.project-people {

@@ -180,7 +180,7 @@ $(document).on('click', '.delTypeA', function () {
 $(document).on('click', '.modifyTypeA', function(){
 	$(this).addClass('modifyTypeB');
 	$(this).removeClass('modifyTypeA');
-	$(this).text('확인');
+	$(this).text('확인!!!');
 	$(this).parents('td').prev('.firstTd').text('');
 	$(this).parents('td').prev('.firstTd').append('<input type="text" class="modifyInputTypeB input-sm form-control" value="">');
 })
