@@ -12,18 +12,21 @@ $(document).ready(function () {
 
 		firebase.auth().onAuthStateChanged(function(user) {
 			if(user){
-				firebase.database().ref('user-infos/' + user.uid).on('child_added', function(snapshot){
-					if(snapshot.val() != undefined || snapshot.val() != ''){
+				firebase.database().ref('user-infos/' + user.uid).on('value', function(snapshot){
+					console.log(snapshot.val());
+					if(snapshot.val() != null){
 						window.location.hash = 'index/main';
 						$('#navUserName').text(user.displayName);
 						$('#navprofileImg').attr('src', user.photoURL);
-						firebase.database().ref('user-infos/' + user.uid + '/' + snapshot.key).on('value', function(snapshot2){
-							$('#navjob').text(snapshot2.val().department + ' / ' + snapshot2.val().job);
+						firebase.database().ref('user-infos/' + user.uid).once('child_added', function(snapshot1){
+							firebase.database().ref('user-infos/' + user.uid + '/' + snapshot1.key).on('value', function(snapshot2){
+								$('#navjob').text(snapshot2.val().department + ' / ' + snapshot2.val().job);
+							})
 						})
-					} else {
+					}else {
 						window.location.hash = 'register';
 					}
-				})
+				});
 			}
 		})
 	})
