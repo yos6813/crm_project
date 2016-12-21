@@ -18,7 +18,7 @@ $(document).ready(function(){
 		$('#viewCustomer').text(snapshot.val().postCustomer);
 		$('#viewCall').text(snapshot.val().postCusPhone);
 
-		if(snapshot.val().postCompany == ''){
+		if(snapshot.val().postCompany != ''){
 			$('#viewCompany').text(snapshot.val().postCompany);
 			var client = [];
 			var comClient = $('#viewCompany').text();
