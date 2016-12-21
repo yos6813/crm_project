@@ -157,4 +157,5 @@ $('#registerBtn').click(function(){
 	
 	writeUserInfo(uid, userImg, username, email, nickname, department, job, extension, phone, call, emergency, address, join, birth);
 	window.location.hash="/index/main"
+	location.reload();
 });

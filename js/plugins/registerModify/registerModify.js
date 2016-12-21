@@ -110,26 +110,16 @@ function writeUserData(userId, name, email, imageUrl) {
 }
 
 $('#modifyBtn').click(function(){
-	var userImg = firebase.auth().currentUser.photoURL;
-	var nickname = $('#nickname').val();
-	var department = $('#department').val();
-	var job = $('#job').val();
-	var extension = $('#extension').val();
-	var phone = $('#phone').val();
-	var call = $('#call').val();
-	var emergency = $('#emergency').val();
-	var address = $('#sample6_address').val() + ' ' + $('#sample6_address2').val();
-	
 	firebase.database().ref('user-infos/' + modifyPageno).on('child_added', function(snapshot){
 		firebase.database().ref('user-infos/' + modifyPageno + '/' + snapshot.key).update({
-			nickname: nickname,
-			department: department,
-			job: job,
-			extension: extension,
-			phone: phone,
-			call: call,
-			emergency: emergency,
-			address: address
+			nickname: $('#nicknameMo').val(),
+			department: $('#departmentInputMo').val(),
+			job: $('#jobInputMo').val(),
+			extension: $('#extensionMo').val(),
+			phone: $('#phoneMo').val(),
+			call: $('#callMo').val(),
+			emergency: $('#emergencyMo').val(),
+			address: $('#sample6_address').val() + ' ' + $('#sample6_address2').val()
 		})
 	})
 	

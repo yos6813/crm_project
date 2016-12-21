@@ -9,11 +9,11 @@ $(document).ready(function () {
 	$('#login').click(function(){
 		var provider = new firebase.auth.GoogleAuthProvider();
 		firebase.auth().signInWithPopup(provider);
-		
+
 		firebase.auth().onAuthStateChanged(function(user) {
 			if(user){
 				firebase.database().ref('user-infos/' + user.uid).on('child_added', function(snapshot){
-					if(snapshot.val() != null){
+					if(snapshot.val() != undefined || snapshot.val() != ''){
 						window.location.hash = 'index/main';
 						$('#navUserName').text(user.displayName);
 						$('#navprofileImg').attr('src', user.photoURL);
@@ -25,7 +25,7 @@ $(document).ready(function () {
 					}
 				})
 			}
-		});
+		})
 	})
 	
 	

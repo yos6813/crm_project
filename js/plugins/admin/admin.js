@@ -201,4 +201,5 @@ $(document).on('click', '.modifyUserA', function(){
 $(document).on('click', '.delUserA', function(){
 	firebase.database().ref('user-infos/' + $(this).val()).remove();
 	firebase.database().ref('users/' + $(this).val()).remove();
+	location.reload();
 })
