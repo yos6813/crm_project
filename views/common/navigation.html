@@ -19,14 +19,25 @@
                     </ul>
                 </div>
                 <div class="logo-element">
-                    CRM
+                    ATNP
                 </div>
 
             </li>
            		<li ui-sref-active="active"><a ui-sref="index.main"><span class="nav-label">Home</span></a></li>
-				<li ui-sref-active="active"><a><i class="fa fa-users"></i> <span class="nav-label">CRM</span><span class="fa arrow"></span></a>
+				<li ui-sref-active="active"><a><i class="fa fa-users"></i><span class="nav-label">CRM</span><span class="fa arrow"></span></a>
                    	<ul class="nav nav-second-level collapse">
                         <li><a>CR Dashboard</a></li>
+                        <li>
+                            <a>고객관리 <span class="fa arrow"></span></a>
+                            <ul class="nav nav-third-level">
+                                <li>
+                                    <a ui-sref="index.client_company_list">고객사 관리</a>
+                                </li>
+                                <li>
+                                     <a ui-sref="index.client_user_list">담당자(수강생) 관리</a>
+                                </li>
+                            </ul>
+                        </li>
                         <li>
                             <a>YETA 고객상담 <span class="fa arrow"></span></a>
                             <ul class="nav nav-third-level">
@@ -43,7 +54,7 @@
                    	</ul>
         		</li>
                 <li>
-                    <a><i class="fa fa-user"></i><span class="nav-label">관리자페이지 </span><span class="fa arrow"></span></a>
+                    <a><i class="fa fa-gear"></i><span class="nav-label">관리자페이지 </span><span class="fa arrow"></span></a>
                     <ul class="nav nav-third-level">
                         <li><a ui-sref="index.company"><span class="nav-label">회사관리</span></a></li>
                         <li><a ui-sref="index.customer"><span class="nav-label">고객관리</span></a></li>
