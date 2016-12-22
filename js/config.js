@@ -99,6 +99,11 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
                 }
             }
         })
+       .state('index.chart', {
+            url: "/chart",
+            templateUrl: "views/chart.html",
+            data: { pageTitle: 'chart' }
+        })
         .state('index.call_list', {
             url: "/call_list",
             templateUrl: "views/call_list.html",
