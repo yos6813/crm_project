@@ -152,12 +152,14 @@ function addPost(uid, title, text, tags, postCompany, postCustomer, postType, po
 			replyImg: replyImg
 	};
 	
+	
 	var newPostKey = firebase.database().ref().child('posts').push().key;
 	
 	var updates = {};
 	updates['/posts/' + newPostKey] = postData;
 	updates['/user-posts/' + uid + '/' + newPostKey] = postData;
 	updates['/reply/' + newPostKey + '/' + newPostKey] = replyData;
+	updates['/timePosts/' + new Date().getDate() + '/' + new Date().getHours() + '/' + newPostKey] = postData;
 	
 	return firebase.database().ref().update(updates);
 }

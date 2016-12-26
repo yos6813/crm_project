@@ -8442,7 +8442,6 @@ body.md-skin {
 }
 
 .logo-login {
-
     display: block;
     margin: auto;
     width: 100%;
@@ -8458,4 +8457,10 @@ body.md-skin {
 #navprofileImg, .adminUser{
 	width: 36px;
 	height: 36px;
+}
+
+#doughnutChart, #barChart{
+	display: block;
+	height: 300px;
+    width: 30%;
 }
