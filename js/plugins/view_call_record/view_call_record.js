@@ -154,26 +154,16 @@ $(document).ready(function(){
 		}
 		
 		var newAcceptKey = firebase.database().ref().child('accept').push().key;
+		var userId = firebase.auth().currentUser.uid;
 		
 		var updates = {};
-		updates['/accept/' + newAcceptKey] = acceptData;
+		updates['/accept/' + userId + '/' + newAcceptKey] = acceptData;
 		
 		return firebase.database().ref().update(updates);
 	}
 	
 	$('#postAccept').click(function(){
-		var name = firebase.auth().currentUser.displayName;
-		var today = new Date();
-		var year = today.getFullYear();
-		var month = today.getMonth()+1;
-		var day = today.getDate();
-		var hour = today.getHours();
-		var minutes = today.getMinutes();
-		var date = year + '.' + month + '.' + day + ' ' + hour + ':' + minutes;
-		var post = viewPageno;
 		
-		addAccept(name, post, date);
-		$('#acceptSel1').show();
 	})
 	
 	$('#acceptSel1').change(function(){
@@ -189,6 +179,19 @@ $(document).ready(function(){
 		var state = $(this).children("option:selected").val();
 
 		if(state == 'accept'){
+			var name = firebase.auth().currentUser.displayName;
+			var today = new Date();
+			var year = today.getFullYear();
+			var month = today.getMonth()+1;
+			var day = today.getDate();
+			var hour = today.getHours();
+			var minutes = today.getMinutes();
+			var date = year + '.' + month + '.' + day + ' ' + hour + ':' + minutes;
+			var post = viewPageno;
+			
+			addAccept(name, post, date);
+			$('#acceptSel1').show();
+			
 			firebase.database().ref('posts/' + viewPageno).update({
 				postState:'접수'
 			})

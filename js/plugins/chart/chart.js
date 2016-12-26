@@ -106,7 +106,23 @@ $(document).ready(function(){
 	}
 	
 	firebase.database().ref('users/').orderByKey().on('child_added', function(snapshot){
-		console.log(snapshot.val().username);
+		firebase.database().ref('accept/' + snapshot.key).on('value', function(snapshot1){
+			console.log(snapshot1.numChildren(), snapshot.val().username);
+			$('#userPostNum').append('<div class="col-xs-4">' +
+									 '<a><img alt="image" class="img-circle" src="' + snapshot.val().profile_picture + '"></a>' +
+									 '<br/>' +
+									 '<small>' + snapshot.val().username + '</small>' +
+									 '<br/>' +
+									 '</div>' +
+									 '<div class="col-xs-4">' +
+									 '<small class="stats-label">% New Visits</small>' +
+									 '<h4>46.11%</h4>' +
+									 '</div>' +
+									 '<div class="col-xs-4">' +
+									 '<small class="stats-label">Last week</small>' +
+									 '<h4>432.021</h4>' +
+									 '</div>');		
+		})
 	})
 })
 
