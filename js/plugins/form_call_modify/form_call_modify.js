@@ -279,7 +279,7 @@ $('#postSave').click(function(){
 		postDate: postday
 	});
 	
-	firebase.database().ref('reply/' + modifyPageno + '/' + modifyPageno).update({
+	firebase.database().ref('reply/' + modifyPageno).update({
 		replyText: replyText,
 		replyDate: replydate,
 		replyName: replyName,
@@ -302,6 +302,13 @@ firebase.database().ref('posts/' + modifyPageno + '/companyType').on('value', fu
 			$('.consulting').show();
 		}
 	}
+});
+
+$('.summernote').summernote({
+  height: 300,                 // set editor height
+  minHeight: null,             // set minimum height of editor
+  maxHeight: null,             // set maximum height of editor
+  focus: true                  // set focus to editable area after initializing summernote
 });
 
 // 연락처 로드

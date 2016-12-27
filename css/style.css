@@ -8461,7 +8461,9 @@ body.md-skin {
 
 #doughnutChart, #barChart{
 	display: block;
-	height: 300px;
+	height: 260px;
     width: 30%;
 }
-
+#search_select, #search_company{
+	float: left;
+}

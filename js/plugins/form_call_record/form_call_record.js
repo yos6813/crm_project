@@ -126,7 +126,8 @@ $('.companySel').blur(function(){
 // 글 등록
 
 function addPost(uid, title, text, tags, postCompany, postCustomer, postType, postCusPhone,
-				 postState, username, postDate, userImg, companyType, uploadfile, userId, replyDate, replyName, replyText, replyImg){
+				 postState, username, postDate, userImg, companyType, uploadfile, userId, replyDate, replyName, replyText, replyImg, AcceptName,
+				 AcceptDate, AcceptUserId){
 	var postData = {
 		uid: uid,
 		title: title,
@@ -152,14 +153,20 @@ function addPost(uid, title, text, tags, postCompany, postCustomer, postType, po
 			replyImg: replyImg
 	};
 	
+	var acceptData = {
+			AcceptName: AcceptName,
+			AcceptDate: AcceptDate,
+			AcceptUserId: AcceptUserId
+	}
 	
 	var newPostKey = firebase.database().ref().child('posts').push().key;
 	
 	var updates = {};
 	updates['/posts/' + newPostKey] = postData;
 	updates['/user-posts/' + uid + '/' + newPostKey] = postData;
-	updates['/reply/' + newPostKey + '/' + newPostKey] = replyData;
+	updates['/reply/' + newPostKey] = replyData;
 	updates['/timePosts/' + new Date().getDate() + '/' + new Date().getHours() + '/' + newPostKey] = postData;
+	updates['/accept/' + newPostKey] = acceptData;
 	
 	return firebase.database().ref().update(updates);
 }
@@ -256,6 +263,9 @@ $('#postSave').click(function(){
 	var post = '';
 	var replyImg = '';
 	var userId = '';
+	var AcceptUserId = '';
+	var AcceptDate = '';
+	var AcceptName = '';
 	
 	for(var i=0; i<=$('#fileInput').children().length; i++){
 		if($('#fileInput').children().eq(i).text() != undefined && $('#fileInput').children().eq(i).text() != null){
@@ -274,6 +284,15 @@ $('#postSave').click(function(){
 	
 	$('input[type=radio][name="optionsRadios"]:checked').each(function(){
 		postState = $(this).val();
+		if($(this).val() == '접수'){
+			AcceptUserId = firebase.auth().currentUser.uid;
+			AcceptDate = postDate;
+			AcceptName = username;
+		} else {
+			AcceptUserId = '';
+			AcceptDate = '';
+			AcceptName = '';
+		}
 	})
 	
 	$('input[type=radio][name="optionsContact"]:checked').each(function(){
@@ -311,7 +330,8 @@ $('#postSave').click(function(){
 	
 	if(title != '' && postCustomer != ''){
 		addPost(uid, title, text, tags, postCompany, postCustomer, postType, postCusPhone, postState, username, postDate,
-				userImg, companyType, uploadfile, userId, replyDate, replyName, replyText, replyImg);
+				userImg, companyType, uploadfile, userId, replyDate, replyName, replyText, replyImg, AcceptName,
+				 AcceptDate, AcceptUserId);
 		}
 		window.location.hash = 'index/call_list';
 })

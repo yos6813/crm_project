@@ -13,7 +13,7 @@ if (event.persisted) {
 
 function postList(key){
 	firebase.database().ref('posts/' + key).on('value', function(snapshot1){
-		firebase.database().ref('reply/' + key + '/' + key).on('value', function(snapshot2){
+		firebase.database().ref('reply/' + key).on('value', function(snapshot2){
 		
 		var old = snapshot2.val().replyDate;
 		if(old != ''){

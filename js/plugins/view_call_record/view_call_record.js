@@ -114,7 +114,7 @@ $(document).ready(function(){
 		$('#viewText').append(snapshot.val());
 	})
 	
-	firebase.database().ref('reply/' + viewPageno + '/' + viewPageno + '/replyText').on('value', function(snapshot){
+	firebase.database().ref('reply/' + viewPageno + '/replyText').on('value', function(snapshot){
 		$('#ReplyText').append(snapshot.val());
 	})
 	
@@ -146,28 +146,14 @@ $(document).ready(function(){
 		})
 	})
 	
-	function addAccept(name, post, date){
-		var acceptData = {
-				name: name,
-				post: post,
-				date: date
-		}
-		
-		var newAcceptKey = firebase.database().ref().child('accept').push().key;
-		var userId = firebase.auth().currentUser.uid;
-		
-		var updates = {};
-		updates['/accept/' + userId + '/' + newAcceptKey] = acceptData;
-		
-		return firebase.database().ref().update(updates);
-	}
 	
 	$('#postAccept').click(function(){
 		
 	})
 	
 	$('#acceptSel1').change(function(){
-		var name = firebase.auth().currentUser.displayName;
+		var user = firebase.auth().currentUser;
+		var name = user.displayName;
 		var today = new Date();
 		var year = today.getFullYear();
 		var month = today.getMonth()+1;
@@ -179,68 +165,75 @@ $(document).ready(function(){
 		var state = $(this).children("option:selected").val();
 
 		if(state == 'accept'){
-			var name = firebase.auth().currentUser.displayName;
-			var today = new Date();
-			var year = today.getFullYear();
-			var month = today.getMonth()+1;
-			var day = today.getDate();
-			var hour = today.getHours();
-			var minutes = today.getMinutes();
-			var date = year + '.' + month + '.' + day + ' ' + hour + ':' + minutes;
-			var post = viewPageno;
-			
-			addAccept(name, post, date);
 			$('#acceptSel1').show();
-			
 			firebase.database().ref('posts/' + viewPageno).update({
 				postState:'접수'
 			})
+			firebase.database().ref('accept/' + viewPageno).update({
+				AcceptName: user.displayName,
+				AcceptDate: date,
+				AcceptUserId: user.uid
+			})
 			location.reload();
 		} else if(state == 'defer'){
-			firebase.database().ref("accept/").orderByChild('post').equalTo(viewPageno).on('child_added', function(snapshot){
-				firebase.database().ref("accept/" + snapshot.key).remove();
+			firebase.database().ref("accept/" + viewPageno).update({
+				AcceptName: '',
+				AcceptDate: '',
+				AcceptUserId:''
 			})
 			firebase.database().ref('posts/' + viewPageno).update({
 				postState: '보류'
 			})
 			location.reload();
 		} else if(state == 'accept1'){
-			firebase.database().ref('reply/' + viewPageno + '/' + viewPageno).set({
+			firebase.database().ref('reply/' + viewPageno).update({
 				replyDate: '',
 				replyImg: '',
 				replyName: '',
-				replyText: '',
 				userId: ''
 			});
 			firebase.database().ref('posts/' + viewPageno).update({
-				postState:'접수'
+				postState:'접수',
+				date: date
+			})
+			firebase.database().ref('accept/' + viewPageno).update({
+				AcceptName: user.displayName,
+				AcceptDate: date,
+				AcceptUserId: user.uid
 			})
 			location.reload();
 		} else {
 			firebase.database().ref('posts/' + viewPageno).update({
 				postState: '해결'
 			})
-			firebase.database().ref('reply/' + viewPageno + '/' + viewPageno).update({
-				replyDate: date
+			firebase.database().ref('reply/' + viewPageno).update({
+				replyDate: date,
+				replyImg: user.photoURL,
+				replyName: name,
+				userId: user.uid
 			})
 			location.reload();
 		}
 	})
 	
 	$(document).ready(function(){
-		firebase.database().ref("accept/").orderByChild('post').equalTo(viewPageno).on('child_added', function(snapshot){
-				if(snapshot.key != null){
+		firebase.database().ref("accept/" + viewPageno).on('value', function(snapshot){
+				if(snapshot.val().AcceptUserId != ''){
 					$('#acceptSel1').show();
 					$('#postAccept').hide();
-					$('#viewAccept').text('접수: ' + snapshot.val().name +
-										  ' (' + snapshot.val().date + ')');
+					$('#viewAccept').text('접수: ' + snapshot.val().AcceptName +
+										  ' (' + snapshot.val().AcceptDate + ')');
+				} else {
+					$('#viewAccept').text('');
 				}
 		})
 		
-		firebase.database().ref("reply/" + viewPageno + '/' + viewPageno).on('value', function(snapshot1){
-			if(snapshot1.val().replyText != ''){
-				$('#viewReply').text('처리: ' + snapshot1.val().replyName +
+		firebase.database().ref("reply/" + viewPageno).on('value', function(snapshot1){
+			if(snapshot1.val().replyName != ''){
+				$('#viewReply').text('해결: ' + snapshot1.val().replyName +
 									 ' (' + snapshot1.val().replyDate + ')');
+			} else {
+				$('#viewReply').text('');
 			}
 		})
 	})
@@ -313,7 +306,7 @@ $(document).ready(function(){
 		var uid = firebase.auth().currentUser.uid;
 		var postRef = firebase.database().ref('posts/' + viewPageno);
 		var userPostRef = firebase.database().ref('user-posts/' + uid + '/' + viewPageno);
-		var replyRef = firebase.database().ref('reply/' + viewPageno + '/' + viewPageno);
+		var replyRef = firebase.database().ref('reply/' + viewPageno);
 		
 		postRef.remove();
 		
