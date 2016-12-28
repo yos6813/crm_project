@@ -1,4 +1,48 @@
+function clientPost(snapshot){
+		$('#client_posts_user').children().remove();
+		firebase.database().ref('posts/').orderByChild('postCustomer').equalTo(snapshot.val().cusName).on('child_added', function(snapshot1){
+			$('#client_posts_user').each(function(){
+			var state;
+			if(snapshot1.val().postState == '해결'){
+				state = 'label-default';
+			} else if(snapshot1.val().postState == '접수'){
+				state = 'label-primary';
+			} else if(snapshot1.val().postState == '보류'){
+				state = 'label-warning';
+			}
+			$('#client_posts_user').append('<tr class="client_list"  value="' + snapshot1.key + '">' +
+										   '<td><span class="label ' + state + '">' + snapshot1.val().postState + '</span></td>' +
+										   '<td>' + snapshot1.val().title + '</td>' +
+										   '<td>' + snapshot1.val().postDate + '</td>' +
+										   '</tr>');
+		})
+			var rowsShown = 5;
+			var rowsTotal = $('#client_posts_user').children('.client_list').size();
+			if(rowsTotal > rowsShown){
+				$('#client_posts_load').show();
+			}
+			var numPages = Math.ceil(rowsTotal/rowsShown);
+			$('#client_posts_user').children('.client_list').hide();
+			$('#client_posts_user').children('.client_list').slice(0, rowsShown).show();
+			$('#client_posts_load').bind('click', function(){
+				if(rowsTotal < rowsShown){
+					$('#client_posts_load').hide();
+				}
+				rowsShown ++;
+				rowsShown ++;
+				rowsShown ++;
+				rowsShown ++;
+				rowsShown ++;
+				console.log(rowsShown);
+				var endItem = rowsShown;
+				$('#client_posts_user').children('.client_list').css('opacity','0.0').hide().slice(0, endItem).
+				css('display','table-row').animate({opacity:1}, 300);
+			});
+	})
+}
+
 $(document).ready(function(){
+	$('#client_posts_load').hide();
 	firebase.database().ref('customer/').on('child_added', function(snapshot){
 		$('#client_user').append('<tr class="client_list"  value="' + snapshot.key + '">' +
 								 '<td>' + snapshot.val().cusName + '</td>' +
@@ -73,6 +117,7 @@ $(document).ready(function(){
 			firebase.database().ref('company/').orderByChild('name').equalTo($('#client_company').text()).on('child_added', function(snapshot1){
 				$('#client_address').append('<i class="fa fa-map-marker"></i>' + snapshot1.val().addr);
 			})
+			clientPost(snapshot);
 		})
 	})
 })

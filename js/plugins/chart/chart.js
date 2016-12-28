@@ -148,48 +148,72 @@ $(document).ready(function(){
 	firebase.database().ref('posts/').orderByChild('postState').equalTo('해결').on('child_added', function(snapshot1){
 		if(snapshot1.val().postType == '세법'){
 			taxLaw.push(snapshot1.key);
-			$('#taxLaw3').text(taxLaw.length);
+			if(taxLaw != null){
+				$('#taxLaw3').text(taxLaw.length);
+			}
 		} else if (snapshot1.val().postType == '운용'){
 			management.push(snapshot1.key);
-			$('#management3').text(management.length);
+			if(management != null){
+				$('#management3').text(management.length);
+			}
 		} else if (snapshot1.val().postType == '기타'){
 			etc.push(snapshot1.key);
-			$('#etc3').text(etc.length);
+			if(etc != null){
+				$('#etc3').text(etc.length);
+			}
 		} else {
 			system.push(snapshot1.key);
-			$('#system3').text(system.length);
+			if(system != null){
+				$('#system3').text(system.length);
+			}
 		}
 	})
 	
 	firebase.database().ref('posts/').orderByChild('postState').equalTo('접수').on('child_added', function(snapshot1){
 		if(snapshot1.val().postType == '세법'){
 			taxLaw1.push(snapshot1.key);
-			$('#taxLaw1').text(taxLaw1.length);
+			if(taxLaw1 != null){
+				$('#taxLaw1').text(taxLaw1.length);
+			}
 		} else if (snapshot1.val().postType == '운용'){
 			management1.push(snapshot1.key);
-			$('#management1').text(management1.length);
+			if(management1 != null){
+				$('#management1').text(management1.length);
+			}
 		} else if (snapshot1.val().postType == '기타'){
 			etc1.push(snapshot1.key);
-			$('#etc1').text(etc1.length);
+			if(etc1 != null){
+				$('#etc1').text(etc1.length);
+			}
 		} else {
 			system1.push(snapshot1.key);
-			$('#system1').text(system1.length);
+			if(system1 != null){
+				$('#system1').text(system1.length);
+			}
 		}
 	})
 
 	firebase.database().ref('posts/').orderByChild('postState').equalTo('보류').on('child_added', function(snapshot1){
 		if(snapshot1.val().postType == '세법'){
 			taxLaw2.push(snapshot1.key);
-			$('#taxLaw2').text(taxLaw2.length);
+			if(taxLaw2 != null){
+				$('#taxLaw2').text(taxLaw2.length);
+			}
 		} else if (snapshot1.val().postType == '운용'){
 			management2.push(snapshot1.key);
-			$('#management2').text(management2.length);
+			if(management2 != null){
+				$('#management2').text(management2.length);
+			}
 		} else if (snapshot1.val().postType == '기타'){
 			etc2.push(snapshot1.key);
-			$('#etc2').text(etc2.length);
+			if(etc2 != null){
+				$('#etc2').text(etc2.length);
+			}
 		} else {
 			system2.push(snapshot1.key);
-			$('#system2').text(system2.length);
+			if(system2 != null){
+				$('#system2').text(system2.length);
+			}
 		}
 	})
 })
