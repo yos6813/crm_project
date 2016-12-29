@@ -3,8 +3,6 @@
  *
  */
 (function () {
-	
-	
     angular
     .module('inspinia', [
         'ui.router',                    // Routing
@@ -13,6 +11,7 @@
         'ngRoute',
         'firebase'
     ])
+    
 })();
 
 

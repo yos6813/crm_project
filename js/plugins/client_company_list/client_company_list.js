@@ -21,6 +21,7 @@ function companyList(snapshot){
 
 function companyClientList(snapshot){
 	$('#company_client_List').children().remove();
+	$('#company_client_List_box').show();
 	firebase.database().ref('customer/').orderByChild('cusCompany').equalTo(snapshot.val().name).on('child_added', function(snapshot1){
 		
 		$('#company_client_List').append('<tr class="clientlist"  value="' + snapshot1.key + '">' +
@@ -56,6 +57,7 @@ function companyClientList(snapshot){
 }
 
 $(document).ready(function(){
+	$('#company_client_List_box').hide();
 	$('#company_client_load').hide();
 	firebase.database().ref('company/').on('child_added', function(snapshot){
 		companyList(snapshot);

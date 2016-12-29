@@ -5,13 +5,9 @@ firebase.database().ref("types/").orderByKey().endAt("type").on("child_added", f
 	})
 })
 
-window.onpageshow = function(event) {
-if (event.persisted) {
-    window.location.reload() 
-}
-};
 
 function postList(key){
+	
 	firebase.database().ref('posts/' + key).on('value', function(snapshot1){
 		firebase.database().ref('reply/' + key).on('value', function(snapshot2){
 		
@@ -117,7 +113,7 @@ function postList(key){
 		$('#postList').children('.call_list').slice(0, rowsShown).show();
 		$('#nav a:first').addClass('active');
 		$('#nav a').bind('click', function(){
-			
+			    
 			$('#nav a').removeClass('active');
 			$(this).addClass('active');
 			var currPage = $(this).attr('rel');
@@ -129,7 +125,9 @@ function postList(key){
 	});
 });}
 
+
 $(document).ready(function(){
+	
 	$('#sizeSel').change(function(){
 		$('#postList').children('.call_list').remove();
 		

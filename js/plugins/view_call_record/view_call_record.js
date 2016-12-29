@@ -7,12 +7,14 @@ function getParameterByName(name) {
 
 var viewPageno = getParameterByName('no');
 
-
 $('#viewYeta').hide();
 $('#viewAcademy').hide();
 $('#viewConsulting').hide();
 
 $(document).ready(function(){
+	$('#test').click(function(){
+		history.go(-1);
+	})
 	firebase.database().ref('posts/' + viewPageno).on('value', function(snapshot){
 		$('#viewTitle').text(snapshot.val().title);
 		$('#viewCustomer').text(snapshot.val().postCustomer);

@@ -72,7 +72,7 @@
 
       if ($this.opts.hidden_mode) $list.children().hide();
 
-      $this.keydown(function(e) {
+      $this.keyup(function(e) {
 
         if (e.keyCode != 38 && e.keyCode != 40 && e.keyCode != 13 && ( e.keyCode != 8 ? $this.val().length >= $this.opts.min_chars : true ) ) {
 

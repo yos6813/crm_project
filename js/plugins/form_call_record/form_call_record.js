@@ -160,13 +160,20 @@ function addPost(uid, title, text, tags, postCompany, postCustomer, postType, po
 	}
 	
 	var newPostKey = firebase.database().ref().child('posts').push().key;
+	var todayMonth;
+	if(new Date().getMonth() == 12){
+		todayMonth = 1;
+	} else {
+		todayMonth = new Date().getMonth() + 1;
+	}
 	
 	var updates = {};
 	updates['/posts/' + newPostKey] = postData;
 	updates['/user-posts/' + uid + '/' + newPostKey] = postData;
 	updates['/reply/' + newPostKey] = replyData;
 	updates['/timePosts/' + new Date().getDate() + '/' + new Date().getHours() + '/' + newPostKey] = postData;
-	updates['/accept/' + newPostKey] = acceptData;
+	updates['/monthPosts/' + todayMonth + '/' +new Date().getDate() + '/' + newPostKey] = postData;
+ 	updates['/accept/' + newPostKey] = acceptData;
 	
 	return firebase.database().ref().update(updates);
 }

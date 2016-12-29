@@ -8459,7 +8459,7 @@ body.md-skin {
 	height: 36px;
 }
 
-#doughnutChart, #barChart{
+#doughnutChart, #barChart, #lineChart{
 	display: block;
 	height: 260px;
     width: 30%;

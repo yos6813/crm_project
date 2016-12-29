@@ -1,4 +1,5 @@
 function clientPost(snapshot){
+		$('#client_posts_user_box').show();
 		$('#client_posts_user').children().remove();
 		firebase.database().ref('posts/').orderByChild('postCustomer').equalTo(snapshot.val().cusName).on('child_added', function(snapshot1){
 			$('#client_posts_user').each(function(){
@@ -42,6 +43,7 @@ function clientPost(snapshot){
 }
 
 $(document).ready(function(){
+	$('#client_posts_user_box').hide();
 	$('#client_posts_load').hide();
 	firebase.database().ref('customer/').on('child_added', function(snapshot){
 		$('#client_user').append('<tr class="client_list"  value="' + snapshot.key + '">' +

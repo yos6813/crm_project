@@ -56,32 +56,28 @@ $(document).ready(function(){
 		})
 	})
 	
+	var dataSource = [];
 	for(var j=0; j<=new Date().getHours(); j++){
-		var dataSource = [];
 		firebase.database().ref('timePosts/' + new Date().getDate() + '/' + j).on('value', function(snapshot){
 			firebase.database().ref('timePosts/' + (new Date().getDate() - 1)).remove();
-			if(snapshot.val() != undefined){
 			var chartValue = [];
-			chartValue.push(snapshot.numChildren());
+			if(snapshot.val() == undefined){
+				chartValue.push("0");
+			} else {
+				chartValue.push(snapshot.numChildren());
+			}
 			var	time = new Date().getHours();
 			var value = [];
-	
 				dataSource.push({
-					y: chartValue[0],
+					y: chartValue,
 					x: snapshot.key
 				});
-			
-			var chart = $("#barChart").dxChart({
+			$("#barChart").dxChart({
 		        palette: "Soft Pastel",
 		        dataSource: dataSource,
 		        commonSeriesSettings: {
-		            type: "spline",
+		            type: "bar",
 		            argumentField: "x"
-		        },
-		        commonAxisSettings: {
-		            grid: {
-		                visible: true
-		            }
 		        },
 		        margin: {
 		            bottom: 20
@@ -93,22 +89,24 @@ $(document).ready(function(){
 		            enabled: true
 		        },
 		        legend: {
-		            verticalAlignment: "top",
-		            horizontalAlignment: "right"
+		            verticalAlignment: "bottom",
+		            horizontalAlignment: "center"
 		        },
 		        "export": {
 		            enabled: true
 		        }
 		    }).dxChart("instance");
-			}
 		})
 	}
+	
+	
+	
 	
 	$('#userPostNum').children('.ibox-content').remove();
 	firebase.database().ref('users/').orderByKey().on('child_added', function(snapshot){
 		firebase.database().ref('accept/').orderByChild('AcceptUserId').equalTo(snapshot.key).on('value', function(snapshot1){
 			firebase.database().ref('reply/').orderByChild('userId').equalTo(snapshot.key).on('value', function(snapshot2){
-				$('#userPostNum').append('<div class="ibox-content">' +
+				$('#userPostNum').append('<div class="userList ibox-content">' +
 	            						 '<div class="row">' +
 										 '<div class="col-xs-4">' +
 										 '<a><img alt="image" style="width:36px; height:36px;" class="img-circle" src="' + snapshot.val().profile_picture + '"></a>' +
@@ -125,7 +123,8 @@ $(document).ready(function(){
 										 '<h4>'+ snapshot2.numChildren() + '</h4>' +
 										 '</div>' +
 										 '</div>'+
-										 '</div>');		
+										 '</div>');
+
 			})
 		})
 	})
@@ -216,6 +215,66 @@ $(document).ready(function(){
 			}
 		}
 	})
+	MonthPosts();
+	
+	$('#monthSelect').change(function(){
+		MonthPosts();
+	})
 })
 
+
+function MonthPosts(){
+	var todayMonth;
+	if(new Date().getMonth() == 12){
+		todayMonth = 1;
+	} else {
+		todayMonth = new Date().getMonth() + 1;
+	}
+	
+	for(var i=todayMonth; i>=1; i--){
+		$('#monthSelect').append('<option value="' + i + '">' + i + '월</option>');
+	}
+	
+	var month = $('#monthSelect option:selected').val();
+	var dataSource1 = [];
+	for(var k=0; k<=31; k++){
+		firebase.database().ref('monthPosts/' + month + '/' + k).orderByKey().on('value', function(snapshot){
+			var chartValue1 = [];
+			if(snapshot.val() == undefined){
+				chartValue1.push("0");
+			} else {
+				chartValue1.push(snapshot.numChildren());
+			}
+			var value = [];
+				dataSource1.push({
+					y: chartValue1,
+					x: snapshot.key
+				});
+			$("#lineChart").dxChart({
+		        palette: "Soft Pastel",
+		        dataSource: dataSource1,
+		        commonSeriesSettings: {
+		            type: "bar",
+		            argumentField: "x"
+		        },
+		        margin: {
+		            bottom: 20
+		        },
+		        series: [
+		            { valueField: "y", name: "포스팅 수" },
+		        ],
+		        tooltip:{
+		            enabled: true
+		        },
+		        legend: {
+		            verticalAlignment: "bottom",
+		            horizontalAlignment: "center"
+		        },
+		        "export": {
+		            enabled: true
+		        }
+		    }).dxChart("instance");
+		})
+	}
+}
 
