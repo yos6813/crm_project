@@ -125,14 +125,14 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
                 pageTitle: '고객사리스트'
             },
         })
-        .state('index.company', {
+        .state('company', {
             url: "/company",
             templateUrl: "views/company.html",
             data: {
                 pageTitle: 'company'
             },
         })
-        .state('index.customer', {
+        .state('customer', {
             url: "/customer",
             templateUrl: "views/customer.html",
             data: {

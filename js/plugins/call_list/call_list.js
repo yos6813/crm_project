@@ -33,8 +33,19 @@ function postList(key){
 			var hourgap;
 		
 			minutegap = (replyminute - postminute) % 60;
+			if(replyminute - postminute < 0){
+				minutegap += 60;
+				hourgap -= 1;
+			}
 			hourgap = Math.floor((replyminute - postminute) / 60);
+			if(replyminute - postminute < 0){
+				hourgap += 24;
+				daygap -= 1;
+			}
 			daygap = Math.floor(replyday - postday);
+			if(daygap < 0){
+				daygap += 30;
+			}
 			
 		} else {
 			daygap = '-';
@@ -87,6 +98,8 @@ function postList(key){
 								'<br/>' +
 								'<small>처리: ' + daygap + '일  ' + hourgap + '시간 ' + minutegap + '분</small>' +
 								'</td>' +
+								'<td class="project-title ' + key + '">' +
+								'</td>' +
 								'</tr>');
 			
 			for(var i=0; i<=comType[0].length; i++){
@@ -99,6 +112,25 @@ function postList(key){
 				}
 			}
 		})
+		
+		var now = snapshot1.val().postDate;
+		var postDate = now.split(' ');
+		var postDate1 = postDate[0].split('.');
+		var postDate2 = postDate[1].split(':');
+		
+		var today = new Date();
+		var daygap1 = (today.getDate() - postDate1[2]) * 24;
+		var hourgap1 = (today.getHours() - postDate2[0]) + daygap1;
+		
+		var minutegap1 = today.getMinutes() - postDate2[1];
+		if(today.getMinutes() - postDate2[1] < 0){
+			minutegap1 += 60;
+			hourgap1 -= 1;
+		}
+		
+		if(snapshot1.val().postState == '접수' || snapshot1.val().postState == '보류'){
+			$('.' + key).append('<h4>' + hourgap1 + '시간' + minutegap1 + '분' + '</h4>');
+		}
 		
 		//pagination
 		$('#nav a').remove();

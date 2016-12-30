@@ -16,6 +16,69 @@ firebase.database().ref("types/").orderByKey().endAt("type").on("child_added", f
 	})
 })
 
+$(document).ready(function(){
+	$('#client_search_modify').hideseek({hidden_mode: true});
+	firebase.database().ref('customer/').orderByKey().on('child_added', function(snapshot){
+		$('.client_searchList').append('<li class="list-item" style="display:none;"><a value="' + snapshot.key + '">' + 
+										snapshot.val().cusName + '(' + snapshot.val().cusCompany + ')' + '</a></li>');
+	})
+	
+	$(document).on('click', '.client_searchList a', function(){
+		firebase.database().ref('customer/' + $(this).attr('value')).on('value', function(snapshot){
+			$('.customerSel').val(snapshot.val().cusName);
+			$('.companySel').val(snapshot.val().cusCompany);
+			$('.yeta').hide();
+			$('.academy').hide();
+			$('.consulting').hide();
+			
+			var client = [];
+			var comClient = $('.companySel').val();
+			firebase.database().ref("company/").orderByChild('name').equalTo(comClient).on('child_added', function(snapshot){
+				firebase.database().ref("company/" + snapshot.key + "/client").on('value', function(snapshot1){
+					client.push(snapshot1.val());
+					for(var i=0; i<=client[0].length; i++){
+						if(client[0][i] == 'yeta'){
+							$('.yeta').show();
+						}
+						else if(client[0][i] == 'academy'){
+							$('.academy').show();
+						}
+						else if(client[0][i] == 'consulting'){
+							$('.consulting').show();
+						} 
+					}
+				})
+			})
+			
+			var phoneSel = $('.customerSel').val();
+			var phoneSel2 = [];
+			
+			firebase.database().ref('customer').orderByChild('cusName').equalTo(phoneSel).on('child_added',function(snapshot){
+				firebase.database().ref('customer/' + snapshot.key + '/cusPhone').on('value', function(snapshot2){
+					snapshot2.forEach(function(){
+						phoneSel2 = snapshot2.val();
+					})
+					$('#phoneSec').children().remove();
+					for(var i=0; i<=phoneSel2.length; i++){
+						if(phoneSel2[i] != null && phoneSel2[i] != undefined){
+							$('#phoneSec').append('<tr>' +
+									'<td><input type="radio" value="' + phoneSel2[i][1] + '" class="optionContact" name="optionsContact"></td>' +
+									'<td>'+ phoneSel2[i][0] + '</td>' +
+									'<td>'+ phoneSel2[i][1] + '</td>' +
+									'<td class="text-right">' +
+									'<button type="button" class="mod btn-white btn btn-xs" value="' + snapshot.key + '">수정</button>' +
+									'<button type="button" class="del btn-white btn btn-xs" value="' + snapshot.key + '">삭제</button>' +
+									'</td>' +
+									'</tr>');
+						} else {
+							$('#phoneSec').append('<tr></tr>');
+						}
+					}
+				})
+			});
+		})
+	})
+})
 $("#customerIn").blur(function(){
 	var phoneSel = $('.customerSel').val();
 	var phoneSel2 = [];
@@ -240,21 +303,37 @@ $('#postSave').click(function(){
 		}
 	}
 	
-	$('#replyText').val($('#replyText').val().replace(/^\s*|\s*$/g,''));
+//	$('#replyText').val($('#replyText').val().replace(/^\s*|\s*$/g,''));
 	var replyText = $('#replyText').summernote('code');
 	
-	if(replyText != ''){
+	if(postState == '해결'){
 		replyText = $('#replyText').summernote('code');
 		replydate = today.getFullYear() + "." + (today.getMonth()+1) + "." + today.getDate() + " " + today.getHours() + ":" + today.getMinutes();
 		replyName = firebase.auth().currentUser.displayName;
 		userId = firebase.auth().currentUser.uid;
 		replyImg = firebase.auth().currentUser.photoURL;
+		
+		firebase.database().ref('reply/' + modifyPageno).update({
+			replyText: replyText,
+			replyDate: replydate,
+			replyName: replyName,
+			userId: userId,
+			replyImg: replyImg
+		})
 	} else {
 		replyText = '';
 		replydate = '';
 		replyName = '';
 		userId = '';
 		replyImg = ''
+			
+		firebase.database().ref('reply/' + modifyPageno).set({
+			replyText: replyText,
+			replyDate: replydate,
+			replyName: replyName,
+			userId: userId,
+			replyImg: replyImg
+		})
 	}
 	
 	var postday;
@@ -278,14 +357,6 @@ $('#postSave').click(function(){
 		uploadfile: uploadfile,
 		postDate: postday
 	});
-	
-	firebase.database().ref('reply/' + modifyPageno).update({
-		replyText: replyText,
-		replyDate: replydate,
-		replyName: replyName,
-		userId: userId,
-		replyImg: replyImg
-	})
 	
 	window.location.hash = 'index/view_call_record?no=' + modifyPageno;
 });

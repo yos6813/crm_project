@@ -43,13 +43,14 @@ function sample6_execDaumPostcode() {
 
 /* 회사 등록 */
 
-function addCompany(name, addr, license, corporate, client){
+function addCompany(name, addr, license, corporate, client, client1){
 	var companyData = {
 		name: name,
 		addr: addr,
 		license: license,
 		corporate: corporate,
-		client: client
+		client: client,
+		client1: client1
 	};
 	
 	var newCompanyKey = firebase.database().ref().child('company').push().key;
@@ -60,18 +61,36 @@ function addCompany(name, addr, license, corporate, client){
 	return firebase.database().ref().update(updates);
 }
 
+$(document).ready(function(){
+	$('input[name=yetacheck]').change(function(){
+	 if($(this).is(":checked")){
+		 $('.yetaList').append('<label class="col-sm-2 control-label">YETA 고객구분 <br/><small class="text-navy">복수 선택 가능</small></label>' +
+			 	   		       '<div class="i-checks"><label> <input class="checkBox1" type="checkbox" value="SAP"> <i></i> SAP </label></div>' +
+			 	   		       '<div class="i-checks"><label> <input class="checkBox1" type="checkbox" value="cloud"> <i></i> Cloud </label></div>' +
+	           				   '<div class="i-checks"><label> <input class="checkBox1" type="checkbox" value="OnPremises"> <i></i> On Premises </label></div>');
+        }else{
+            $('.yetaList').children().remove();
+        }
+	})
+})
+
 function submitCompany(){
 	var name = $('#comName').val();
 	var addr = $('#addr').val() + ' ' + $("#addr2").val();
 	var license = $('#licenseeNum').val();
 	var corporate = $('#corporateNum').val();
 	var client = [];
+	var client1 = [];
 	
-	$('input[class=checkbox]:checked').each(function(){
+	$('input[class=checkBox]:checked').each(function(){
 		client.push($(this).val());
 	})
 	
-	addCompany(name, addr, license, corporate, client);
+	$('input[class=checkBox1]:checked').each(function(){
+		client1.push($(this).val());
+	})
+	
+	addCompany(name, addr, license, corporate, client, client1);
 	
 	$('#comName').val('');
 	$('#addr').val('');

@@ -1,46 +1,95 @@
-<meta charset="utf-8">
-<div class="row">
-<div class="col-lg-12">
-<div class="wrapper wrapper-content animated fadeInUp">
-<form class="form-horizontal" role="form">
-    <div class="form-group"><label class="col-sm-2 control-label">회사명</label>
-        <div class="col-sm-10"><input id="comName" type="text" class="form-control" required></div>
-    </div>
-    <div class="hr-line-dashed"></div>
-    <div class="form-group"><label class="col-sm-2 control-label">주소</label>
-        <div class="col-sm-10">
-       		<input type="text" class="form-control" id="addr" placeholder="주소"  readonly required>
-			<input type="text" class="form-control" id="addr2" placeholder="상세주소" required>
-			<button id="addrbtn" onclick="sample6_execDaumPostcode()" class="btn btn-default" type="button">
-			<i class="fa fa-search"></i>&nbsp;&nbsp;주소검색</button>
-        </div>
-    </div>
-    <div class="hr-line-dashed"></div>
-    <div class="form-group"><label class="col-sm-2 control-label">사업자등록번호</label>
-        <div class="col-sm-10"><input id="licenseeNum" type="text" class="form-control" placeholder="-제외" required></div>
-    </div>
-    <div class="hr-line-dashed"></div>
-    <div class="form-group"><label class="col-sm-2 control-label">법인등록번호</label>
 
-        <div class="col-sm-10"><input id="corporateNum" type="text" class="form-control" placeholder="-제외" required></div>
-    </div>
-    <div class="hr-line-dashed"></div>
-    <div class="form-group"><label class="col-sm-2 control-label">고객구분 <br/><small class="text-navy">복수 선택 가능</small></label>
-        <div class="col-sm-10">
-            <div class="i-checks"><label> <input class="checkBox" type="checkbox" value="yeta"> <i></i> YETA </label></div>
-            <div class="i-checks"><label> <input class="checkBox" type="checkbox" value="academy"> <i></i> 아카데미 </label></div>
-            <div class="i-checks"><label> <input class="checkBox" type="checkbox" value="consulting"> <i></i> 자문 </label></div>
-        </div>
-    </div>
-    <div class="hr-line-dashed"></div>
-    <div class="form-group">
-        <div class="col-sm-4 col-sm-offset-2">
-            <input id="companySubmit" onclick="submitCompany()" class="btn btn-primary" type="button" value="Save">
-        </div>
-    </div>
-</form>
-</div>
-</div>
-</div>
+<!DOCTYPE html>
+<html>
+	<meta charset="utf-8">
 
-<script src="../js/plugins/company/company.js"></script>
+	<head>
+		<script src="https://apis.google.com/js/platform.js" async defer></script>
+	    <link href="../css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+	
+	  	<!-- Sweet Alert -->
+	  	<link href="../css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+	  	<link href="../css/plugins/iCheck/custom.css" rel="stylesheet">
+	
+	  	<meta charset="utf-8">
+	  	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	
+	
+	  	<title>At&amp;P Partners Intranet | register</title>
+	
+	  	<link href="../css/bootstrap.min.css" rel="stylesheet">
+	  	<link href="../font-awesome/css/font-awesome.css" rel="stylesheet">
+	
+	  	<link href="../css/animate.css" rel="stylesheet">
+	  	<link href="../css/style1.css" rel="stylesheet">
+	
+	</head>
+	<body class="grey-bg">
+		<div class="row text-center center1">
+            <h1>회사 관리</h1>
+        </div>
+		<div class="row center">
+			<div class="col-lg-12">
+				<div class="wrapper wrapper-content animated fadeInUp">
+					<form class="form-horizontal" role="form">
+					    <div class="form-group"><label class="col-sm-2 control-label">회사명</label>
+					        <div class="col-sm-10"><input id="comName" type="text" class="form-control" required></div>
+					    </div>
+					    <div class="hr-line-dashed"></div>
+					    <div class="form-group"><label class="col-sm-2 control-label">주소</label>
+					        <div class="col-sm-10">
+					       		<input type="text" class="form-control" id="addr" placeholder="주소"  readonly required>
+								<input type="text" class="form-control" id="addr2" placeholder="상세주소" required>
+								<button id="addrbtn" onclick="sample6_execDaumPostcode()" class="btn btn-default" type="button">
+								<i class="fa fa-search"></i>&nbsp;&nbsp;주소검색</button>
+					        </div>
+					    </div>
+					    <div class="hr-line-dashed"></div>
+					    <div class="form-group"><label class="col-sm-2 control-label">사업자등록번호</label>
+					        <div class="col-sm-10"><input id="licenseeNum" type="text" class="form-control" placeholder="-제외" required></div>
+					    </div>
+					    <div class="hr-line-dashed"></div>
+					    <div class="form-group"><label class="col-sm-2 control-label">법인등록번호</label>
+					
+					        <div class="col-sm-10"><input id="corporateNum" type="text" class="form-control" placeholder="-제외" required></div>
+					    </div>
+					    <div class="hr-line-dashed"></div>
+					    <div class="form-group"><label class="col-sm-2 control-label">고객구분 <br/><small class="text-navy">복수 선택 가능</small></label>
+					        <div class="col-sm-10">
+					            <div class="i-checks"><label> <input class="checkBox" name="yetacheck" type="checkbox" value="yeta"> <i></i> YETA </label></div>
+					            <div class="i-checks"><label> <input class="checkBox" type="checkbox" value="academy"> <i></i> 아카데미 </label></div>
+					            <div class="i-checks"><label> <input class="checkBox" type="checkbox" value="consulting"> <i></i> 자문 </label></div>
+					        </div>
+					    </div>
+					    <div class="hr-line-dashed"></div>
+						    <div class="form-group yetaList">
+								
+						    </div>
+					    <div class="hr-line-dashed"></div>
+					    <div class="form-group">
+					        <div class="col-sm-4 col-sm-offset-2">
+					            <input id="companySubmit" onclick="submitCompany()" class="btn btn-primary" type="button" value="Save">
+					        </div>
+					    </div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<!-- Mainly scripts -->
+	    <script src="../js/bootstrap/bootstrap.min.js"></script>
+	    <script src="../js/plugins/metisMenu/jquery.metisMenu.js"></script>
+	    <script src="../js/plugins/pace/pace.min.js"></script>
+	    <script src="../js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+	    <script src="../js/jquery/jquery-ui.custom.min.js"></script>
+	    <script src="../js/jquery/jquery-ui-1.10.4.min.js"></script>
+	
+	 	<!-- daum 주소찾기 -->
+	    <script src="https://spi.maps.daum.net/imap/map_js_init/postcode.v2.js"></script>
+		
+	    <!-- Custom and plugin javascript -->
+	    <script src="../js/inspinia.js"></script>
+	    <script src="../js/plugins/pace/pace.min.js"></script>
+		<script src="../js/plugins/company/company.js"></script>
+		
+	</body>
+</html>

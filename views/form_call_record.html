@@ -28,8 +28,17 @@
                 </div>
                 <div class="ibox-content">
                     <form method="get" class="form-horizontal">
+	                    <div class="form-group">
+	                    	<label class="col-sm-2 control-label">고객 선택</label>
+	                    	<div class="col-sm-3">
+		                    	<input type="text" class="form-control" id="client_search" data-list=".client_searchList" autocomplete="off">
+			                    	<ul class="vertical client_searchList">
+			                    		
+			                    	</ul>
+	                    	</div>
+                    	</div>
                         <div class="form-group"><label class="col-sm-2 control-label">고객사명</label>
-                            <div class="col-sm-3"><input type="text" placeholder="고객사명을 입력하세요" class="companySel form-control"/></div>
+                            <div class="col-sm-3"><input type="text" class="companySel form-control" readonly="readonly"/></div>
                             <div class="col-sm-7">
                                 <span class="badge badge-success yeta"> YETA </span>
                                 <span class="badge badge-info academy"> ACADEMY </span>
@@ -37,7 +46,7 @@
                             </div>
                         </div>
                         <div class="form-group"><label class="col-sm-2 control-label">고객명</label>
-                            <div class="col-sm-3"><input type="text" id="customerIn" placeholder="고객명을 입력하세요" class="customerSel form-control" required/></div>
+                            <div class="col-sm-3"><input type="text" id="customerIn" class="customerSel form-control" required readonly="readonly"/></div>
                         	<a href="#/index/customer" target="_blank"><span>고객 추가</span></a>
                         </div>
                         <div class="form-group"><label class="col-sm-2 control-label">연락처</label>

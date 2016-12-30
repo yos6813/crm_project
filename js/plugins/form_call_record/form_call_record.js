@@ -7,120 +7,79 @@ firebase.database().ref("types/").orderByKey().endAt("type").on("child_added", f
 	})
 })
 
-$("#customerIn").blur(function(){
-	var phoneSel = $('.customerSel').val();
-	var phoneSel2 = [];
-	
-	firebase.database().ref('customer').orderByChild('cusName').equalTo(phoneSel).on('child_added',function(snapshot){
-		firebase.database().ref('customer/' + snapshot.key + '/cusPhone').on('value', function(snapshot2){
-			snapshot2.forEach(function(){
-				phoneSel2 = snapshot2.val();
-			})
-			$('#phoneSec').children().remove();
-			for(var i=0; i<=phoneSel2.length; i++){
-				if(phoneSel2[i] != null && phoneSel2[i] != undefined){
-					$('#phoneSec').append('<tr>' +
-							'<td><input type="radio" value="' + phoneSel2[i][1] + '" class="optionContact" name="optionsContact"></td>' +
-							'<td>'+ phoneSel2[i][0] + '</td>' +
-							'<td>'+ phoneSel2[i][1] + '</td>' +
-							'<td class="text-right">' +
-							'<button type="button" class="mod btn-white btn btn-xs" value="' + snapshot.key + '">수정</button>' +
-							'<button type="button" class="del btn-white btn btn-xs" value="' + snapshot.key + '">삭제</button>' +
-							'</td>' +
-							'</tr>');
-				} else {
-					$('#phoneSec').append('<tr></tr>');
-				}
-			}
-		})
-	});
-});
-
 $(document).on('click','.del', function(){
 	$(this).parents('tr').remove();
 	firebase.database().ref('customer/' + $(this).val() + '/cusPhone').child().eq($(this).closest('tr').index() + 1).remove();
 })
 
-// 고객 autocomplete 
 $(document).ready(function(){
-	$(".customerSel").focus(function(){
-		var cusSel3 = [];
-		var cusSel2 = [];
-		console.log($('.companySel').val());
-		if($('.companySel').val() == null || $('.companySel').val() == undefined || $('.companySel').val() == ''){
-			firebase.database().ref("customer/").orderByKey().on("child_added", function(snapshot){
-				firebase.database().ref("customer/" + snapshot.key + '/cusName').on('value', function(snapshot1){
-					cusSel3.push(snapshot1.val());
-					$(".customerSel").typeahead({source: cusSel3});
-				});
-			});
-		} else {
-			var cusSel = $('.companySel').val();
-			firebase.database().ref('customer').orderByChild('cusCompany').equalTo(cusSel).on('child_added',function(snapshot){
-				firebase.database().ref('customer/' + snapshot.key + '/cusName').on('value', function(snapshot2){
-					cusSel2.push(snapshot2.val());
-					$(".customerSel").typeahead({source: cusSel2});
+	$('#client_search').hideseek({hidden_mode: true});
+	firebase.database().ref('customer/').orderByKey().on('child_added', function(snapshot){
+		$('.client_searchList').append('<li class="list-item" style="display: none;"><a value="' + snapshot.key + '">' + 
+										snapshot.val().cusName + '(' + snapshot.val().cusCompany + ')' + '</a></li>');
+	})
+	
+	$(document).on('click', '.client_searchList a', function(){
+		firebase.database().ref('customer/' + $(this).attr('value')).on('value', function(snapshot){
+			$('#customerIn').val(snapshot.val().cusName);
+			$('.companySel').val(snapshot.val().cusCompany);
+			$('.yeta').hide();
+			$('.academy').hide();
+			$('.consulting').hide();
+			
+			var client = [];
+			var comClient = $('.companySel').val();
+			firebase.database().ref("company/").orderByChild('name').equalTo(comClient).on('child_added', function(snapshot){
+				firebase.database().ref("company/" + snapshot.key + "/client").on('value', function(snapshot1){
+					client.push(snapshot1.val());
+					for(var i=0; i<=client[0].length; i++){
+						if(client[0][i] == 'yeta'){
+							$('.yeta').show();
+						}
+						else if(client[0][i] == 'academy'){
+							$('.academy').show();
+						}
+						else if(client[0][i] == 'consulting'){
+							$('.consulting').show();
+						} 
+					}
+				})
+			})
+			
+			var phoneSel = $('.customerSel').val();
+			var phoneSel2 = [];
+			
+			firebase.database().ref('customer').orderByChild('cusName').equalTo(phoneSel).on('child_added',function(snapshot){
+				firebase.database().ref('customer/' + snapshot.key + '/cusPhone').on('value', function(snapshot2){
+					snapshot2.forEach(function(){
+						phoneSel2 = snapshot2.val();
+					})
+					$('#phoneSec').children().remove();
+					for(var i=0; i<=phoneSel2.length; i++){
+						if(phoneSel2[i] != null && phoneSel2[i] != undefined){
+							$('#phoneSec').append('<tr>' +
+									'<td><input type="radio" value="' + phoneSel2[i][1] + '" class="optionContact" name="optionsContact"></td>' +
+									'<td>'+ phoneSel2[i][0] + '</td>' +
+									'<td>'+ phoneSel2[i][1] + '</td>' +
+									'<td class="text-right">' +
+									'<button type="button" class="mod btn-white btn btn-xs" value="' + snapshot.key + '">수정</button>' +
+									'<button type="button" class="del btn-white btn btn-xs" value="' + snapshot.key + '">삭제</button>' +
+									'</td>' +
+									'</tr>');
+						} else {
+							$('#phoneSec').append('<tr></tr>');
+						}
+					}
 				})
 			});
-		}
-	});
-})
-
-// 회사 autocomplete 
-$(document).ready(function(){
-	var comSel = [];
-	firebase.database().ref("company/").orderByKey().on("child_added", function(snapshot){
-		firebase.database().ref("company/" + snapshot.key + '/name').on('value', function(snapshot1){
-			comSel.push(snapshot1.val());
-			$(".companySel").typeahead({ source: comSel});
-		});
-	});
-	
-	var tagSel = [];
-	var uniqueNames = [];
-	firebase.database().ref("tags/").orderByKey().endAt("tag").on("child_added", function(snapshot){
-		snapshot.forEach(function(data){
-			tagSel.push(data.val());
-		})
-		
-		$.each(tagSel, function(i, el){
-			if($.inArray(el, uniqueNames) === -1) uniqueNames.push(el);
-		});
-		
-		$(".tagAuto").typeahead({source: uniqueNames});
-	});
-});
-
-$('.yeta').hide();
-$('.academy').hide();
-$('.consulting').hide();
-
-$('.companySel').blur(function(){
-	
-	$('.yeta').hide();
-	$('.academy').hide();
-	$('.consulting').hide();
-	
-	var client = [];
-	var comClient = $('.companySel').val();
-	firebase.database().ref("company/").orderByChild('name').equalTo(comClient).on('child_added', function(snapshot){
-		firebase.database().ref("company/" + snapshot.key + "/client").on('value', function(snapshot1){
-			client.push(snapshot1.val());
-			for(var i=0; i<=client[0].length; i++){
-				if(client[0][i] == 'yeta'){
-					$('.yeta').show();
-				}
-				else if(client[0][i] == 'academy'){
-					$('.academy').show();
-				}
-				else if(client[0][i] == 'consulting'){
-					$('.consulting').show();
-				} 
-			}
 		})
 	})
 })
 
+
+$('.yeta').hide();
+$('.academy').hide();
+$('.consulting').hide();
 
 
 // 글 등록
@@ -172,8 +131,8 @@ function addPost(uid, title, text, tags, postCompany, postCustomer, postType, po
 	updates['/user-posts/' + uid + '/' + newPostKey] = postData;
 	updates['/reply/' + newPostKey] = replyData;
 	updates['/timePosts/' + new Date().getDate() + '/' + new Date().getHours() + '/' + newPostKey] = postData;
-	updates['/monthPosts/' + todayMonth + '/' +new Date().getDate() + '/' + newPostKey] = postData;
- 	updates['/accept/' + newPostKey] = acceptData;
+	updates['/monthPosts/' + new Date().getFullYear() + '/' + todayMonth + '/' +new Date().getDate() + '/' + newPostKey] = postData;
+ 	updates['/accept/' + newPostKey] = acceptData; 
 	
 	return firebase.database().ref().update(updates);
 }

@@ -11,20 +11,20 @@ function clientPost(snapshot){
 			} else if(snapshot1.val().postState == '보류'){
 				state = 'label-warning';
 			}
-			$('#client_posts_user').append('<tr class="client_list"  value="' + snapshot1.key + '">' +
+			$('#client_posts_user').append('<tr class="clientList" value="' + snapshot1.key + '">' +
 										   '<td><span class="label ' + state + '">' + snapshot1.val().postState + '</span></td>' +
 										   '<td>' + snapshot1.val().title + '</td>' +
 										   '<td>' + snapshot1.val().postDate + '</td>' +
 										   '</tr>');
 		})
 			var rowsShown = 5;
-			var rowsTotal = $('#client_posts_user').children('.client_list').size();
+			var rowsTotal = $('#client_posts_user').children('.clientList').size();
 			if(rowsTotal > rowsShown){
 				$('#client_posts_load').show();
 			}
 			var numPages = Math.ceil(rowsTotal/rowsShown);
-			$('#client_posts_user').children('.client_list').hide();
-			$('#client_posts_user').children('.client_list').slice(0, rowsShown).show();
+			$('#client_posts_user').children('.clientList').hide();
+			$('#client_posts_user').children('.clientList').slice(0, rowsShown).show();
 			$('#client_posts_load').bind('click', function(){
 				if(rowsTotal < rowsShown){
 					$('#client_posts_load').hide();
@@ -36,11 +36,15 @@ function clientPost(snapshot){
 				rowsShown ++;
 				console.log(rowsShown);
 				var endItem = rowsShown;
-				$('#client_posts_user').children('.client_list').css('opacity','0.0').hide().slice(0, endItem).
+				$('#client_posts_user').children('.clientList').css('opacity','0.0').hide().slice(0, endItem).
 				css('display','table-row').animate({opacity:1}, 300);
 			});
 	})
 }
+
+$(document).on('click', '.clientList', function(){
+	location.hash = '#/index/view_call_record?no=' + $(this).attr('value');
+})
 
 $(document).ready(function(){
 	$('#client_posts_user_box').hide();
@@ -128,7 +132,7 @@ $(document).ready(function(){
 	$('#search_client').click(function(){
 		$('#client_user').children('.client_list').remove();
 		firebase.database().ref("customer/").on("child_added", function(snapshot){
-			$('#client_user').append('<tr class="client_list"  value="' + snapshot.key + '">' +
+			$('#client_user').append('<tr class="clientList"  value="' + snapshot.key + '">' +
 					 '<td>' + snapshot.val().cusName + '</td>' +
 					 '<td>' + snapshot.val().cusCompany + '</td>' +
 					 '<td>' + snapshot.val().cusDepartment + '</td>' +

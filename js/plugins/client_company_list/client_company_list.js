@@ -1,10 +1,10 @@
 function companyList(snapshot){
-	$('#company_list').append('<tr class="company_list1" value="' + snapshot.key + '">' +
+	$('#company_list').append('<tr class="company_list1" value="' + snapshot.key + '"><a href="#/index/view_call_record?no='+ snapshot.key +'">' +
 			 '<td>' + snapshot.val().name + '</td>' +
 			 '<td>' + snapshot.val().corporate + '</td>' +
 			 '<td>' + snapshot.val().license + '</td>' +
 			 '<td id="' + snapshot.key + '"></td>' +
-			 '</tr>');
+			 '</a></tr>');
 	
 	var comType = snapshot.val().client;
 	

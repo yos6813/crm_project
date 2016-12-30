@@ -8467,3 +8467,19 @@ body.md-skin {
 #search_select, #search_company1{
 	float: left;
 }
+
+.client_searchList{
+	text-align: left;
+	list-style: none;
+	height: 100px;
+	overflow: auto;
+	margin-bottom: 10px;
+	margin-top: 0px;
+	padding-left: 0px;
+}
+
+.client_searchList a, .client_searchList li{
+	font-size: 13px;
+	list-style-position: outside;
+	color: rgb(147, 146, 146);
+}

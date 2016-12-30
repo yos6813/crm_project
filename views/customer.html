@@ -1,63 +1,111 @@
-<meta charset="utf-8">
-<form class="form-horizontal">
-    <div class="form-group"><label class="col-sm-2 control-label">성명</label>
-        <div class="col-sm-10">
-        	<input id="customerName" type="text" class="form-control" required>
-       	</div>
-    </div>
-    <div class="hr-line-dashed"></div>
-    <div class="form-group"><label class="col-sm-2 control-label">회사</label>
-        <div class="col-sm-10">
-          	<input id="cusCompany" type="text" class="typeahead_2 form-control" />
-       	</div>
-    </div>
-    <div class="hr-line-dashed"></div>
-    <div class="form-group"><label class="col-sm-2 control-label">부서</label>
-        <div class="col-sm-10">
-        	<input id="customerDepartment" type="text" class="form-control" required>
-        </div>
-    </div>
-    <div class="hr-line-dashed"></div>
-    <div class="form-group"><label class="col-sm-2 control-label">직책</label>
-        <div class="col-sm-10">
-        	<input id="customerJob" type="text" class="form-control" required>
-        </div>
-    </div>
-    <div class="hr-line-dashed"></div>
-    <div class="form-group"><label class="col-sm-2 control-label">직위</label>
-        <div class="col-sm-10">
-        	<input id="customerPosition" type="text" class="form-control" required>
-        </div>
-    </div>
-    <div class="hr-line-dashed"></div>
-    <div class="form-group"><label class="col-sm-2 control-label">연락처 <br/><small class="text-navy">복수 선택 가능</small></label>
-        <div id="phoneSection" class="col-sm-10">
-   			<select class="phoneDrop input-sm form-control input-s-sm inline">
-            	<option value="직장전화">직장전화</option>
-            	<option value="휴대전화">휴대전화</option>
-            	<option value="팩스">팩스</option>
-            	<option value="이메일">이메일</option>
-       	  	</select>
-        	<input id="customerPhone" type="text" class="phoneInput form-control" placeholder="-제외" required>
-        </div>
-        	<div class="form-group">
-				<div class="col-sm-2 control-label"></div>
-	        	<div  class="col-sm-10">
-		        	<button onclick="phoneSectionInput()" id="addInput" type="button" class="btn btn-outline btn-link">
-		        		<i class="fa fa-plus-square-o"></i>&nbsp;<small>폼 추가</small>
-		        	</button>
-	    	    	<button onclick="phoneSectionRemove()" id="delInput" type="button" class="btn btn-outline btn-link">
-	    	    		<i class="fa fa-minus-square-o"></i>&nbsp;<small>폼 삭제</small>
-    	    		</button>
-	        	</div>
-        	</div>
-    </div>
-    <div class="hr-line-dashed"></div>
-    <div class="form-group">
-        <div class="col-sm-4 col-sm-offset-2">
-            <input onclick="submitCustomer()" id="customerAdd" class="btn btn-primary" type="button" value="Save">
-        </div>
-    </div>
-</form>
+<!DOCTYPE html>
+<html>
+	<meta charset="utf-8">
 
-<script src="../js/plugins/customer/customer.js"></script>
+	<head>
+		<script src="https://apis.google.com/js/platform.js" async defer></script>
+	    <link href="../css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+	
+	  	<!-- Sweet Alert -->
+	  	<link href="../css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+	  	<link href="../css/plugins/iCheck/custom.css" rel="stylesheet">
+	
+	  	<meta charset="utf-8">
+	  	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	
+	
+	  	<title>At&amp;P Partners Intranet | register</title>
+	
+	  	<link href="../css/bootstrap.min.css" rel="stylesheet">
+	  	<link href="../font-awesome/css/font-awesome.css" rel="stylesheet">
+	
+	  	<link href="../css/animate.css" rel="stylesheet">
+	  	<link href="../css/style1.css" rel="stylesheet">
+	
+	</head>
+	<body class="grey-bg">
+		<div class="row text-center center1">
+            <h1>고객 관리</h1>
+        </div>
+		<div class="row center">
+			<div class="col-lg-12">
+				<div class="registerBox animated fadeInDown">
+					<form class="form-horizontal">
+					    <div class="form-group"><label class="col-sm-2 control-label">성명</label>
+					        <div class="col-sm-10">
+					        	<input id="customerName" type="text" class="form-control" required>
+					       	</div>
+					    </div>
+					    <div class="hr-line-dashed"></div>
+					    <div class="form-group"><label class="col-sm-2 control-label">회사</label>
+					        <div class="col-sm-10">
+					          	<input id="cusCompany" type="text" class="typeahead_2 form-control" />
+					       	</div>
+					    </div>
+					    <div class="hr-line-dashed"></div>
+					    <div class="form-group"><label class="col-sm-2 control-label">부서</label>
+					        <div class="col-sm-10">
+					        	<input id="customerDepartment" type="text" class="form-control" required>
+					        </div>
+					    </div>
+					    <div class="hr-line-dashed"></div>
+					    <div class="form-group"><label class="col-sm-2 control-label">직책</label>
+					        <div class="col-sm-10">
+					        	<input id="customerJob" type="text" class="form-control" required>
+					        </div>
+					    </div>
+					    <div class="hr-line-dashed"></div>
+					    <div class="form-group"><label class="col-sm-2 control-label">직위</label>
+					        <div class="col-sm-10">
+					        	<input id="customerPosition" type="text" class="form-control" required>
+					        </div>
+					    </div>
+					    <div class="hr-line-dashed"></div>
+					    <div class="form-group"><label class="col-sm-2 control-label">연락처 <br/><small class="text-navy">복수 선택 가능</small></label>
+					        <div id="phoneSection" class="col-sm-10">
+					   			<select class="phoneDrop input-sm form-control input-s-sm inline">
+					            	<option value="직장전화">직장전화</option>
+					            	<option value="휴대전화">휴대전화</option>
+					            	<option value="팩스">팩스</option>
+					            	<option value="이메일">이메일</option>
+					       	  	</select>
+					        	<input id="customerPhone" type="text" class="phoneInput form-control" placeholder="-제외" required>
+					        </div>
+					        	<div class="form-group">
+									<div class="col-sm-2 control-label"></div>
+						        	<div  class="col-sm-10">
+							        	<button onclick="phoneSectionInput()" id="addInput" type="button" class="btn btn-outline btn-link">
+							        		<i class="fa fa-plus-square-o"></i>&nbsp;<small>폼 추가</small>
+							        	</button>
+						    	    	<button onclick="phoneSectionRemove()" id="delInput" type="button" class="btn btn-outline btn-link">
+						    	    		<i class="fa fa-minus-square-o"></i>&nbsp;<small>폼 삭제</small>
+					    	    		</button>
+						        	</div>
+					        	</div>
+					    </div>
+					    <div class="hr-line-dashed"></div>
+					    <div class="form-group">
+					        <div class="col-sm-4 col-sm-offset-2">
+					            <input onclick="submitCustomer()" id="customerAdd" class="btn btn-primary" type="button" value="Save">
+					        </div>
+					    </div>
+					</form>
+				</div>
+			</div>
+		</div>
+		
+		<!-- Mainly scripts -->
+	    <script src="../js/bootstrap/bootstrap.min.js"></script>
+	    <script src="../js/plugins/metisMenu/jquery.metisMenu.js"></script>
+	    <script src="../js/plugins/pace/pace.min.js"></script>
+	    <script src="../js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+	    <script src="../js/jquery/jquery-ui.custom.min.js"></script>
+	    <script src="../js/jquery/jquery-ui-1.10.4.min.js"></script>
+	
+	    <!-- Custom and plugin javascript -->
+	    <script src="../js/inspinia.js"></script>
+	    <script src="../js/plugins/pace/pace.min.js"></script>
+		<script src="../js/plugins/customer/customer.js"></script>
+		
+	</body>
+</html>

@@ -1,7 +1,7 @@
 
 
 function pagestart() {
-	window.setTimeout("pagereload()", 60000);
+	window.setTimeout("pagereload()", 6000000);
 }
 
 function pagereload() {
@@ -60,21 +60,24 @@ $(document).ready(function(){
 	for(var j=0; j<=new Date().getHours(); j++){
 		firebase.database().ref('timePosts/' + new Date().getDate() + '/' + j).on('value', function(snapshot){
 			firebase.database().ref('timePosts/' + (new Date().getDate() - 1)).remove();
-			var chartValue = [];
+			var chartValue;
 			if(snapshot.val() == undefined){
-				chartValue.push("0");
+//				chartValue="0";
 			} else {
-				chartValue.push(snapshot.numChildren());
+				chartValue=snapshot.numChildren();
 			}
 			var	time = new Date().getHours();
 			var value = [];
 				dataSource.push({
 					y: chartValue,
-					x: snapshot.key
+					x: snapshot.key + '시'
 				});
 			$("#barChart").dxChart({
 		        palette: "Soft Pastel",
 		        dataSource: dataSource,
+		        equalBarWidth: {
+                    width: 18
+                },
 		        commonSeriesSettings: {
 		            type: "bar",
 		            argumentField: "x"
@@ -238,24 +241,28 @@ function MonthPosts(){
 	var month = $('#monthSelect option:selected').val();
 	var dataSource1 = [];
 	for(var k=0; k<=31; k++){
-		firebase.database().ref('monthPosts/' + month + '/' + k).orderByKey().on('value', function(snapshot){
-			var chartValue1 = [];
+		firebase.database().ref('monthPosts/' + new Date().getFullYear() + '/' + month + '/' + k).orderByKey().on('value', function(snapshot){
+			firebase.database().ref('monthPosts/' + (new Date().getFullYear() - 1)).remove();
+			var chartValue1;
 			if(snapshot.val() == undefined){
-				chartValue1.push("0");
+//				chartValue1="";
 			} else {
-				chartValue1.push(snapshot.numChildren());
+				chartValue1=snapshot.numChildren();
 			}
 			var value = [];
 				dataSource1.push({
 					y: chartValue1,
-					x: snapshot.key
+					x: snapshot.key + '일'
 				});
 			$("#lineChart").dxChart({
 		        palette: "Soft Pastel",
 		        dataSource: dataSource1,
+		        equalBarWidth: {
+                    width: 18
+                },
 		        commonSeriesSettings: {
 		            type: "bar",
-		            argumentField: "x"
+		            argumentField: 'x'
 		        },
 		        margin: {
 		            bottom: 20
@@ -263,12 +270,16 @@ function MonthPosts(){
 		        series: [
 		            { valueField: "y", name: "포스팅 수" },
 		        ],
+		        argumentAxis: {
+		            tickInterval: 10
+		        },
 		        tooltip:{
 		            enabled: true
 		        },
 		        legend: {
 		            verticalAlignment: "bottom",
-		            horizontalAlignment: "center"
+		            horizontalAlignment: "center",
+		            itemTextPosition: 'top'
 		        },
 		        "export": {
 		            enabled: true
