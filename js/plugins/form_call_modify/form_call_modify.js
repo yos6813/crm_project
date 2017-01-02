@@ -7,6 +7,23 @@ function getParameterByName(name) {
 
 var modifyPageno = getParameterByName('no');
 
+/* user post alert */
+function writeAlert(uid, replyPhoto, replyUser, replyDay, replyTitle, replyPost, replyUserName){
+	var alertData = {
+			replyPhoto: replyPhoto,
+			replyUser: replyUser,
+			replyDay: replyDay,
+			replyTitle: replyTitle,
+			replyPost: replyPost,
+			replyUserName: replyUserName
+	}
+	
+	var updates = {};
+	updates['/userAlert/' + replyPost + '' + uid] = alertData;
+	
+	return firebase.database().ref().update(updates);
+}
+
 /* 유형 드롭다운 옵션 추가 */
 
 firebase.database().ref("types/").orderByKey().endAt("type").on("child_added", function(snapshot){
@@ -108,7 +125,6 @@ $("#customerIn").blur(function(){
 
 $('.del').click(function(){
 	$(this).parent().remove();
-	alert("삭제");
 	firebase.database().ref('customer/' + $(this).val() + '/cusPhone').equalTo($(this).parent().children('td').text()).remove();
 })
 
@@ -222,7 +238,6 @@ function handleFileSelect(evt) {
 			  var url = snapshot.metadata.downloadURLs[i];
 			  $('#fileInput').append('<span class="fileName">' +  snapshot.metadata.name + '</span>&nbsp;&nbsp;&nbsp;&nbsp;');
 		  }).catch(function(error) {
-			  console.log(error)
 		  });
 	  } else if(evt.target.files[i] != undefined && evt.target.files.length == 0){
 		  file = evt.target.files[0];
@@ -235,7 +250,6 @@ function handleFileSelect(evt) {
 			  var url = snapshot.metadata.downloadURLs[0];
 			  $('#fileInput').append('<span class="fileName">' +  file.name + '</span>&nbsp;&nbsp;&nbsp;&nbsp;');
 		  }).catch(function(error) {
-			  console.log(error)
 		  });
 	  }
   }
@@ -255,7 +269,6 @@ firebase.database().ref('posts/' + modifyPageno).on('value', function(snapshot){
 	$('#title').val(snapshot.val().title);
 	$('#postText').summernote('code', snapshot.val().text);
 	if(snapshot.val().uploadfile != '' || snapshot.val().uploadfile != 'x' || snapshot.val().uploadfile != undefined){
-		console.log(snapshot.val().uploadfile.length);
 		for(var i=0; i<snapshot.val().uploadfile.length; i++){
 			$('#fileInput').append('<span class="fileName">' +  snapshot.val().uploadfile[i] + '</span>');
 		}
@@ -303,7 +316,6 @@ $('#postSave').click(function(){
 		}
 	}
 	
-//	$('#replyText').val($('#replyText').val().replace(/^\s*|\s*$/g,''));
 	var replyText = $('#replyText').summernote('code');
 	
 	if(postState == '해결'){
@@ -320,6 +332,18 @@ $('#postSave').click(function(){
 			userId: userId,
 			replyImg: replyImg
 		})
+		
+		firebase.database().ref('posts/' + modifyPageno).on('value', function(snapshot){
+			var replyPhoto = firebase.auth().currentUser.photoURL;
+			var replyTitle = $('#title').val();
+			var replyUser = firebase.auth().currentUser.uid;
+			var replyDay = today.getFullYear() + "." + (today.getMonth()+1) + "." + today.getDate() + " " + today.getHours() + ":" + today.getMinutes();
+			var uid = snapshot.val().uid;
+			var replyUserName = firebase.auth().currentUser.displayName;
+			var replyPost = modifyPageno;
+			writeAlert(uid, replyPhoto, replyUser, replyDay, replyTitle, replyPost, replyUserName);
+		})
+		
 	} else {
 		replyText = '';
 		replydate = '';
@@ -334,6 +358,8 @@ $('#postSave').click(function(){
 			userId: userId,
 			replyImg: replyImg
 		})
+		
+		firebase.database().ref('userAlert/').orderByChild('replyPost').equalTo(modifyPageno).remove();
 	}
 	
 	var postday;

@@ -47,6 +47,11 @@ $(document).ready(function(){
 			                };
 			            }
 			        },
+			        onPointClick: function (info) {
+			            var clickedPoint = info.target;
+			            var name = clickedPoint.argument;
+			            clickedPoint.isSelected() ? '': location.hash = '#/index/call_list?type=' + name;
+			        },
 			        "export": {
 			            enabled: true
 			        }
@@ -146,6 +151,24 @@ $(document).ready(function(){
 	var system2 = [];
 	var etc2 = [];
 	var management2 = [];
+	
+	for(var i=1; i<=3; i++){
+		$('#taxLaw' + i).click(function(){
+			location.hash = '#/index/call_list?type=' + $(this).prev().text() + '&status=' + $(this).parent().prev().children().text();
+		})
+		
+		$('#system' + i).click(function(){
+			location.hash = '#/index/call_list?type=' + $(this).prev().text() + '&status=' + $(this).parent().prev().children().text();
+		})
+		
+		$('#management' + i).click(function(){
+			location.hash = '#/index/call_list?type=' + $(this).prev().text() + '&status=' + $(this).parent().prev().children().text();
+		})
+		
+		$('#etc' + i).click(function(){
+			location.hash = '#/index/call_list?type=' + $(this).prev().text() + '&status=' + $(this).parent().prev().children().text();
+		})
+	}
 	
 	firebase.database().ref('posts/').orderByChild('postState').equalTo('해결').on('child_added', function(snapshot1){
 		if(snapshot1.val().postType == '세법'){

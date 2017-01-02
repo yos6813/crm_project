@@ -137,8 +137,6 @@ function addPost(uid, title, text, tags, postCompany, postCustomer, postType, po
 	return firebase.database().ref().update(updates);
 }
 
-
-
 // 태그 등록
 
 function addtags(tag){
@@ -181,7 +179,6 @@ function handleFileSelect(evt) {
 			  var url = snapshot.metadata.downloadURLs[i];
 			  $('#fileInput').append('<span class="fileName">' +  snapshot.metadata.name + '</span>&nbsp;&nbsp;&nbsp;&nbsp;');
 		  }).catch(function(error) {
-			  console.log(error)
 		  });
 	  } else if(evt.target.files[i] != undefined && evt.target.files.length == 0){
 		  file = evt.target.files[0];
@@ -194,7 +191,6 @@ function handleFileSelect(evt) {
 			  var url = snapshot.metadata.downloadURLs[0];
 			  $('#fileInput').append('<span class="fileName">' +  file.name + '</span>&nbsp;&nbsp;&nbsp;&nbsp;');
 		  }).catch(function(error) {
-			  console.log(error)
 		  });
 	  }
   }

@@ -1,3 +1,13 @@
+function getParameterByName(name) {
+	name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+	var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+	results = regex.exec(location.hash);
+	return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
+var pageType = getParameterByName('type');
+var status = getParameterByName('status')
+
 firebase.database().ref("types/").orderByKey().endAt("type").on("child_added", function(snapshot){
 	snapshot.forEach(function(data){
 		$('#typeSelect').append('<option value="'+ snapshot.key +'">' + data.val()
@@ -5,46 +15,37 @@ firebase.database().ref("types/").orderByKey().endAt("type").on("child_added", f
 	})
 })
 
-
 function postList(key){
-	
 	firebase.database().ref('posts/' + key).on('value', function(snapshot1){
 		firebase.database().ref('reply/' + key).on('value', function(snapshot2){
-		
 		var old = snapshot2.val().replyDate;
 		if(old != ''){
 			var replyDate1 = old.split(' ');
 			var replyDate = replyDate1[0].split('.');
 			var replyDate2 = replyDate1[1].split(':');
+			var replyDate3 = new Date(replyDate[0], replyDate[1]-1, replyDate[2]).getTime() / 1000;
 			
 			var now = snapshot1.val().postDate;
 			var postDate = now.split(' ');
 			var postDate1 = postDate[0].split('.');
 			var postDate2 = postDate[1].split(':');
+			var postDate3 = new Date(postDate1[0], postDate1[1]-1, postDate1[2]).getTime() / 1000;
 			
-			var replyminute = replyDate2[0] * 60 + parseInt(replyDate2[1]);
-			var postminute = postDate2[0] * 60 + parseInt(postDate2[1]);
+			var gap = replyDate3 - postDate3;
+			var gap2 = gap / 1000;
 			
-			var postday = (postDate1[1] * 30) + parseInt(postDate1[2]);
-			var replyday = (replyDate[1] * 30) + parseInt(replyDate[2]);
+			var hour = gap / 3600;
+			var hourgap = replyDate2[0] - postDate2[0];
+			var minutegap = replyDate2[1] - postDate2[1];
+			var daygap = hour / 24;
 			
-			var daygap;
-			var minutegap;
-			var hourgap;
-		
-			minutegap = (replyminute - postminute) % 60;
-			if(replyminute - postminute < 0){
-				minutegap += 60;
-				hourgap -= 1;
-			}
-			hourgap = Math.floor((replyminute - postminute) / 60);
-			if(replyminute - postminute < 0){
+			if(hourgap<0){
 				hourgap += 24;
 				daygap -= 1;
 			}
-			daygap = Math.floor(replyday - postday);
-			if(daygap < 0){
-				daygap += 30;
+			if(minutegap < 0){
+				minutegap += 60;
+				hourgap -= 1;
 			}
 			
 		} else {
@@ -52,7 +53,6 @@ function postList(key){
 			minutegap = '-';
 			hourgap = '-';
 		}
-		
 		
 		var comType = snapshot1.val().companyType;
 		$('#postList').each(function(){
@@ -98,41 +98,61 @@ function postList(key){
 								'<br/>' +
 								'<small>처리: ' + daygap + '일  ' + hourgap + '시간 ' + minutegap + '분</small>' +
 								'</td>' +
-								'<td class="project-title ' + key + '">' +
+								'<td onload="setTimeout()" class="project-title ' + key + '">' +
 								'</td>' +
 								'</tr>');
+			/* 실시간 시간차 */
+			var now = snapshot1.val().postDate;
+	    	var postDate = now.split(' ');
+	    	var postDate1 = postDate[0].split('.');
+	    	var postDate2 = postDate[1].split(':');
+	    	var postDate3 = new Date(postDate1[0], postDate1[1]-1, postDate1[2], postDate2[0], postDate2[1]).getTime() / 1000;
+	    	
+	    	
+	    	var gap = new Date().getTime() / 1000;
+	    	var gap2 = gap - postDate3;
+	    	
+	    	var hour = parseInt(gap2/3600);
+	    	var min =	parseInt((gap2%3600)/60);
+	    	var sec = gap2%60;
+	    	
+	    	if(snapshot1.val().postState == '접수' || snapshot1.val().postState == '보류'){
+		    	$('.' + key).children().remove();
+		    	$('.' + key).append('<h4>' + hour + '시간' + min + '분' + '</h4>');
+	    		$('.' + key).css('color', 'red');
+	    		myFunction(snapshot1, key);
+			} else {
+				var old = snapshot2.val().replyDate;
+				var replyDate1 = old.split(' ');
+				var replyDate = replyDate1[0].split('.');
+				var replyDate2 = replyDate1[1].split(':');
+				var replyDate3 = new Date(replyDate[0], replyDate[1]-1, replyDate[2], replyDate2[0], replyDate2[1]).getTime() / 1000;
+
+				var replygap2 = replyDate3 - postDate3;
+
+				var hour1 = parseInt(replygap2/3600);
+				var min1 =	parseInt((replygap2%3600)/60);
+				
+				$('.' + key).children().remove();
+				$('.' + key).append('<h4>' + hour1 + '시간' + min1 + '분' + '</h4>')
+				$('.' + key).css('color', 'grey');
+			}
 			
+			
+	    	/* 회사 고객 타입 */
 			for(var i=0; i<=comType[0].length; i++){
 				if(comType[0][i] == 'yeta'){
-					$('#' + key).append('<span class="badge badge-success yeta"> YETA </span>');
+					$('#' + key).append('<span class="badge badge-success yeta"> Y </span>&nbsp;');
 				} else if(comType[0][i] == 'academy'){
-					$('#' + key).append('<span class="badge badge-info academy"> ACADEMY </span>');
+					$('#' + key).append('<span class="badge badge-info academy"> A </span>&nbsp;');
 				} else if(comType[0][i] == 'consulting'){
-					$('#' + key).append('<span class="badge badge-warning consulting"> CONSULTING </span>');
+					$('#' + key).append('<span class="badge badge-warning consulting"> C </span>&nbsp;');
 				}
 			}
 		})
 		
-		var now = snapshot1.val().postDate;
-		var postDate = now.split(' ');
-		var postDate1 = postDate[0].split('.');
-		var postDate2 = postDate[1].split(':');
 		
-		var today = new Date();
-		var daygap1 = (today.getDate() - postDate1[2]) * 24;
-		var hourgap1 = (today.getHours() - postDate2[0]) + daygap1;
-		
-		var minutegap1 = today.getMinutes() - postDate2[1];
-		if(today.getMinutes() - postDate2[1] < 0){
-			minutegap1 += 60;
-			hourgap1 -= 1;
-		}
-		
-		if(snapshot1.val().postState == '접수' || snapshot1.val().postState == '보류'){
-			$('.' + key).append('<h4>' + hourgap1 + '시간' + minutegap1 + '분' + '</h4>');
-		}
-		
-		//pagination
+		/* pagination */
 		$('#nav a').remove();
 		var rowsShown = parseInt($('#sizeSel option:selected').val());
 		var rowsTotal = $('#postList').children('.call_list').size();
@@ -155,25 +175,62 @@ function postList(key){
 			css('display','table-row').animate({opacity:1}, 300);
 		});
 	});
-});}
+})}
 
+/* 실시간 시간차 */
+function myFunction(snapshot1, key) {
+    setInterval(function(){ 
+    	var now = snapshot1.val().postDate;
+    	var postDate = now.split(' ');
+    	var postDate1 = postDate[0].split('.');
+    	var postDate2 = postDate[1].split(':');
+    	var postDate3 = new Date(postDate1[0], postDate1[1]-1, postDate1[2], postDate2[0], postDate2[1]).getTime() / 1000;
+    	
+    	var gap = new Date().getTime() / 1000;
+    	var gap2 = gap - postDate3;
+    	
+    	var hour = parseInt(gap2/3600);
+    	var min = parseInt((gap2%3600)/60);
+    	var sec = gap2%60;		
+    	
+    	if(snapshot1.val().postState == '접수' || snapshot1.val().postState == '보류'){
+    		$('.' + key).children().remove();
+	    	$('.' + key).append('<h4>' + hour + '시간' + min + '분' + '</h4>');
+    		$('.' + key).css('color', 'red');
+    	}
+
+    }, 3000);
+}
 
 $(document).ready(function(){
-	
 	$('#sizeSel').change(function(){
 		$('#postList').children('.call_list').remove();
 		
-		// call_list
+		/* 전체 리스트 */
 		firebase.database().ref("posts/").orderByKey().on("child_added", function(snapshot){
 			postList(snapshot.key);
 		});
 	})
 	
 	$(document).ready(function(){
-		//전체 리스트
-		firebase.database().ref("posts/").on("child_added", function(snapshot){
-			postList(snapshot.key);
-		});
+		if(pageType != '' && status == ''){
+			$('#postList').children('.call_list').remove();
+			firebase.database().ref('posts/').orderByChild('postState').equalTo(pageType).on('child_added', function(snapshot){
+				postList(snapshot.key);
+			});
+		} else if(status != '' && pageType != ''){
+			$('#postList').children('.call_list').remove();
+			firebase.database().ref('posts/').orderByChild('postState').equalTo(pageType ).on('child_added', function(snapshot){
+				if(snapshot.val().postType == status){
+					postList(snapshot.key);
+				}
+			});
+		} else{
+			/* 전체 리스트 */
+			firebase.database().ref("posts/").on("child_added", function(snapshot){
+				postList(snapshot.key);
+			});
+		}
 	})
 	
 	$('#typeSelect').change(function(){

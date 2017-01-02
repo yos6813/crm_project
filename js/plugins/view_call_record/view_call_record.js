@@ -55,7 +55,6 @@ $('#viewType4').hide();
 $(document).ready(function(){
 	
 	firebase.database().ref('posts/' + viewPageno + '/postState').on('value', function(snapshot){
-		console.log(snapshot.val());
 		if(snapshot.val() == '해결'){
 			$('#acceptSel1').show();
 			$('#postAccept').hide();
@@ -118,37 +117,38 @@ $(document).ready(function(){
 	})
 	
 	firebase.database().ref('posts/' + viewPageno + '/uploadfile').on('value', function(snapshot){
-		firebase.database().ref('posts/' + viewPageno).on('value', function(snapshot1){
-			snapshot.forEach(function(data){
-			if(data.val() == 'x'){
-				$('#viewFile').append('<div class="file-box"><small>no file</small></div>');
-			} else {
-					firebase.storage().ref('files/' + data.val()).getDownloadURL().then(function(url){
-						$('#viewFile').append('<div class="file-box">' +
-								'<div class="file">' + 
-								'<a href="' + url + '">' + 
-								'<span class="corner"></span>' + 
-								'<div class="image">' + 
-								'<img alt="file" class="img-responsive" src="' + url + '">' + 
-								'</div>' + 
-								'<div class="file-name">' + data.val() +
-								'<br/>' +
-								'<small>Added: ' + snapshot1.val().postDate + '</small>' +
-								'</div>' +
-								'</a>' +
-								'<div>' +
-								'</div>' +
-						'<div class="clearfix"></div>');
-					})
-				}
+		if(snapshot.val() == undefined || snapshot.val() == 'x'){
+			$('#viewFile').append('<div class="file-box"><small>no file</small></div>');
+		}else{
+			firebase.database().ref('posts/' + viewPageno).on('value', function(snapshot1){
+				snapshot.forEach(function(data){
+				if(data.val() == 'x' || data.val() == ''){
+					$('#viewFile').children().remove();
+					$('#viewFile').append('<div class="file-box"><small>no file</small></div>');
+				} else {
+						firebase.storage().ref('files/' + data.val()).getDownloadURL().then(function(url){
+							$('#viewFile').append('<div class="file-box">' +
+									'<div class="file">' + 
+									'<a href="' + url + '">' + 
+									'<span class="corner"></span>' + 
+									'<div class="image">' + 
+									'<img alt="file" class="img-responsive" src="' + url + '">' + 
+									'</div>' + 
+									'<div class="file-name">' + data.val() +
+									'<br/>' +
+									'<small>Added: ' + snapshot1.val().postDate + '</small>' +
+									'</div>' +
+									'</a>' +
+									'<div>' +
+									'</div>' +
+							'<div class="clearfix"></div>');
+						})
+					}
+				})
 			})
-		})
+		}
 	})
 	
-	
-	$('#postAccept').click(function(){
-		
-	})
 	
 	$('#acceptSel1').change(function(){
 		var user = firebase.auth().currentUser;
@@ -290,15 +290,15 @@ $(document).ready(function(){
 		});
 	})
 	
-	firebase.auth().onAuthStateChanged(function(user) {
-		var userId = firebase.auth().currentUser;
-		firebase.database().ref('user-posts/' + userId.uid + '/' + viewPageno).on('value', function(snapshot){
-			if(snapshot.val() != null){
+//	firebase.auth().onAuthStateChanged(function(user) {
+//		var userId = firebase.auth().currentUser;
+//		firebase.database().ref('user-posts/' + userId.uid + '/' + viewPageno).on('value', function(snapshot){
+//			if(snapshot.val() != null){
 				$('#viewButton').append('<a href="#/index/form_call_record_modify?no=' + viewPageno + '" id="viewModify" class="btn btn-white btn-sm" title="Reply"><i class="fa fa-pencil"></i> 수정</a>' +
 										'<a id="viewDelete" class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Move to trash"><i class="fa fa-trash-o"></i> 삭제</a>');
-			}
-		})
-	});
+//			}
+//		})
+//	});
 	
 	$(document).on('click','#viewDelete', function(){
 		window.location.hash = 'index/call_list';

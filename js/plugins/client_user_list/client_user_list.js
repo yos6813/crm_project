@@ -181,7 +181,7 @@ function typeSelect(){
 	
 	var searchInput = []; 
 	$('#search_client').click(function(){
-		$('#client_user').children('.client_list').remove();
+		$('#client_user').children('.clientList').remove();
 		searchInput =[];
 		var searchType = $('#search_select option:selected').val();
 		if($('#input_client').val() != ''){
@@ -203,7 +203,7 @@ function typeSelect(){
 					searchInput.push($('.client_searchUl').children().not($('.hideLi')).eq(i).text());
 				}
 			}
-			$('#client_user').children('.client_list').remove();
+			$('#client_user').children('.clientList').remove();
 			for(var i=0; i<=searchInput.length; i++){
 				if(searchInput[i] != undefined || searchInput[i] != null){
 					firebase.database().ref('customer/').orderByChild(searchType).equalTo(searchInput[i]).on('child_added', function(snapshot){
@@ -218,7 +218,7 @@ function typeSelect(){
 				}
 			}	
 		} else {
-			$('#client_user').children('.client_list').remove();
+			$('#client_user').children('.clientList').remove();
 			firebase.database().ref("customer/").on("child_added", function(snapshot){
 				$('#client_user').append('<tr class="client_list"  value="' + snapshot.key + '">' +
 						 '<td>' + snapshot.val().cusName + '</td>' +
