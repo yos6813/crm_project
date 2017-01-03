@@ -6,16 +6,23 @@ function companyList(snapshot){
 			 '<td id="' + snapshot.key + '"></td>' +
 			 '</a></tr>');
 	
-	var comType = snapshot.val().client;
-	
-	for(var i=0; i<=comType.length; i++){
-		if(comType[i] == 'yeta'){
-			$('#' + snapshot.key).append('<span class="badge badge-success yeta"> YETA </span>');
-		} else if(comType[i] == 'academy'){
-			$('#' + snapshot.key).append('<span class="badge badge-info academy"> ACADEMY </span>');
-		} else if(comType[i] == 'consulting'){
-			$('#' + snapshot.key).append('<span class="badge badge-warning consulting"> CONSULTING </span>');
+	if(snapshot.val().yeta == '1'){
+		$('#' + snapshot.key).append('<span class="badge badge-success yeta"> Y </span>');
+		if(snapshot.val().sap == '1'){
+			$('#' + snapshot.key).append('<span class="badge badge-info sap"> S </span>');
 		}
+		if(snapshot.val().cloud == '1'){
+			$('#' + snapshot.key).append('<span class="badge badge-primary cloud"> C </span>');
+		}
+		if(snapshot.val().onpremises == '1'){
+			$('#' + snapshot.key).append('<span class="badge badge-danger onpremises"> O </span>');
+		}
+	}
+	if(snapshot.val().academy == '1'){
+		$('#' + snapshot.key).append('<span class="badge badge-info academy"> A </span>');
+	}
+	if(snapshot.val().consulting == '1'){
+		$('#' + snapshot.key).append('<span class="badge badge-warning consulting"> C </span>');
 	}
 }
 
@@ -93,18 +100,23 @@ $(document).ready(function(){
 			$('#company_Coporate').text('사업자: ' + snapshot.val().corporate);
 			$('#company_license').text('법인: ' + snapshot.val().license);
 			
-			if(snapshot.val().client != undefined){
-				comType = snapshot.val().client;
-			}
-			for(var i=0; i<comType.length; i++){
-				if(comType[i] == 'yeta'){
-					$('#company_Type').append('<span class="badge badge-success yeta"> YETA </span>');
-					
-				} else if(comType[i] == 'academy'){
-					$('#company_Type').append('<span class="badge badge-info academy"> ACADEMY </span>');
-				} else if(comType[i] == 'consulting'){
-					$('#company_Type').append('<span class="badge badge-warning consulting"> CONSULTING </span>');
+			if(snapshot.val().yeta == '1'){
+				$('#company_Type').append('<span class="badge badge-success yeta"> YETA </span>');
+				if(snapshot.val().sap == '1'){
+					$('#company_Type').append('<span class="badge badge-info sap"> SAP </span>');
 				}
+				if(snapshot.val().cloud == '1'){
+					$('#company_Type').append('<span class="badge badge-primary cloud"> CLOUD </span>');
+				}
+				if(snapshot.val().onpremises == '1'){
+					$('#company_Type').append('<span class="badge badge-danger onpremises"> ONPREMISES </span>');
+				}
+			}
+			if(snapshot.val().academy == '1'){
+				$('#company_Type').append('<span class="badge badge-info academy"> ACADEMY </span>');
+			}
+			if(snapshot.val().consulting == '1'){
+				$('#company_Type').append('<span class="badge badge-warning consulting"> CONSULTING </span>');
 			}
 			$('#company_addr').children().remove();
 			$('#company_addr').text('');

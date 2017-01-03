@@ -19,21 +19,17 @@ $(document).ready(function(){
 
 		if(snapshot.val().postCompany != ''){
 			$('#viewCompany').text(snapshot.val().postCompany);
-			var client = [];
 			var comClient = $('#viewCompany').text();
 			firebase.database().ref("company/").orderByChild('name').equalTo(comClient).on('child_added', function(snapshot){
-				firebase.database().ref("company/" + snapshot.key + "/client").on('value', function(snapshot1){
-					client.push(snapshot1.val());
-					for(var i=0; i<=client[0].length; i++){
-						if(client[0][i] == 'yeta'){
-							$('#viewYeta').show();
-						}
-						else if(client[0][i] == 'academy'){
-							$('#viewAcademy').show();
-						}
-						else if(client[0][i] == 'consulting'){
-							$('#viewConsulting').show();
-						} 
+				firebase.database().ref("company/" + snapshot.key).on('value', function(snapshot1){
+					if(snapshot.val().yeta == '1'){
+						$('#viewYeta').show();
+					}
+					if(snapshot.val().academy == '1'){
+						$('#viewAcademy').show();
+					}
+					if(snapshot.val().consulting == '1'){
+						$('#viewConsulting').show();
 					}
 				})
 			})

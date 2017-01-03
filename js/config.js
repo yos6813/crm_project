@@ -77,6 +77,13 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
                 pageTitle: 'departmentList'
             }
         })
+        .state('index.user', {
+            url: "/user",
+            templateUrl: "views/user.html",
+            data: {
+                pageTitle: 'user'
+            }
+        })
         .state('register', {
             url: "/register",
             templateUrl: "views/register.html",

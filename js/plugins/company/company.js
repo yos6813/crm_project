@@ -43,14 +43,18 @@ function sample6_execDaumPostcode() {
 
 /* 회사 등록 */
 
-function addCompany(name, addr, license, corporate, client, client1){
+function addCompany(name, addr, license, corporate, yeta, academy, consulting, sap, cloud, onpremises){
 	var companyData = {
 		name: name,
 		addr: addr,
 		license: license,
 		corporate: corporate,
-		client: client,
-		client1: client1
+		yeta: yeta,
+		academy: academy,
+		consulting: consulting,
+		sap: sap,
+		cloud: cloud,
+		onpremises: onpremises
 	};
 	
 	var newCompanyKey = firebase.database().ref().child('company').push().key;
@@ -65,9 +69,9 @@ $(document).ready(function(){
 	$('input[name=yetacheck]').change(function(){
 	 if($(this).is(":checked")){
 		 $('.yetaList').append('<label class="col-sm-2 control-label">YETA 고객구분 <br/><small class="text-navy">복수 선택 가능</small></label>' +
-			 	   		       '<div class="i-checks"><label> <input class="checkBox1" type="checkbox" value="SAP"> <i></i> SAP </label></div>' +
-			 	   		       '<div class="i-checks"><label> <input class="checkBox1" type="checkbox" value="cloud"> <i></i> Cloud </label></div>' +
-	           				   '<div class="i-checks"><label> <input class="checkBox1" type="checkbox" value="OnPremises"> <i></i> On Premises </label></div>');
+			 	   		       '<div class="i-checks"><label> <input class="checkBox1" type="checkbox" name="sapcheck" value="SAP"> <i></i> SAP </label></div>' +
+			 	   		       '<div class="i-checks"><label> <input class="checkBox1" type="checkbox" name="cloudcheck" value="cloud"> <i></i> Cloud </label></div>' +
+	           				   '<div class="i-checks"><label> <input class="checkBox1" type="checkbox" name="precheck" value="OnPremises"> <i></i> On Premises </label></div>');
         }else{
             $('.yetaList').children().remove();
         }
@@ -79,18 +83,33 @@ function submitCompany(){
 	var addr = $('#addr').val() + ' ' + $("#addr2").val();
 	var license = $('#licenseeNum').val();
 	var corporate = $('#corporateNum').val();
-	var client = [];
-	var client1 = [];
+	var yeta = '0';
+	var academy = '0';
+	var consulting = '0';
+	var sap = '0';
+	var cloud = '0';
+	var onpremises = '0';
 	
-	$('input[class=checkBox]:checked').each(function(){
-		client.push($(this).val());
-	})
+	if($('input[name="yetacheck"]').filter(':checked').val() != undefined){
+		yeta = '1';
+		if($('input[name="sapcheck"]').filter(':checked').val() != undefined){
+			sap = '1';
+		} 
+		if($('input[name="cloudcheck"]').filter(':checked').val() != undefined){
+			cloud = '1';
+		} 
+		if($('input[name="precheck"]').filter(':checked').val() != undefined){
+			onpremises = '1';
+		}
+	}
+	if($('input[name="academycheck"]').filter(':checked').val() != undefined){
+		academy = '1';
+	}
+	if($('input[name="consultingcheck"]').filter(':checked').val() != undefined){
+		consulting = '1';
+	} 
 	
-	$('input[class=checkBox1]:checked').each(function(){
-		client1.push($(this).val());
-	})
-	
-	addCompany(name, addr, license, corporate, client, client1);
+	addCompany(name, addr, license, corporate, yeta, academy, consulting, sap, cloud, onpremises);
 	
 	$('#comName').val('');
 	$('#addr').val('');

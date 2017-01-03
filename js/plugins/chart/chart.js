@@ -6,10 +6,6 @@ function pagereload() {
 	location.reload();
 }
 
-window.onhashchange = function() {
-	history.go(-1);
-}
-
 $(document).ready(function(){
 	pagestart();
 	var todayMonth = new Date().getMonth() + 1;
@@ -57,7 +53,8 @@ $(document).ready(function(){
 			        onPointClick: function (info) {
 			            var clickedPoint = info.target;
 			            var name = clickedPoint.argument;
-			            clickedPoint.isSelected() ? '': location.hash = '#/index/call_list?type=' + name;
+			            var url = '#/index/call_list?type=' + name
+			            clickedPoint.isSelected() ? '': window.open(url, "_blank");
 			        },
 			        "export": {
 			            enabled: true
@@ -166,19 +163,23 @@ $(document).ready(function(){
 	
 	for(var i=1; i<=3; i++){
 		$('#taxLaw' + i).click(function(){
-			location.hash = '#/index/call_list?type=' + $(this).prev().text() + '&status=' + $(this).parent().prev().children().text();
+			var url = '#/index/call_list?type=' + $(this).prev().text() + '&status=' + $(this).parent().prev().children().text();
+			window.open(url, "_blank");
 		})
 		
 		$('#system' + i).click(function(){
-			location.hash = '#/index/call_list?type=' + $(this).prev().text() + '&status=' + $(this).parent().prev().children().text();
+			var url = '#/index/call_list?type=' + $(this).prev().text() + '&status=' + $(this).parent().prev().children().text();
+			window.open(url, "_blank");
 		})
 		
 		$('#management' + i).click(function(){
-			location.hash = '#/index/call_list?type=' + $(this).prev().text() + '&status=' + $(this).parent().prev().children().text();
+			var url = '#/index/call_list?type=' + $(this).prev().text() + '&status=' + $(this).parent().prev().children().text();
+			window.open(url, "_blank");
 		})
 		
 		$('#etc' + i).click(function(){
-			location.hash = '#/index/call_list?type=' + $(this).prev().text() + '&status=' + $(this).parent().prev().children().text();
+			var url = '#/index/call_list?type=' + $(this).prev().text() + '&status=' + $(this).parent().prev().children().text();
+			window.open(url, "_blank");
 		})
 	}
 	

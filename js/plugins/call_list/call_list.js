@@ -54,7 +54,6 @@ function postList(key){
 			hourgap = '-';
 		}
 		
-		var comType = snapshot1.val().companyType;
 		$('#postList').each(function(){
 			var state;
 			if(snapshot1.val().postState == '해결'){
@@ -87,11 +86,11 @@ function postList(key){
 								'<small>' + snapshot1.val().username + '</small>' +
 								'<br/>' +
 								'</td>' +
-								'<td class="project-people">' +
+								'<td class="project-people replyImgTr">' +
 								'<a><img alt="" class="replyImgli img-circle" src="' + snapshot2.val().replyImg + '"></a>' +
-								'<br/>' +
-								'<small>' + snapshot2.val().replyName + '</small>' +
-								'<br/>' +
+					 			'<br/>' +
+				 				'<small>' + snapshot2.val().replyName + '</small>' +
+					 			'<br/>' +
 								'</td>' +
 								'<td class="project-title">' +
 								'<small>접수: ' + snapshot1.val().postDate + '</small>' +
@@ -101,6 +100,10 @@ function postList(key){
 								'<td onload="setTimeout()" class="project-title ' + key + '">' +
 								'</td>' +
 								'</tr>');
+			
+			$('.replyImgli[src=""]').hide();
+	        $('.replyImgli:not([src=""])').show();
+			
 			/* 실시간 시간차 */
 			var now = snapshot1.val().postDate;
 	    	var postDate = now.split(' ');
@@ -140,15 +143,24 @@ function postList(key){
 			
 			
 	    	/* 회사 고객 타입 */
-			for(var i=0; i<=comType[0].length; i++){
-				if(comType[0][i] == 'yeta'){
-					$('#' + key).append('<span class="badge badge-success yeta"> Y </span>&nbsp;');
-				} else if(comType[0][i] == 'academy'){
-					$('#' + key).append('<span class="badge badge-info academy"> A </span>&nbsp;');
-				} else if(comType[0][i] == 'consulting'){
-					$('#' + key).append('<span class="badge badge-warning consulting"> C </span>&nbsp;');
-				}
-			}
+	    	if(snapshot1.val().yeta == '1'){
+	    		$('#' + key).append('<span class="badge badge-success yeta"> Y </span>');
+	    		if(snapshot1.val().sap == '1'){
+	    			$('#' + key).append('<span class="badge badge-info sap"> S </span>');
+	    		}
+	    		if(snapshot1.val().cloud == '1'){
+	    			$('#' + key).append('<span class="badge badge-primary cloud"> C </span>');
+	    		}
+	    		if(snapshot1.val().onpremises == '1'){
+	    			$('#' + key).append('<span class="badge badge-danger onpremises"> O </span>');
+	    		}
+	    	}
+	    	if(snapshot1.val().academy == '1'){
+	    		$('#' + key).append('<span class="badge badge-info academy"> A </span>');
+	    	}
+	    	if(snapshot1.val().consulting == '1'){
+	    		$('#' + key).append('<span class="badge badge-warning consulting"> C </span>');
+	    	}
 		})
 		
 		
@@ -203,6 +215,27 @@ function myFunction(snapshot1, key) {
 }
 
 $(document).ready(function(){
+	if(pageType != '' && status == ''){
+		$('#postList').children('.call_list').remove();
+		firebase.database().ref('posts/').orderByChild('postState').equalTo(pageType).on('child_added', function(snapshot){
+			postList(snapshot.key);
+		});
+	} else if(status != '' && pageType != ''){
+		$('#postList').children('.call_list').remove();
+		firebase.database().ref('posts/').orderByChild('postState').equalTo(pageType ).on('child_added', function(snapshot){
+			if(snapshot.val().postType == status){
+				postList(snapshot.key);
+			}
+		});
+	} else{
+		/* 전체 리스트 */
+		firebase.database().ref("posts/").on("child_added", function(snapshot){
+			postList(snapshot.key);
+		});
+	}
+})
+
+$(document).ready(function(){
 	$('#sizeSel').change(function(){
 		$('#postList').children('.call_list').remove();
 		
@@ -210,27 +243,6 @@ $(document).ready(function(){
 		firebase.database().ref("posts/").orderByKey().on("child_added", function(snapshot){
 			postList(snapshot.key);
 		});
-	})
-	
-	$(document).ready(function(){
-		if(pageType != '' && status == ''){
-			$('#postList').children('.call_list').remove();
-			firebase.database().ref('posts/').orderByChild('postState').equalTo(pageType).on('child_added', function(snapshot){
-				postList(snapshot.key);
-			});
-		} else if(status != '' && pageType != ''){
-			$('#postList').children('.call_list').remove();
-			firebase.database().ref('posts/').orderByChild('postState').equalTo(pageType ).on('child_added', function(snapshot){
-				if(snapshot.val().postType == status){
-					postList(snapshot.key);
-				}
-			});
-		} else{
-			/* 전체 리스트 */
-			firebase.database().ref("posts/").on("child_added", function(snapshot){
-				postList(snapshot.key);
-			});
-		}
 	})
 	
 	$('#typeSelect').change(function(){

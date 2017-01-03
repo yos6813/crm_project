@@ -1,10 +1,13 @@
-function addCustomer(cusName, cusDepartment, cusJob, cusPosition, cusPhone, cusCompany){
+function addCustomer(cusName, cusDepartment, cusJob, cusPosition, workPhone, mobilePhone, fax, email, cusCompany){
 	var customerData = {
 		cusName: cusName,
 		cusDepartment: cusDepartment,
 		cusJob: cusJob,
 		cusPosition: cusPosition,
-		cusPhone: cusPhone,
+		workPhone: workPhone,
+		mobilePhone: mobilePhone,
+		fax: fax,
+		email: email,
 		cusCompany: cusCompany
 	};
 	
@@ -23,20 +26,23 @@ function submitCustomer(){
 	var cusJob = $('#customerJob').val();
 	var cusPosition = $('#customerPosition').val();
 	var cusCompany = $('#cusCompany').val();
-	var cusPhone = [];
-
-	$('.phoneDrop').each(function(){
-		cusPhone.push([$(this).val(), $(this).next('.phoneInput').val()]);
-	})
+	var workPhone = $('#workPhoneInput').val();
+	var mobilePhone = $('#mobilePhoneInput').val();
+	var fax = $('#faxInput').val();
+	var email = $('#emailFormInput').val();
 	
-	addCustomer(cusName, cusDepartment, cusJob, cusPosition, cusPhone, cusCompany);
+	addCustomer(cusName, cusDepartment, cusJob, cusPosition, workPhone, mobilePhone, fax, email, cusCompany);
 	
 	$('#cusCompany').val('');
 	$('#customerName').val('');
 	$('#customerDepartment').val('');
 	$('#customerJob').val('');
 	$('#customerPosition').val('');
-	$('.phoneInput').val('');
+	
+	$('#workPhoneInput').val('');
+	$('#mobilePhoneInput').val('');
+	$('#faxInput').val('');
+	$('#emailFormInput').val('');
 }
 
 function phoneSectionInput(){

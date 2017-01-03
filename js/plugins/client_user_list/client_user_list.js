@@ -83,41 +83,17 @@ $(document).ready(function(){
 	})
 	
 	$(document).on('click', '.client_list', function(){
-		var phone;
-		$('#client_phone').children().remove();
 		firebase.database().ref('customer/' + $(this).attr('value')).on('value', function(snapshot){
 			$('#client_company').text(snapshot.val().cusCompany);
 			$('#client_name').text(snapshot.val().cusName);
 			$('#client_department').text(snapshot.val().cusDepartment);
 			$('#client_job').text(snapshot.val().cusJob + '/' + snapshot.val().cusPosition);
 			
-			if(snapshot.val().cusPhone != undefined){
-				phone = snapshot.val().cusPhone;
-			}
-			for(var i=0; i<phone.length; i++){
-				if(phone[i][0] == '휴대전화'){
-					$('#client_phone').append('<li>' +
-											  '<span> <i class="fa fa-mobile-phone"> </i></span>' +
-											  '<span style="margin-left: 1em">' + phone[i][1] + '</span>' +
-											  '</li>');
-					
-				} else if(phone[i][0] == '이메일'){
-					$('#client_phone').append('<li>' +
-											  '<span> <i class="fa fa-envelope"> </i></span>' +
-											  '<span style="margin-left: 1em">' + phone[i][1] + '</span>' +
-											  '</li>');
-				} else if(phone[i][0] == '직장전화'){
-					$('#client_phone').append('<li>' +
-											  '<span> <i class="fa fa-phone"> </i></span>' +
-											  '<span style="margin-left: 1em">' + phone[i][1] + '</span>' +
-											  '</li>');
-				} else if(phone[i][0] == '팩스'){
-					$('#client_phone').append('<li>' +
-											  '<span> <i class="fa fa-fax"> </i></span>' +
-											  '<span style="margin-left: 1em">' + phone[i][1] + '</span>' +
-											  '</li>');
-				}
-			}
+			$('#workPhone').append('<i class="fa fa-phone"> </i><span style="margin-left: 1em" >' + snapshot.val().workPhone + '</span>');
+			$('#mobilePhone').append('<i class="fa fa-mobile-phone"> </i><span style="margin-left: 1em" >' + snapshot.val().mobilePhone + '</span>');
+			$('#fax').append('<i class="fa fa-fax"> </i><span style="margin-left: 1em" >' + snapshot.val().fax + '</span>');
+			$('#email').append('<i class="fa fa-envelope"> </i><span style="margin-left: 1em" >' + snapshot.val().email + '</span>');
+			
 			$('#client_address').children().remove();
 			$('#client_address').text('');
 			firebase.database().ref('company/').orderByChild('name').equalTo($('#client_company').text()).on('child_added', function(snapshot1){

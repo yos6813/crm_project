@@ -7,12 +7,9 @@ firebase.database().ref("types/").orderByKey().endAt("type").on("child_added", f
 	})
 })
 
-$(document).on('click','.del', function(){
-	$(this).parents('tr').remove();
-	firebase.database().ref('customer/' + $(this).val() + '/cusPhone').child().eq($(this).closest('tr').index() + 1).remove();
-})
-
 $(document).ready(function(){
+	
+	
 	$('#client_search').hideseek({hidden_mode: true});
 	firebase.database().ref('customer/').orderByKey().on('child_added', function(snapshot){
 		$('.client_searchList').append('<li class="list-item" style="display: none;"><a value="' + snapshot.key + '">' + 
@@ -30,52 +27,47 @@ $(document).ready(function(){
 			var client = [];
 			var comClient = $('.companySel').val();
 			firebase.database().ref("company/").orderByChild('name').equalTo(comClient).on('child_added', function(snapshot){
-				firebase.database().ref("company/" + snapshot.key + "/client").on('value', function(snapshot1){
-					client.push(snapshot1.val());
-					for(var i=0; i<=client[0].length; i++){
-						if(client[0][i] == 'yeta'){
-							$('.yeta').show();
-						}
-						else if(client[0][i] == 'academy'){
-							$('.academy').show();
-						}
-						else if(client[0][i] == 'consulting'){
-							$('.consulting').show();
-						} 
+				firebase.database().ref("company/" + snapshot.key).on('value', function(snapshot1){
+					if(snapshot.val().yeta == '1'){
+						$('.yeta').show();
+					}
+					if(snapshot.val().academy == '1'){
+						$('.academy').show();
+					}
+					if(snapshot.val().consulting == '1'){
+						$('.consulting').show();
 					}
 				})
 			})
 			
 			var phoneSel = $('.customerSel').val();
-			var phoneSel2 = [];
 			
 			firebase.database().ref('customer').orderByChild('cusName').equalTo(phoneSel).on('child_added',function(snapshot){
-				firebase.database().ref('customer/' + snapshot.key + '/cusPhone').on('value', function(snapshot2){
-					snapshot2.forEach(function(){
-						phoneSel2 = snapshot2.val();
-					})
-					$('#phoneSec').children().remove();
-					for(var i=0; i<=phoneSel2.length; i++){
-						if(phoneSel2[i] != null && phoneSel2[i] != undefined){
-							$('#phoneSec').append('<tr>' +
-									'<td><input type="radio" value="' + phoneSel2[i][1] + '" class="optionContact" name="optionsContact"></td>' +
-									'<td>'+ phoneSel2[i][0] + '</td>' +
-									'<td>'+ phoneSel2[i][1] + '</td>' +
-									'<td class="text-right">' +
-									'<button type="button" class="mod btn-white btn btn-xs" value="' + snapshot.key + '">수정</button>' +
-									'<button type="button" class="del btn-white btn btn-xs" value="' + snapshot.key + '">삭제</button>' +
-									'</td>' +
-									'</tr>');
-						} else {
-							$('#phoneSec').append('<tr></tr>');
-						}
-					}
-				})
+				$('#phoneSec').children().remove();
+					$('#phoneSec').append('<tr>' +
+							'<td><input type="radio" value="' + snapshot.val().workPhone + '" name="optionContact" class="optionContact"></td>' +
+							'<td>직장전화</td>' +
+							'<td>'+ snapshot.val().workPhone + '</td>' +
+							'</tr>' +
+							'<tr>' +
+							'<td><input type="radio" value="' + snapshot.val().mobilePhone + '" class="optionContact" name="optionContact"></td>' +
+							'<td>휴대전화</td>' +
+							'<td>'+ snapshot.val().mobilePhone + '</td>' +
+							'</tr>' +
+							'<tr>' +
+							'<td><input type="radio" value="' + snapshot.val().fax + '" class="optionContact" name="optionContact"></td>' +
+							'<td>팩스</td>' +
+							'<td>'+ snapshot.val().fax + '</td>' +
+							'</tr>' +
+							'<tr>' +
+							'<td><input type="radio" value="' + snapshot.val().email + '" class="optionContact" name="optionContact"></td>' +
+							'<td>이메일</td>' +
+							'<td>'+ snapshot.val().email + '</td>' +
+							'</tr>');
 			});
 		})
 	})
 })
-
 
 $('.yeta').hide();
 $('.academy').hide();
@@ -84,9 +76,9 @@ $('.consulting').hide();
 
 // 글 등록
 
-function addPost(uid, title, text, tags, postCompany, postCustomer, postType, postCusPhone,
+function addPost(uid, title, text, tags, postCompany, postCustomer, yeta, academy, consulting, sap, cloud, onpremises, postCusPhone,
 				 postState, username, postDate, userImg, companyType, uploadfile, userId, replyDate, replyName, replyText, replyImg, AcceptName,
-				 AcceptDate, AcceptUserId){
+				 AcceptDate, AcceptUserId, postType){
 	var postData = {
 		uid: uid,
 		title: title,
@@ -94,14 +86,20 @@ function addPost(uid, title, text, tags, postCompany, postCustomer, postType, po
 		tags: tags,
 		postCompany: postCompany,
 		postCustomer: postCustomer,
-		postType: postType,
+		yeta: yeta,
+		academy: academy,
+		consulting: consulting,
+		sap: sap,
+		cloud: cloud,
+		onpremises: onpremises,
 		postCusPhone: postCusPhone,
 		postState: postState,
 		username: username,
 		postDate: postDate,
 		userImg: userImg,
 		companyType: companyType,
-		uploadfile: uploadfile
+		uploadfile: uploadfile,
+		postType: postType
 	};
 	
 	var replyData = {
@@ -211,8 +209,6 @@ $('#postSave').click(function(){
 	var postCompany = $('.companySel').val();
 	var postCustomer = $('.customerSel').val();
 	var postType = $('#writeTypeSelect').val();
-	var postCusPhone = '';
-	var postState = '';
 	var today = new Date();
 	var postDate = today.getFullYear() + "." + (today.getMonth()+1) + "." + today.getDate() + " " + today.getHours() + ":" + today.getMinutes();
 	var userImg = firebase.auth().currentUser.photoURL;
@@ -228,6 +224,7 @@ $('#postSave').click(function(){
 	var AcceptUserId = '';
 	var AcceptDate = '';
 	var AcceptName = '';
+	var postCusPhone = '';
 	
 	for(var i=0; i<=$('#fileInput').children().length; i++){
 		if($('#fileInput').children().eq(i).text() != undefined && $('#fileInput').children().eq(i).text() != null){
@@ -244,6 +241,7 @@ $('#postSave').click(function(){
 		})
 	})
 	
+	var postState = '';
 	$('input[type=radio][name="optionsRadios"]:checked').each(function(){
 		postState = $(this).val();
 		if($(this).val() == '접수'){
@@ -257,8 +255,10 @@ $('#postSave').click(function(){
 		}
 	})
 	
-	$('input[type=radio][name="optionsContact"]:checked').each(function(){
-		postCusPhone = $(this).val();
+	$('.optionContact').each(function(){
+		if($(this).filter(':checked').val() != undefined){
+			postCusPhone = '(' + $(this).parents('tr').children('td').eq(1).text() + ') ' + $(this).filter(':checked').val();
+		}
 	})
 	
 	$('.tagSel').each(function(){
@@ -290,10 +290,26 @@ $('#postSave').click(function(){
 		replyImg = firebase.auth().currentUser.photoURL;
 	}
 	
+	var yeta = '0';
+	var academy = '0';
+	var consulting = '0';
+	var sap = '0';
+	var cloud = '0';
+	var onpremises = '0';
+	
+	firebase.database().ref('company/').on('child_added', function(snapshot){
+		yeta = snapshot.val().yeta;
+		sap = snapshot.val().sap;
+		cloud = snapshot.val().cloud;
+		onpremises = snapshot.val().onpremises;
+		academy = snapshot.val().academy;
+		consulting = snapshot.val().consulting;
+	})
+	
 	if(title != '' && postCustomer != ''){
-		addPost(uid, title, text, tags, postCompany, postCustomer, postType, postCusPhone, postState, username, postDate,
-				userImg, companyType, uploadfile, userId, replyDate, replyName, replyText, replyImg, AcceptName,
-				 AcceptDate, AcceptUserId);
+		addPost(uid, title, text, tags, postCompany, postCustomer, yeta, academy, consulting, sap, cloud, onpremises, postCusPhone,
+				 postState, username, postDate, userImg, companyType, uploadfile, userId, replyDate, replyName, replyText, replyImg, AcceptName,
+				 AcceptDate, AcceptUserId, postType);
 		}
 		window.location.hash = 'index/call_list';
 })
