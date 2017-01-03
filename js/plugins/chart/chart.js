@@ -1,5 +1,3 @@
-
-
 function pagestart() {
 	window.setTimeout("pagereload()", 6000000);
 }
@@ -8,9 +6,18 @@ function pagereload() {
 	location.reload();
 }
 
+window.onhashchange = function() {
+	history.go(-1);
+}
+
 $(document).ready(function(){
 	pagestart();
-	firebase.database().ref('timePosts/' + new Date().getDate()-1).remove();
+	var todayMonth = new Date().getMonth() + 1;
+	if(todayMonth == '1'){
+		firebase.database().ref('timePosts/30').remove();
+	} else {
+		firebase.database().ref('timePosts/' + todayMonth - 1).remove();
+	}
 	
 	firebase.database().ref('posts/').orderByChild('postState').equalTo('해결').on('value', function(snapshot1){
 		firebase.database().ref('posts/').orderByChild('postState').equalTo('접수').on('value', function(snapshot2){
@@ -62,9 +69,14 @@ $(document).ready(function(){
 	})
 	
 	var dataSource = [];
+	var todayMonth = new Date().getMonth() + 1;
 	for(var j=0; j<=new Date().getHours(); j++){
-		firebase.database().ref('timePosts/' + new Date().getDate() + '/' + j).on('value', function(snapshot){
-			firebase.database().ref('timePosts/' + (new Date().getDate() - 1)).remove();
+		firebase.database().ref('timePosts/' + todayMonth + '/' + new Date().getDate() + '/' + j).on('value', function(snapshot){
+			if(todayMonth == '1'){
+				firebase.database().ref('timePosts/30').remove();
+			} else {
+				firebase.database().ref('timePosts/' + todayMonth - 1).remove();
+			}
 			var chartValue;
 			if(snapshot.val() == undefined){
 //				chartValue="0";

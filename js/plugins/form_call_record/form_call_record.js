@@ -130,7 +130,7 @@ function addPost(uid, title, text, tags, postCompany, postCustomer, postType, po
 	updates['/posts/' + newPostKey] = postData;
 	updates['/user-posts/' + uid + '/' + newPostKey] = postData;
 	updates['/reply/' + newPostKey] = replyData;
-	updates['/timePosts/' + new Date().getDate() + '/' + new Date().getHours() + '/' + newPostKey] = postData;
+	updates['/timePosts/' + todayMonth + '/' + new Date().getDate() + '/' + new Date().getHours() + '/' + newPostKey] = postData;
 	updates['/monthPosts/' + new Date().getFullYear() + '/' + todayMonth + '/' +new Date().getDate() + '/' + newPostKey] = postData;
  	updates['/accept/' + newPostKey] = acceptData; 
 	
