@@ -99,9 +99,6 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
                         files: ['css/plugins/datapicker/angular-datapicker.css', 'js/plugins/datapicker/angular-datepicker.js']
                     }, {
                         files: ['js/plugins/jasny/jasny-bootstrap.min.js']
-                    }, {
-                        name: 'daterangepicker',
-                        files: ['js/plugins/daterangepicker/angular-daterangepicker.js']
                     }]);
                 }
             }

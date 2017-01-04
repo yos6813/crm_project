@@ -55,6 +55,10 @@ function userAlert(user){
 	})
 }
 
+$(window).load(function() {
+	$(".se-pre-con").fadeOut("slow");
+})
+
 $(document).ready(function () {
 	$('#login').click(function(){
 		var provider = new firebase.auth.GoogleAuthProvider();
