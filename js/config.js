@@ -21,13 +21,13 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
             url: "/index",
             templateUrl: "views/common/content.html",
         })
-        .state('index.main', {
-            url: "/main",
-            templateUrl: "views/main.html",
-            data: {
-                pageTitle: 'Example view'
-            }
-        })
+//        .state('index.main', {
+//            url: "/main",
+//            templateUrl: "views/main.html",
+//            data: {
+//                pageTitle: 'Example view'
+//            }
+//        })
         .state('login', {
             url: "/login",
             templateUrl: "views/login.html",

@@ -64,7 +64,7 @@ $(document).ready(function () {
 			if(user){
 				firebase.database().ref('user-infos/' + user.uid).on('value', function(snapshot){
 					if(snapshot.val() != null){
-						window.location.hash = 'index/main';
+						window.location.hash = 'index/chart';
 						$('#navUserName').text(user.displayName);
 						$('#navprofileImg').attr('src', user.photoURL);
 						firebase.database().ref('user-infos/' + user.uid).once('child_added', function(snapshot1){
