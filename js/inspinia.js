@@ -157,7 +157,6 @@ $(document).ready(function () {
 function logout(){
 	firebase.auth().signOut();
 	window.location.hash = '#/login';
-	console.log('logout');
 	$('#navUserName').text('');
 	$('#navUserEMail').text('');
 }
