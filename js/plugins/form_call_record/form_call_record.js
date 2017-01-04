@@ -8,23 +8,21 @@ firebase.database().ref("types/").orderByKey().endAt("type").on("child_added", f
 })
 
 $(document).ready(function(){
-	
-	
 	$('#client_search').hideseek({hidden_mode: true});
 	firebase.database().ref('customer/').orderByKey().on('child_added', function(snapshot){
 		$('.client_searchList').append('<li class="list-item" style="display: none;"><a value="' + snapshot.key + '">' + 
 										snapshot.val().cusName + '(' + snapshot.val().cusCompany + ')' + '</a></li>');
 	})
-	
+	$('#cusKey').hide();
 	$(document).on('click', '.client_searchList a', function(){
 		firebase.database().ref('customer/' + $(this).attr('value')).on('value', function(snapshot){
+			$('#cusKey').text(snapshot.key);
 			$('#customerIn').val(snapshot.val().cusName);
 			$('.companySel').val(snapshot.val().cusCompany);
 			$('.yeta').hide();
 			$('.academy').hide();
 			$('.consulting').hide();
 			
-			var client = [];
 			var comClient = $('.companySel').val();
 			firebase.database().ref("company/").orderByChild('name').equalTo(comClient).on('child_added', function(snapshot){
 				firebase.database().ref("company/" + snapshot.key).on('value', function(snapshot1){
@@ -78,7 +76,7 @@ $('.consulting').hide();
 
 function addPost(uid, title, text, tags, postCompany, postCustomer, yeta, academy, consulting, sap, cloud, onpremises, postCusPhone,
 				 postState, username, postDate, userImg, companyType, uploadfile, userId, replyDate, replyName, replyText, replyImg, AcceptName,
-				 AcceptDate, AcceptUserId, postType){
+				 AcceptDate, AcceptUserId, postType, cusKey){
 	var postData = {
 		uid: uid,
 		title: title,
@@ -99,7 +97,8 @@ function addPost(uid, title, text, tags, postCompany, postCustomer, yeta, academ
 		userImg: userImg,
 		companyType: companyType,
 		uploadfile: uploadfile,
-		postType: postType
+		postType: postType,
+		cusKey: cusKey
 	};
 	
 	var replyData = {
@@ -306,10 +305,11 @@ $('#postSave').click(function(){
 		consulting = snapshot.val().consulting;
 	})
 	
+	var cusKey = $('#cusKey').text();
 	if(title != '' && postCustomer != ''){
 		addPost(uid, title, text, tags, postCompany, postCustomer, yeta, academy, consulting, sap, cloud, onpremises, postCusPhone,
 				 postState, username, postDate, userImg, companyType, uploadfile, userId, replyDate, replyName, replyText, replyImg, AcceptName,
-				 AcceptDate, AcceptUserId, postType);
+				 AcceptDate, AcceptUserId, postType, cusKey);
 		}
 		window.location.hash = 'index/call_list';
 })

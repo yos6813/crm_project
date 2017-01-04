@@ -7,7 +7,8 @@
  *
  */
 function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
-    $urlRouterProvider.otherwise("login");
+//    $urlRouterProvider.otherwise("login");
+//    $urlRouterProvider.otherwise("clientLogin");
 
     $ocLazyLoadProvider.config({
         // Set to true if you want to see what and when is dynamically loaded
@@ -33,6 +34,20 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
             templateUrl: "views/login.html",
             data: {
                 pageTitle: 'Login'
+            }
+        })
+        .state('clientRegister', {
+            url: "/clientRegister",
+            templateUrl: "views/clientRegister.html",
+            data: {
+                pageTitle: '회원가입'
+            }
+        })
+        .state('clientLogin', {
+            url: "/clientLogin",
+            templateUrl: "views/clientLogin.html",
+            data: {
+                pageTitle: '로그인'
             }
         })
         .state('index.admin', {

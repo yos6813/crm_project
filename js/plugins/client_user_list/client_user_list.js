@@ -1,7 +1,7 @@
 function clientPost(snapshot){
 		$('#client_posts_user_box').show();
 		$('#client_posts_user').children().remove();
-		firebase.database().ref('posts/').orderByChild('postCustomer').equalTo(snapshot.val().cusName).on('child_added', function(snapshot1){
+		firebase.database().ref('posts/').orderByChild('cusKey').equalTo(snapshot.key).on('child_added', function(snapshot1){
 			$('#client_posts_user').each(function(){
 			var state;
 			if(snapshot1.val().postState == '해결'){
@@ -98,6 +98,10 @@ $(document).ready(function(){
 			$('#mobilePhone').append('<i class="fa fa-mobile-phone"> </i><span style="margin-left: 1em" >' + snapshot.val().mobilePhone + '</span>');
 			$('#fax').append('<i class="fa fa-fax"> </i><span style="margin-left: 1em" >' + snapshot.val().fax + '</span>');
 			$('#email').append('<i class="fa fa-envelope"> </i><span style="margin-left: 1em" >' + snapshot.val().email + '</span>');
+
+			$('#infoModify').remove();
+			$('#userInfoBox').prepend('<button class="btn btn-default pull-right" style="color:gray" id="infoModify" value="' + snapshot.key + 
+			'">수정</button>');
 			
 			$('#client_address').children().remove();
 			$('#client_address').text('');
@@ -106,7 +110,12 @@ $(document).ready(function(){
 			})
 			clientPost(snapshot);
 		})
+		
 	})
+})
+
+$(document).on('click', '#infoModify', function(){
+	location.hash = '#/customer?no=' + $(this).attr('value');
 })
 
 $(document).ready(function(){

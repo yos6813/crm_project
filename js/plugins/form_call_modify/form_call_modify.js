@@ -362,7 +362,7 @@ $('#postSave').click(function(){
 			replyImg: replyImg
 		})
 		
-		firebase.database().ref('userAlert/').orderByChild('replyPost').equalTo(modifyPageno).remove();
+//		firebase.database().ref('userAlert/').orderByChild('replyPost').equalTo(modifyPageno).remove();
 	}
 	
 	var postday;

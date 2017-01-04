@@ -1,3 +1,12 @@
+function getParameterByName(name) {
+	name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+	var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+	results = regex.exec(location.hash);
+	return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
+var key = getParameterByName('no');
+
 function addCustomer(cusName, cusDepartment, cusJob, cusPosition, workPhone, mobilePhone, fax, email, cusCompany){
 	var customerData = {
 		cusName: cusName,
@@ -31,7 +40,21 @@ function submitCustomer(){
 	var fax = $('#faxInput').val();
 	var email = $('#emailFormInput').val();
 	
-	addCustomer(cusName, cusDepartment, cusJob, cusPosition, workPhone, mobilePhone, fax, email, cusCompany);
+	if(key != ''){
+		firebase.database().ref('customer/' + key).update({
+			cusName: cusName,
+			cusCompany: cusCompany,
+			cusDepartment: cusDepartment,
+			cusJob: cusJob,
+			cusPosition: cusPosition,
+			email: email,
+			fax: fax,
+			mobilePhone: mobilePhone,
+			workPhone: workPhone
+		})
+	} else {
+		addCustomer(cusName, cusDepartment, cusJob, cusPosition, workPhone, mobilePhone, fax, email, cusCompany);
+	}
 	
 	$('#cusCompany').val('');
 	$('#customerName').val('');
@@ -67,3 +90,20 @@ firebase.database().ref("company/").orderByKey().on("child_added", function(snap
 		$(".typeahead_2").typeahead({ source: comName});
 	});
 });
+
+$(document).ready(function(){
+	if(key != ''){
+		firebase.database().ref('customer/' + key).on('value', function(snapshot){
+			$('#cusCompany').val(snapshot.val().cusCompany);
+			$('#customerName').val(snapshot.val().cusName);
+			$('#customerDepartment').val(snapshot.val().cusDepartment);
+			$('#customerJob').val(snapshot.val().cusJob);
+			$('#customerPosition').val(snapshot.val().cusPosition);
+			
+			$('#workPhoneInput').val(snapshot.val().workPhone);
+			$('#mobilePhoneInput').val(snapshot.val().mobilePhone);
+			$('#faxInput').val(snapshot.val().fax);
+			$('#emailFormInput').val(snapshot.val().email);
+		})
+	}
+})

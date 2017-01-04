@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+	<link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../font-awesome/css/font-awesome.css" rel="stylesheet">
+
+    <link href="../css/plugins/bootstrapSocial/bootstrap-social.css" rel="stylesheet">
+
+    <link href="../css/animate.css" rel="stylesheet">
+    <link href="../css/style1.css" rel="stylesheet">
+<body class="grey-bg">
+	<div class="registerBox animated fadeInDown">
+	    <div>
+	        <div>
+				<img id="glogin" class="logo-login" src="../img/logo_color.png"  alt="logo">
+      		</div>
+      		<div class="row">
+            	<div class="col-md-12">
+                	<div class="ibox float-e-margins">
+                    	<div class="ibox-title">
+	                        <h3>회원가입 <small>아래 폼에 맞춰 입력해 주세요</small></h3>
+                    	</div>
+                    	<div class="ibox-content">
+                      		<fieldset class="form-horizontal">
+	        					<form id="registerForm" class="m-t" role="form">
+	                                <div class="form-group">
+	                                    <label class="col-sm-2 control-label">사업자번호:</label>
+	                                    <div class="col-sm-10"><input id="clientCorporate" type="text" class="form-control" required>
+	                                    </div>
+	                                </div>
+	                                <div class="form-group">
+	                                    <label class="col-sm-2 control-label">사명:</label>
+	                                    <div class="col-sm-10"><input id="clientCorporate" type="text" class="form-control" required>
+	                                    </div>
+	                                </div>
+	                                <div class="form-group"><label class="col-sm-2 control-label">이메일:</label>
+	                                    <div class="col-sm-10"><input id="clientEmail" type="email" class="form-control" required></div>
+	                                </div>
+	                                <div class="form-group">
+	                                    <label class="col-sm-2 control-label">비밀번호:</label>
+	                                    <div class="col-sm-10"><input id="pw" type="password" class="form-control" required>
+	                                    </div>
+	                                </div>
+	                                <div class="form-group">
+	                                    <label class="col-sm-2 control-label">비밀번호 확인:</label>
+	                                    <div class="col-sm-10"><input id="pwCheck" type="password" class="form-control" required>
+	                                    </div>
+	                                </div>
+	                                <div class="form-group"><label class="col-sm-2 control-label">성명:</label>
+	                                    <div class="col-sm-10"><input id="clientName" type="text" class="form-control" required></div>
+	                                </div>
+	                                <div class="form-group">
+	                                    <label class="col-sm-2 control-label">주소:</label>
+	                                    <div class="col-sm-10">
+	                                        <button id="address" onclick="sample6_execDaumPostcode()" class="btn btn-default" type="button"><i class="fa fa-search"></i>&nbsp;&nbsp;주소검색</button>
+	                                        <input type="text" class="form-control" id="sample6_address" placeholder="주소" readonly>
+	                                        <input type="text" class="form-control" id="sample6_address2" placeholder="상세주소">
+	                                    </div>
+                                	</div>
+									<div class="form-group"><label class="col-sm-2 control-label">직위:</label>
+	                                    <div class="col-sm-10"><input id="clientName" type="text" class="form-control" required></div>
+	                                </div>
+	                                <div class="form-group"><label class="col-sm-2 control-label">직책:</label>
+	                                    <div class="col-sm-10"><input id="clientName" type="text" class="form-control" required></div>
+	                                </div>
+	                                <div class="form-group"><label class="col-sm-2 control-label">부서:</label>
+	                                    <div class="col-sm-10"><input id="clientName" type="text" class="form-control" required></div>
+	                                </div>
+	                                <div class="form-group">
+	                                    <label class="col-sm-2 control-label">업무전화:</label>
+	                                    <div class="col-sm-10"><input id="clientCall" type="text" class="form-control" required>
+	                                    </div>
+	                                </div>
+	                                <div class="form-group">
+	                                    <label class="col-sm-2 control-label">휴대전화:</label>
+	                                    <div class="col-sm-10"><input id="clientPhone" type="text" class="form-control" required></div>
+	                                </div>
+	
+	                                <div class="form-group">
+	                                    <label class="col-sm-2 control-label">내선:</label>
+	                                    <div class="col-sm-10"><input id="clientExtension" type="text" class="form-control">
+	                                    </div>
+	                                </div>
+	                                
+	                                <div class="form-group">
+	                                    <label class="col-sm-2 control-label">팩스:</label>
+	                                    <div class="col-sm-10"><input id="clientFax" type="text" class="form-control">
+	                                    </div>
+	                                </div>
+	                                <div class="form-group">
+                                    	<label class="col-sm-2 control-label"></label>
+                                    	<div class="col-sm-10"><input type="submit" id="clientRegister" class="btn btn-primary block full-width m-b" value="가입">
+	                                        <p>
+	                                        	입력하신 정보는 내부 관리 목적으로 사용되며, 이 이외의 목적으로 사용되지 않습니다.
+	                                        </p>
+                                    	</div>
+                                	</div>
+                            	</form>
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+            </div>
+	    </div>
+	</div>
+</body>
+</html>
