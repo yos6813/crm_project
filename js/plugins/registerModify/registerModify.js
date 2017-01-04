@@ -76,8 +76,6 @@ function sample6_execDaumPostcode() {
     }).open();
 }
 
-		$(document).ready(function(){
-		/* 부서  */
 			firebase.database().ref("departments/").orderByKey().on("child_added", function(snapshot){
 				snapshot.forEach(function(data){
 					$('#departmentMo').append('<li><a value="' + data.val() + '">' + data.val()
@@ -90,15 +88,15 @@ function sample6_execDaumPostcode() {
 			
 			/* 직책 */
 			firebase.database().ref("jobs/").orderByKey().on("child_added", function(snapshot){
-					snapshot.forEach(function(data){
-						$('#jobMo').append('<li><a value="' + data.val() + '">' + data.val()
-								+ '</a></li>');
+				snapshot.forEach(function(data){
+					$('#jobMo').append('<li><a value="' + data.val() + '">' + data.val()
+							+ '</a></li>');
 				})
 				$('#jobMo a').on('click', function(){
 					$('#jobInputMo').val($(this).attr('value'));
 				})
 			})
-		})
+			
 /* add User */
 
 function writeUserData(userId, name, email, imageUrl) {

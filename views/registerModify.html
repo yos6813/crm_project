@@ -57,9 +57,9 @@
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label">부서:</label>
                                     <div class="col-sm-10">
-                                        <div class="btn-group">
-                                            <button data-toggle="dropdown" class="btn btn-default dropdown-toggle">선택 <span class="caret"></span></button>
-                                            <ul id="departmentMo" class="dropdown-menu">
+                                        <div class="btn-group" uib-dropdown>
+                                             <button type="button" class="btn btn-default" uib-dropdown-toggle>선택 <span class="caret"></span></button>
+                                            <ul id="departmentMo" class="dropdown-menu" role="menu" uib-dropdown-menu="">
                                             	
                                             </ul>
                                             <input id="departmentInputMo" type="text" class="form-control" readonly required>
@@ -70,9 +70,9 @@
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label">직책:</label>
                                     <div class="col-sm-10">
-                                        <div class="btn-group">
-                                            <button data-toggle="dropdown" class="btn btn-default dropdown-toggle">선택 <span class="caret"></span></button>
-                                            <ul id="jobMo" class="dropdown-menu">
+                                        <div class="btn-group" uib-dropdown>
+                                            <button type="button" class="btn btn-default" uib-dropdown-toggle>선택 <span class="caret"></span></button>
+                                            <ul id="jobMo" class="dropdown-menu" role="menu" uib-dropdown-menu="">
                                             
                                             </ul>
                                             <input id="jobInputMo" type="text" class="form-control" readonly required>

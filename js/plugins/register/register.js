@@ -137,25 +137,28 @@ function writeUserInfo(uid, userImg, username, email, nickname, department, job,
 }
 
 $('#registerBtn').click(function(){
-	var user = firebase.auth().currentUser;
-	writeUserData(user.uid, user.displayName, user.email, user.photoURL);
-	
-	var uid = firebase.auth().currentUser.uid;
-	var userImg = firebase.auth().currentUser.photoURL;
-	var username = $('#registerUsername').val();
-	var email = $('#emailInput').val();
-	var nickname = $('#nickname').val();
-	var department = $('#department').val();
-	var job = $('#job').val();
-	var extension = $('#extension').val();
-	var phone = $('#phone').val();
-	var call = $('#call').val();
-	var emergency = $('#emergency').val();
-	var address = $('#sample6_address').val() + ' ' + $('#sample6_address2').val();
-	var join = $('.join').val();
-	var birth = $('#birth1').val() + '/' + $('#birth2').val() + '/' + $('#birth3').val();
-	
-	writeUserInfo(uid, userImg, username, email, nickname, department, job, extension, phone, call, emergency, address, join, birth);
-	window.location.hash="/index/main"
-	location.reload();
+	if($('#extension').val() != '' && $('#call').val() != '' && $('#phone').val() != '' && $('#department').val() != '' && $('#job').val() != ''
+		&& $('#nickname').val() != ''){
+			var user = firebase.auth().currentUser;
+			writeUserData(user.uid, user.displayName, user.email, user.photoURL);
+			
+			var uid = firebase.auth().currentUser.uid;
+			var userImg = firebase.auth().currentUser.photoURL;
+			var username = $('#registerUsername').val();
+			var email = $('#emailInput').val();
+			var nickname = $('#nickname').val();
+			var department = $('#department').val();
+			var job = $('#job').val();
+			var extension = $('#extension').val();
+			var phone = $('#phone').val();
+			var call = $('#call').val();
+			var emergency = $('#emergency').val();
+			var address = $('#sample6_address').val() + ' ' + $('#sample6_address2').val();
+			var join = $('.join').val();
+			var birth = $('#birth1').val() + '/' + $('#birth2').val() + '/' + $('#birth3').val();
+			
+			writeUserInfo(uid, userImg, username, email, nickname, department, job, extension, phone, call, emergency, address, join, birth);
+			window.location.hash="/index/main"
+			location.reload();
+	}
 });

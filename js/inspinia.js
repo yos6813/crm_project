@@ -49,8 +49,8 @@ function userAlert(user){
 	})
 	firebase.database().ref('userAlert/').orderByChild('check').equalTo('확인안함').on('value', function(snapshot){
 		if(snapshot.numChildren() == '0'){
-//			$('#userAlert').children().remove();
-			$('#userAlert').prepend('There is no new message' + '<li class="divider"></li>');
+			$('#userAlert').children('.noM').remove();
+			$('#userAlert').prepend('<p class="noM">There is no new message</p>' + '<li class="noM divider"></li>');
 		}
 	})
 }
@@ -63,7 +63,6 @@ $(document).ready(function () {
 		firebase.auth().onAuthStateChanged(function(user) {
 			if(user){
 				firebase.database().ref('user-infos/' + user.uid).on('value', function(snapshot){
-					console.log(snapshot.val());
 					if(snapshot.val() != null){
 						window.location.hash = 'index/main';
 						$('#navUserName').text(user.displayName);
@@ -82,33 +81,20 @@ $(document).ready(function () {
 		})
 	})
 	
+	
 	firebase.auth().onAuthStateChanged(function(user) {
-		userAlert(user);
-		
-		$('#navprofileImg').attr('src', user.photoURL);
-		firebase.database().ref('user-infos/' + user.uid).on('child_added', function(snapshot){
-			firebase.database().ref('user-infos/' + user.uid + '/' + snapshot.key).on('value', function(snapshot2){
-				$('#navjob').text(snapshot2.val().department + ' / ' + snapshot2.val().job);
+		if(user){
+			userAlert(user);
+
+			firebase.database().ref('user-infos/' + user.uid).on('child_added', function(snapshot){
+				firebase.database().ref('user-infos/' + user.uid + '/' + snapshot.key).on('value', function(snapshot2){
+					$('#navjob').text(snapshot2.val().department + ' / ' + snapshot2.val().job);
+				});
 			});
-		});
-		
-		$('#navUserName').text(user.displayName);
-		
-		$('#logout').click(function(){
-			firebase.auth().signOut();
-			window.location.hash = 'login';
-			$('#navUserName').text('');
-			$('#navUserEMail').text('');
-		})
-		
-		$('#navlogout').click(function(){
-			firebase.auth().signOut();
-			window.location.hash = 'login';
-			$('#navUserName').text('');
-			$('#navUserEMail').text('');
-		})
-		
-	});
+			$('#navprofileImg').attr('src', user.photoURL);
+			$('#navUserName').text(user.displayName);
+		}
+	})
 	
     // Full height of sidebar
     function fix_height() {
@@ -167,5 +153,13 @@ $(document).ready(function () {
 	});
 	
 });
+
+function logout(){
+	firebase.auth().signOut();
+	window.location.hash = '#/login';
+	console.log('logout');
+	$('#navUserName').text('');
+	$('#navUserEMail').text('');
+}
 	
 	

@@ -41,7 +41,14 @@ function messages(){
 				$('.check').css('color', '');
 			}
 			
-			$('#size').text($('#messageBox').children('.messageChild').size());
+			firebase.database().ref('userAlert/').orderByChild('check').equalTo('확인안함').on('value', function(snapshot3){
+				if(snapshot3.numChildren() == undefined){
+					$('#size').text('0');
+				} else {
+					$('#size').text(snapshot3.numChildren());
+				}
+					
+			})
 			
 			$(document).on('click', '#postLlink', function(){
 				location.reload();
