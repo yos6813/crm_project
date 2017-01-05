@@ -8502,3 +8502,9 @@ body.md-skin {
   width: 48%;
   height: 59%;
 }
+
+.RcompanyList{
+	height: 100px;	
+	list-style: none;
+	color: gray;
+}

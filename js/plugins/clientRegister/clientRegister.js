@@ -66,30 +66,58 @@ function addClient(clientLicense, companyName, clientEmail, password, clientName
 }
 
 $(document).ready(function(){
-	console.log('왜 안돼');
 	$('#companyName').hideseek({hidden_mode: true});
-	firebase.database().ref('company/').orderByKey().on('child_added', function(snapshot){
-		$('.companyList').append('<li class="list-item" style="display:none;"><a value="' + snapshot.key + '">' +
-												snapshot.val().name + '(' + snapshot.val().license + ')' + '</a></li>');
-	})		
+	firebase.database().ref('company/').on('child_added', function(snapshot){
+		$('.RcompanyList').append('<li class="list-item" style="display:none;"><a value="' + snapshot.key + '">' +
+								 snapshot.val().name + '(' + snapshot.val().license + ')' + '</a></li>');
+	})
+	$(document).on('click', '.RcompanyList a', function(){
+		firebase.database().ref('company/' + $(this).attr('value')).on('value', function(snapshot){
+			$('#clientCorporate').val(snapshot.val().license);
+			$('#companyName').val(snapshot.val().name);
+		})
+	})
 })
 
+    function handleSignUp() {
+      var clientEmail = $('#clientEmail').val();
+      var password = $('#pw').val();
+      
+      firebase.auth().createUserWithEmailAndPassword(clientEmail, password).catch(function(error) {
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          if (errorCode == 'auth/weak-password') {
+        	  alert('The password is too weak.');
+          } else {
+            alert(errorMessage);
+          }
+          console.log(error);
+      });
+    }
+
 $('#clientRegister').click(function(){
-	var clientLicense = $('#clientCorporate').val();
-	var companyName = $('#companyName').val();
 	var clientEmail = $('#clientEmail').val();
-	var password = $('#pw').val();
-	var clientName = $('#clientName').val();
-	var clientAddress = $('#sample6_address').val() + ' ' + $('#sample6_address2').val();
-	var clientPosition = $('#cPosition').val();
-	var clientJob = $('#cJob').val();
-	var clientDepartment = $('#cDepartment').val();
-	var clientWorkPhone = $('#clientCall').val();
-	var clientPhone = $('#clientPhone').val();
-	var clientExtension = $('#clientExtension').val();
-	var clientFax = $('#clientFax').val();
-	
-	addClient(clientLicense, companyName, clientEmail, password, clientName, clientAddress, clientPosition,
-			   clientJob, clientDepartment, clientWorkPhone, clientPhone, clientExtension, clientFax);
-			   location.hash = '#/clientLogin';
+    var password = $('#pw').val();
+    var clientLicense = $('#clientCorporate').val();
+	  var companyName = $('#companyName').val();
+	  var clientName = $('#clientName').val();
+	  var clientAddress = $('#sample6_address').val() + ' ' + $('#sample6_address2').val();
+	  var clientPosition = $('#cPosition').val();
+	  var clientJob = $('#cJob').val();
+	  var clientDepartment = $('#cDepartment').val();
+	  var clientWorkPhone = $('#clientCall').val();
+	  var clientPhone = $('#clientPhone').val();
+	  var clientExtension = $('#clientExtension').val();
+	  var clientFax = $('#clientFax').val();
+	  
+	if($('#pw').val() == $('#pwCheck').val()){
+		  addClient(clientLicense, companyName, clientEmail, password, clientName, clientAddress, clientPosition,
+				  clientJob, clientDepartment, clientWorkPhone, clientPhone, clientExtension, clientFax);
+		  handleSignUp();
+		  location.hash = '#/clientLogin';
+	  } else {
+		  $('#pwCheck').val('');
+		  $('#pw').val('');
+		  alert('비밀번호를 확인해주세요');
+	  }
 })

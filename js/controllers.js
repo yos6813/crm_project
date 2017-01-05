@@ -13,6 +13,7 @@ function MainCtrl() {
     this.descriptionText = '';
 };
 
+
 angular
     .module('inspinia')
     .controller('MainCtrl', MainCtrl)

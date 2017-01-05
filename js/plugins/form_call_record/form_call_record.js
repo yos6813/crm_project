@@ -313,6 +313,7 @@ $('#postSave').click(function(){
 		}
 		window.location.hash = 'index/call_list';
 })
+
 $('.tagsinput').tagsinput({
     tagClass: 'label label-primary'
 });

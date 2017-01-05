@@ -22,13 +22,39 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
             url: "/index",
             templateUrl: "views/common/content.html",
         })
-//        .state('index.main', {
-//            url: "/main",
-//            templateUrl: "views/main.html",
-//            data: {
-//                pageTitle: 'Example view'
-//            }
-//        })
+        .state('cIndex', {
+            abstract: true,
+            url: "/cIndex",
+            templateUrl: "views/common/content2.html",
+        })
+        .state('cIndex.notifyPage', {
+            url: "/notifyPage",
+            templateUrl: "views/notifyPage.html",
+            data: {
+                pageTitle: '공지사항'
+            }
+        })
+        .state('index.notifyPage', {
+            url: "/notifyPage",
+            templateUrl: "views/notifyPage.html",
+            data: {
+                pageTitle: '공지사항 관리'
+            }
+        })
+        .state('index.notifyWrite', {
+            url: "/notifyWrite",
+            templateUrl: "views/notifyWrite.html",
+            data: {
+                pageTitle: '공지사항 쓰기'
+            }
+        })
+        .state('cIndex.main', {
+            url: "/main",
+            templateUrl: "views/main.html",
+            data: {
+                pageTitle: 'Home'
+            }
+        })
         .state('login', {
             url: "/login",
             templateUrl: "views/login.html",
@@ -41,7 +67,7 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
             templateUrl: "views/clientRegister.html",
             data: {
                 pageTitle: '회원가입'
-            }
+            },
         })
         .state('clientLogin', {
             url: "/clientLogin",

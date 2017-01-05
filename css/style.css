@@ -2,7 +2,6 @@
 @import url("https://fonts.googleapis.com/css?family=Roboto:400,300,500,700");
 @import url(https://fonts.googleapis.com/earlyaccess/jejugothic.css);
 /*
- *
  *   INSPINIA - Responsive Admin Theme
  *   version 2.6.2
  *
@@ -174,7 +173,7 @@ h5 {
   font-size: 12px;
 }
 .nav-header {
-  padding: 33px 25px;
+/*   padding: 33px 25px; */
   background-color: #2f4050;
   background-image: url("patterns/header-profile.png");
 }
@@ -8495,3 +8494,16 @@ body.md-skin {
 	z-index: 9999;
 	background: url(../img/Preloader_2.gif) center no-repeat #fff;
 }
+
+.center {
+  position: absolute;
+  left: 30%;
+  top: 40%;
+  transform: translate(-50%, -50%); /* Yep! */
+  width: 48%;
+  height: 59%;
+}
+.logo-register{
+    width: 5%;
+}
+

@@ -164,5 +164,10 @@ function logout(){
 	$('#navUserName').text('');
 	$('#navUserEMail').text('');
 }
+
+function Clogout(){
+	firebase.auth().signOut();
+	window.location.hash = '#/clientLogin';
+}
 	
 	
