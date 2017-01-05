@@ -8,42 +8,44 @@
 function userAlert(user){
 	firebase.database().ref('userAlert/').limitToFirst(5).on('child_added', function(snapshot){
 		firebase.database().ref('userAlert/' + snapshot.key  + '/' + user.uid).on('value', function(snapshot2){
-			if(snapshot2.val().check == '확인안함'){
-				var replyDate = snapshot2.val().replyDay;
-		    	var replyDate1 = replyDate.split(' ');
-		    	var replyDate2 = replyDate1[0].split('.');
-		    	var replyDate3 = replyDate1[1].split(':');
-		    	var replyDate4 = new Date(replyDate2[0], replyDate2[1]-1, replyDate2[2], replyDate3[0], replyDate3[1]).getTime() / 1000;
-		    	
-		    	var now = new Date().getTime() / 1000;
-		    	var gap = now - replyDate4;
-		    	
-		    	var hour = parseInt(gap / 3600);
-				var day = parseInt(hour / 24);
-				
-				$('#userAlert').prepend('<li class="alertChild">' +
-									   '<div class="dropdown-messages-box">' +
-									   '<a ui-sref="profile" class="pull-left">' +
-									   '<img alt="image" class="img-circle" src="' + snapshot2.val().replyPhoto + '">' +
-									   '</a>' +
-									   '<div>' +
-									   '<strong>' + snapshot2.val().replyTitle + '</strong><br>' +
-									   '<strong>' + snapshot2.val().replyUserName + '</strong> replied.<br>' +
-									   '<small class="text-muted">' + day + ' days ago at '+ replyDate1[1] + ' - ' + replyDate1[0] + '</small>' +
-									   '</div>' +
-									   '</div>' +
-									   '</li>' +
-									   '<li class="divider"></li>');
-				
-				$('.alertNum').text($('#userAlert').children('.alertChild').size());
-				
-				$(document).on('click', '.alertChild', function(){
-					location.hash = '#/index/view_call_record?no=' + snapshot2.val().replyPost;
+			if(snapshot2.val() != null){
+				if(snapshot2.val().check == '확인안함'){
+					var replyDate = snapshot2.val().replyDay;
+			    	var replyDate1 = replyDate.split(' ');
+			    	var replyDate2 = replyDate1[0].split('.');
+			    	var replyDate3 = replyDate1[1].split(':');
+			    	var replyDate4 = new Date(replyDate2[0], replyDate2[1]-1, replyDate2[2], replyDate3[0], replyDate3[1]).getTime() / 1000;
+			    	
+			    	var now = new Date().getTime() / 1000;
+			    	var gap = now - replyDate4;
+			    	
+			    	var hour = parseInt(gap / 3600);
+					var day = parseInt(hour / 24);
 					
-					firebase.database().ref('userAlert/' + snapshot2.val().replyPost + '/' + user.uid).update({
-						check: '확인'
+					$('#userAlert').prepend('<li class="alertChild">' +
+										   '<div class="dropdown-messages-box">' +
+										   '<a ui-sref="profile" class="pull-left">' +
+										   '<img alt="image" class="img-circle" src="' + snapshot2.val().replyPhoto + '">' +
+										   '</a>' +
+										   '<div>' +
+										   '<strong>' + snapshot2.val().replyTitle + '</strong><br>' +
+										   '<strong>' + snapshot2.val().replyUserName + '</strong> replied.<br>' +
+										   '<small class="text-muted">' + day + ' days ago at '+ replyDate1[1] + ' - ' + replyDate1[0] + '</small>' +
+										   '</div>' +
+										   '</div>' +
+										   '</li>' +
+										   '<li class="divider"></li>');
+					
+					$('.alertNum').text($('#userAlert').children('.alertChild').size());
+					
+					$(document).on('click', '.alertChild', function(){
+						location.hash = '#/index/view_call_record?no=' + snapshot2.val().replyPost;
+						
+						firebase.database().ref('userAlert/' + snapshot2.val().replyPost + '/' + user.uid).update({
+							check: '확인'
+						})
 					})
-				})
+				}
 			}
 		})
 	})
@@ -169,5 +171,19 @@ function Clogout(){
 	firebase.auth().signOut();
 	window.location.hash = '#/clientLogin';
 }
-	
-	
+
+function systemBtn(){
+	window.location.hash = '#/cIndex/postWrite?type=시스템';
+}
+
+function managementBtn(){
+	window.location.hash = '#/cIndex/postWrite?type=운용';
+}
+
+function taxLawBtn(){
+	window.location.hash = '#/cIndex/postWrite?type=세법';
+}
+
+function qnaList(){
+	window.location.hash = '#/cIndex/qnaList?email=' + firebase.auth().currentUser.email;
+}

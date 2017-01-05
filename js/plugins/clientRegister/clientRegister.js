@@ -66,14 +66,13 @@ function addClient(clientLicense, companyName, clientEmail, password, clientName
 }
 
 $(document).ready(function(){
-	$('#companyName').hideseek({hidden_mode: true});
-	firebase.database().ref('company/').on('child_added', function(snapshot){
-		$('.RcompanyList').append('<li class="list-item" style="display:none;"><a value="' + snapshot.key + '">' +
-								 snapshot.val().name + '(' + snapshot.val().license + ')' + '</a></li>');
-	})
-	$(document).on('click', '.RcompanyList a', function(){
-		firebase.database().ref('company/' + $(this).attr('value')).on('value', function(snapshot){
-			$('#clientCorporate').val(snapshot.val().license);
+	var corporate = $('#clientCorporate').val();
+	var cor = corporate.split('-');
+	
+	$('#clientCorporate').blur(function(){
+		console.log('test');
+		firebase.database().ref('company/').orderByChild('corporate').equalTo(cor[0] + cor[1] + cor[2]).on('child_added', function(snapshot){
+			console.log('test1');
 			$('#companyName').val(snapshot.val().name);
 		})
 	})

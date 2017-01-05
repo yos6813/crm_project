@@ -41,6 +41,20 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
                 pageTitle: '공지사항 관리'
             }
         })
+        .state('cIndex.view_notify', {
+            url: "/view_notify",
+            templateUrl: "views/view_notify.html",
+            data: {
+                pageTitle: '공지보기'
+            }
+        })
+        .state('index.view_notify', {
+            url: "/view_notify",
+            templateUrl: "views/view_notify.html",
+            data: {
+                pageTitle: '공지보기'
+            }
+        })
         .state('index.notifyWrite', {
             url: "/notifyWrite",
             templateUrl: "views/notifyWrite.html",
@@ -216,6 +230,27 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
             },
             data: {
                 pageTitle: 'Form Call Record Modify'
+            }
+        })
+        .state('cIndex.postWrite', {
+            url: "/postWrite",
+            templateUrl: "views/postWrite.html",
+            data: {
+                pageTitle: '글쓰기'
+            }
+        })
+        .state('cIndex.qnaList', {
+            url: "/qnaList",
+            templateUrl: "views/qnaList.html",
+            data: {
+                pageTitle: '문의리스트'
+            }
+        })
+        .state('cIndex.view_qna', {
+            url: "/view_qna",
+            templateUrl: "views/view_qna.html",
+            data: {
+                pageTitle: '문의 글 보기'
             }
         })
 }

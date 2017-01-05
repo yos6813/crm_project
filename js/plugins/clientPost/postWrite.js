@@ -5,7 +5,12 @@ function getParameterByName(name) {
 	return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
 
-var modifyNo = getParameterByName('no');
+var writeType = getParameterByName('type');
+var no = getParameterByName('no');
+
+$('.tagsinput').tagsinput({
+    tagClass: 'label label-primary'
+});
 
 $('.summernote').summernote({
   height: 300,                 // set editor height
@@ -13,8 +18,6 @@ $('.summernote').summernote({
   maxHeight: null,             // set maximum height of editor
   focus: true                  // set focus to editable area after initializing summernote
 });
-
-//파일 업로드
 
 var auth = firebase.auth();
 var storageRef = firebase.storage().ref();
@@ -54,53 +57,52 @@ function handleFileSelect(evt) {
   }
 }
 	  document.getElementById('fileButton').addEventListener('change', handleFileSelect, false);
-
-function addnotify(notifyType, title, text, file, date){
-	
-		var notifyData = {
-			notifyType: notifyType,
+	 
+function postAdd(user, title, text, file, tag, date, type, status){
+	var postData = {
+			user: user,
 			title: title,
 			text: text,
 			file: file,
-			date: date
-		};
-
-	var newNotifyKey = firebase.database().ref().child('notify').push().key;
+			tag: tag,
+			date: date,
+			type: type,
+			status: status
+	}
+	
+	var newPostKey = firebase.database().ref().child('qnaWrite/').push().key;
 	
 	var updates = {};
-	updates['/notify/' + newNotifyKey] = notifyData;
+	updates['/qnaWrite/' + newPostKey] = postData;
 	
 	return firebase.database().ref().update(updates);
 }
 
-$('#Save').click(function(){
-	var notifyType = $("#writeTypeSelect").val();
-	var text = $('#notifyText').summernote('code');
-	var title = $('#title').val();
-	var today = new Date();
-	var date = today.getFullYear() + "." + (today.getMonth()+1) + "." + today.getDate() + " " + today.getHours() + ":" + today.getMinutes();
-	var file = [];
-	
-	for(var i=0; i<=$('#fileInput').children().length; i++){
-		if($('#fileInput').children().eq(i).text() != undefined && $('#fileInput').children().eq(i).text() != null){
-			file.push($('#fileInput').children().eq(i).text());
-		}
-	}
-	addnotify(notifyType, title, text, file, date);
-	location.hash = "#/index/notifyPage?no=1";
-})
-
 $(document).ready(function(){
-	if(modifyNo != null){
-		firebase.database().ref('notify/' + modifyNo).on('value', function(snapshot){
-			$("#writeTypeSelect").val(snapshot.val().notifyType);
-			$('#notifyText').summernote('code', snapshot.val().text);
-			$('#title').val(snapshot.val().title);
-			if(snapshot.val().file != ''){
-				for(var i=0; i<snapshot.val().file.length; i++){
-					$('#fileInput').append('<span class="fileName">' +  snapshot.val().file[i] + '</span>');
-				}
+	$('#qnaSave').click(function(){
+		var user = firebase.auth().currentUser.email;
+		var title = $('#qnaTitle').val();
+		var text = $('#qnaText').val();
+		var file = [];
+		var tag = [];
+		var today = new Date();
+		var date = today.getFullYear() + "." + (today.getMonth()+1) + "." + today.getDate() + " " + today.getHours() + ":" + today.getMinutes();
+		var type = writeType;
+		var status = '접수';
+		
+		for(var i=0; i<=$('#fileInput').children().length; i++){
+			if($('#fileInput').children().eq(i).text() != undefined && $('#fileInput').children().eq(i).text() != null){
+				file.push($('#fileInput').children().eq(i).text());
 			}
+		}
+		
+		$('.tagSel').each(function(){
+			tag.push($(this).text());
 		})
-	}
+		
+		if(title != '' && text != ''){
+			postAdd(user, title, text, file, tag, date, type, status);
+			location.hash = '#/cIndex/qnaList?no' + user;
+		}
+	})
 })
