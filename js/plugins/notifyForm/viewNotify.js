@@ -9,6 +9,8 @@ var type = getParameterByName('no1');
 var no = getParameterByName('no');
 
 $(document).ready(function(){
+	$('#patch').hide();
+	$('#notice').hide();
 	if(type != ''){
 		$('#viewButton').append('<a href="#/index/notifyWrite?no=' + no + '" id="modify" class="btn btn-white btn-sm" title="Reply"><i class="fa fa-pencil"></i> 수정</a>' +
 		'<a id="delete" class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Move to trash"><i class="fa fa-trash-o"></i> 삭제</a>');
@@ -16,7 +18,15 @@ $(document).ready(function(){
 	firebase.database().ref('notify/' + no).on('value', function(snapshot){
 		$("#viewText").text(snapshot.val().text);
 		$('#viewTitle').text(snapshot.val().title);
-		$('#notifyDate').text('작성시간: ' +snapshot.val().date);
+		$('#notifyDate').append('<i class="fa fa-clock-o"></i>' +snapshot.val().date);
+		
+		if(snapshot.val().notifyType == '패치'){
+			$('#patch').show();
+			$('#notice').hide();
+		} else if(snapshot.val().notifyType == '공지') {
+			$('#patch').hide();
+			$('#notice').show();
+		}
 		
 		firebase.database().ref('notify/' + no + '/file').on('value', function(snapshot){
 			if(snapshot.val() == undefined || snapshot.val() == ''){

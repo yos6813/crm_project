@@ -237,6 +237,12 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
             templateUrl: "views/postWrite.html",
             data: {
                 pageTitle: '글쓰기'
+            },
+            controller: function(){
+            	var checkUnload = true;
+            	$(window).on("beforeunload", function(){
+            	    if(checkUnload) return "페이지를 벗어나시겠습니까?";
+            	});
             }
         })
         .state('cIndex.qnaList', {
@@ -253,11 +259,25 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
                 pageTitle: '문의 글 보기'
             }
         })
-        .state('cIndex.clientInfo', {
+        .state('clientInfo', {
             url: "/clientInfo",
             templateUrl: "views/clientInfo.html",
             data: {
                 pageTitle: '회원정보입력'
+            }
+        })
+        .state('cIndex.user', {
+            url: "/user",
+            templateUrl: "views/user.html",
+            data: {
+                pageTitle: '알림함'
+            }
+        })
+        .state('index.group', {
+            url: "/group",
+            templateUrl: "views/group.html",
+            data: {
+                pageTitle: '분류 관리'
             }
         })
 }

@@ -1,3 +1,12 @@
+function getParameterByName(name) {
+	name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+	var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+	results = regex.exec(location.hash);
+	return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
+var no = getParameterByName('no');
+
 function messages(){
 	var user = firebase.auth().currentUser;
 	firebase.database().ref('userAlert/').on('child_added', function(snapshot){
@@ -23,18 +32,34 @@ function messages(){
 				time = 'am';
 			}
 			
+			if(no = '0'){
+				$('#messageBox').append('<div class="feed-element messageChild">' +
+						'<div>' +
+						'<small class="pull-right text-navy">'+ min + 'm ago</small>' +
+						snapshot2.val().replyUserName +
+						'<div><a class="check" style="color:gray" href="#/cIndex/view_qna?no=' + snapshot2.val().replyPost +
+						'"><strong>' + snapshot2.val().replyTitle + '</strong></a></div>' +
+						'<small class="text-muted">' + time + ' ' + replyDate3[0] +
+						' : ' + replyDate3[1] + ' - ' + replyDate1[0] + '</small>' +
+						'<a style="color:gray" id="postLlink" ng-click="closebox()" value="' + snapshot2.val().replyPost + '">' +
+						'<i class="pull-right fa fa-times"></i></a>' +
+						'</div>' +
+				'</div>');
+			}
+			
 			$('#messageBox').append('<div class="feed-element messageChild">' +
-			                    	'<div>' +
-			                        '<small class="pull-right text-navy">'+ min + 'm ago</small>' +
-			                        snapshot2.val().replyUserName +
-			                        '<div><a class="check" style="color:gray" href="#/index/view_call_record?no=' + snapshot2.val().replyPost +
-			                        '"><strong>' + snapshot2.val().replyTitle + '</strong></a></div>' +
-			                        '<small class="text-muted">' + time + ' ' + replyDate3[0] +
-									' : ' + replyDate3[1] + ' - ' + replyDate1[0] + '</small>' +
-			                        '<a style="color:gray" id="postLlink" ng-click="closebox()" value="' + snapshot2.val().replyPost + '">' +
-			                        '<i class="pull-right fa fa-times"></i></a>' +
-			                        '</div>' +
-			                		'</div>');
+					'<div>' +
+					'<small class="pull-right text-navy">'+ min + 'm ago</small>' +
+					snapshot2.val().replyUserName +
+					'<div><a class="check" style="color:gray" href="#/index/view_call_record?no=' + snapshot2.val().replyPost +
+					'"><strong>' + snapshot2.val().replyTitle + '</strong></a></div>' +
+					'<small class="text-muted">' + time + ' ' + replyDate3[0] +
+					' : ' + replyDate3[1] + ' - ' + replyDate1[0] + '</small>' +
+					'<a style="color:gray" id="postLlink" ng-click="closebox()" value="' + snapshot2.val().replyPost + '">' +
+					'<i class="pull-right fa fa-times"></i></a>' +
+					'</div>' +
+			'</div>');
+			
 			
 			if(snapshot2.val().check == '확인안함'){
 				$('.check').addClass('text-navy');
@@ -65,5 +90,6 @@ function messages(){
 }
 
 $(document).ready(function(){
+	$('#messageBox').children().remove();
 	messages();
 })

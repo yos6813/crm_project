@@ -170,20 +170,30 @@ function logout(){
 function Clogout(){
 	firebase.auth().signOut();
 	window.location.hash = '#/clientLogin';
+	location.reload();
 }
 
 function systemBtn(){
-	window.location.hash = '#/cIndex/postWrite?type=시스템';
+	window.location.hash = '#/cIndex/postWrite?type=system';
+	location.reload();
 }
 
 function managementBtn(){
-	window.location.hash = '#/cIndex/postWrite?type=운용';
+	window.location.hash = '#/cIndex/postWrite?type=management';
+	location.reload();
 }
 
 function taxLawBtn(){
-	window.location.hash = '#/cIndex/postWrite?type=세법';
+	window.location.hash = '#/cIndex/postWrite?type=taxLaw';
+	location.reload();
 }
 
 function qnaList(){
-	window.location.hash = '#/cIndex/qnaList?email=' + firebase.auth().currentUser.email;
+	window.location.hash = '#/cIndex/qnaList?no=' + firebase.auth().currentUser.uid;
+	location.reload();
+}
+
+function notifyPage(){
+	window.location.hash = '#/cIndex/notifyPage';
+	location.reload();
 }

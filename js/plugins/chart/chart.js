@@ -15,9 +15,9 @@ $(document).ready(function(){
 		firebase.database().ref('timePosts/' + todayMonth - 1).remove();
 	}
 	
-	firebase.database().ref('posts/').orderByChild('postState').equalTo('해결').on('value', function(snapshot1){
-		firebase.database().ref('posts/').orderByChild('postState').equalTo('접수').on('value', function(snapshot2){
-			firebase.database().ref('posts/').orderByChild('postState').equalTo('보류').on('value', function(snapshot3){
+	firebase.database().ref('qnaWrite/').orderByChild('status').equalTo('해결').on('value', function(snapshot1){
+		firebase.database().ref('qnaWrite/').orderByChild('status').equalTo('접수').on('value', function(snapshot2){
+			firebase.database().ref('qnaWrite/').orderByChild('status').equalTo('보류').on('value', function(snapshot3){
 				var chartResolve = snapshot1.numChildren();
 				var chartDefer = snapshot3.numChildren();
 				var chartAccept = snapshot2.numChildren();
@@ -183,23 +183,18 @@ $(document).ready(function(){
 		})
 	}
 	
-	firebase.database().ref('posts/').orderByChild('postState').equalTo('해결').on('child_added', function(snapshot1){
-		if(snapshot1.val().postType == '세법'){
+	firebase.database().ref('qnaWrite/').orderByChild('status').equalTo('해결').on('child_added', function(snapshot1){
+		if(snapshot1.val().type == 'taxLaw'){
 			taxLaw.push(snapshot1.key);
 			if(taxLaw != null){
 				$('#taxLaw3').text(taxLaw.length);
 			}
-		} else if (snapshot1.val().postType == '운용'){
+		} else if (snapshot1.val().type == 'management'){
 			management.push(snapshot1.key);
 			if(management != null){
 				$('#management3').text(management.length);
 			}
-		} else if (snapshot1.val().postType == '기타'){
-			etc.push(snapshot1.key);
-			if(etc != null){
-				$('#etc3').text(etc.length);
-			}
-		} else {
+		} else if (snapshot1.val().type == 'system'){
 			system.push(snapshot1.key);
 			if(system != null){
 				$('#system3').text(system.length);
@@ -207,23 +202,18 @@ $(document).ready(function(){
 		}
 	})
 	
-	firebase.database().ref('posts/').orderByChild('postState').equalTo('접수').on('child_added', function(snapshot1){
-		if(snapshot1.val().postType == '세법'){
+	firebase.database().ref('qnaWrite/').orderByChild('status').equalTo('접수').on('child_added', function(snapshot1){
+		if(snapshot1.val().type == 'taxLaw'){
 			taxLaw1.push(snapshot1.key);
 			if(taxLaw1 != null){
 				$('#taxLaw1').text(taxLaw1.length);
 			}
-		} else if (snapshot1.val().postType == '운용'){
+		} else if (snapshot1.val().type == 'management'){
 			management1.push(snapshot1.key);
 			if(management1 != null){
 				$('#management1').text(management1.length);
 			}
-		} else if (snapshot1.val().postType == '기타'){
-			etc1.push(snapshot1.key);
-			if(etc1 != null){
-				$('#etc1').text(etc1.length);
-			}
-		} else {
+		} else if (snapshot1.val().type == 'system'){
 			system1.push(snapshot1.key);
 			if(system1 != null){
 				$('#system1').text(system1.length);
@@ -231,23 +221,18 @@ $(document).ready(function(){
 		}
 	})
 
-	firebase.database().ref('posts/').orderByChild('postState').equalTo('보류').on('child_added', function(snapshot1){
-		if(snapshot1.val().postType == '세법'){
+	firebase.database().ref('qnaWrite/').orderByChild('status').equalTo('보류').on('child_added', function(snapshot1){
+		if(snapshot1.val().type == 'taxLaw'){
 			taxLaw2.push(snapshot1.key);
 			if(taxLaw2 != null){
 				$('#taxLaw2').text(taxLaw2.length);
 			}
-		} else if (snapshot1.val().postType == '운용'){
+		} else if (snapshot1.val().type == 'management'){
 			management2.push(snapshot1.key);
 			if(management2 != null){
 				$('#management2').text(management2.length);
 			}
-		} else if (snapshot1.val().postType == '기타'){
-			etc2.push(snapshot1.key);
-			if(etc2 != null){
-				$('#etc2').text(etc2.length);
-			}
-		} else {
+		} else if (snapshot1.val().type == 'system'){
 			system2.push(snapshot1.key);
 			if(system2 != null){
 				$('#system2').text(system2.length);

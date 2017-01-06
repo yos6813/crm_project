@@ -18,13 +18,26 @@ function toggleSignIn() {
 			}
 			console.log(error);
     });
-    firebase.auth().onAuthStateChanged(function(user) {
-		if(user){
-			location.hash = '#/cIndex/main';
-		}
-	})
+}
+
+function sendEmailVerification() {
+	firebase.auth().currentUser.sendEmailVerification().then(function() {
+		alert('이메일 확인을 위한 메일을 전송하였습니다. 메일을 확인해주세요.');
+    });
 }
 
 $('#clientLogin').click(function(){
 	toggleSignIn();
+	firebase.auth().onAuthStateChanged(function(user) {
+		if(user){
+			firebase.database().ref('clients/' + user.uid).on('value', function(snapshot){
+				if(snapshot.val() != null){
+					location.hash = '#/cIndex/notifyPage';
+				} else {
+					sendEmailVerification();
+					location.hash = '#/clientInfo';
+				}
+			})
+		}
+	})
 })

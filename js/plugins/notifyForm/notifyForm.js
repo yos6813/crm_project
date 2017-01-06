@@ -15,7 +15,6 @@ $('.summernote').summernote({
 });
 
 //파일 업로드
-
 var auth = firebase.auth();
 var storageRef = firebase.storage().ref();
 var file = [];

@@ -16,96 +16,107 @@ firebase.database().ref("types/").orderByKey().endAt("type").on("child_added", f
 })
 
 function postList(key){
-	firebase.database().ref('posts/' + key).on('value', function(snapshot1){
+	firebase.database().ref('qnaWrite/' + key).on('value', function(snapshot1){
 		firebase.database().ref('reply/' + key).on('value', function(snapshot2){
-		var old = snapshot2.val().replyDate;
-		if(old != ''){
-			var replyDate1 = old.split(' ');
-			var replyDate = replyDate1[0].split('.');
-			var replyDate2 = replyDate1[1].split(':');
-			var replyDate3 = new Date(replyDate[0], replyDate[1]-1, replyDate[2]).getTime() / 1000;
+			var old = snapshot2.val().replyDate;
+			if(old != ''){
+				var replyDate1 = old.split(' ');
+				var replyDate = replyDate1[0].split('.');
+				var replyDate2 = replyDate1[1].split(':');
+				var replyDate3 = new Date(replyDate[0], replyDate[1]-1, replyDate[2]).getTime() / 1000;
+				
+				var now = snapshot1.val().date;
+				var postDate = now.split(' ');
+				var postDate1 = postDate[0].split('.');
+				var postDate2 = postDate[1].split(':');
+				var postDate3 = new Date(postDate1[0], postDate1[1]-1, postDate1[2]).getTime() / 1000;
+				
+				var gap = replyDate3 - postDate3;
+				var gap2 = gap / 1000;
+				
+				var hour = gap / 3600;
+				var hourgap = replyDate2[0] - postDate2[0];
+				var minutegap = replyDate2[1] - postDate2[1];
+				var daygap = hour / 24;
+				
+				if(hourgap<0){
+					hourgap += 24;
+					daygap -= 1;
+				}
+				if(minutegap < 0){
+					minutegap += 60;
+					hourgap -= 1;
+				}
 			
-			var now = snapshot1.val().postDate;
-			var postDate = now.split(' ');
-			var postDate1 = postDate[0].split('.');
-			var postDate2 = postDate[1].split(':');
-			var postDate3 = new Date(postDate1[0], postDate1[1]-1, postDate1[2]).getTime() / 1000;
-			
-			var gap = replyDate3 - postDate3;
-			var gap2 = gap / 1000;
-			
-			var hour = gap / 3600;
-			var hourgap = replyDate2[0] - postDate2[0];
-			var minutegap = replyDate2[1] - postDate2[1];
-			var daygap = hour / 24;
-			
-			if(hourgap<0){
-				hourgap += 24;
-				daygap -= 1;
+			} else {
+				daygap = '-';
+				minutegap = '-';
+				hourgap = '-';
 			}
-			if(minutegap < 0){
-				minutegap += 60;
-				hourgap -= 1;
-			}
-			
-		} else {
-			daygap = '-';
-			minutegap = '-';
-			hourgap = '-';
-		}
 		
-		$('#postList').each(function(){
-			var state;
-			if(snapshot1.val().postState == '해결'){
-				state = 'label-default';
-			} else if(snapshot1.val().postState == '보류'){
-				state = 'label-warning';
-			} else{
-				state = 'label-primary';
-			}
-			$('#postList').append('<tr class="call_list">' +
-								'<td class="project-status">' +
-								'<span class="label ' + state + '">' + snapshot1.val().postState + '</span>' +
-								'</td>' +
-								'<td class="project-category">' +
-								'<span>' + snapshot1.val().postType + '</span>' +
-								'</td>' +
-								'<td class="title project-title">' +
-								'<a href="#/index/view_call_record?no='+ key +'" id="listTitle">' + snapshot1.val().title + '</a>' +
-								'</td>' +
-								'<td class="project-title">' +
-								'<a id="titleCom">' + snapshot1.val().postCompany + '</a>' +
-								'<br/>' +
-								'<small>' + snapshot1.val().postCustomer + '</small>' +
-								'</td>' +
-								'<td class="project-clientcategory" id="' + key + '">' + 
-								'</td>' +
-								'<td class="project-people">' +
-								'<a><img alt="image" class="img-circle" src="' + snapshot1.val().userImg + '"></a>' +
-								'<br/>' +
-								'<small>' + snapshot1.val().username + '</small>' +
-								'<br/>' +
-								'</td>' +
-								'<td class="project-people replyImgTr">' +
-								'<a><img alt="" class="replyImgli img-circle" src="' + snapshot2.val().replyImg + '"></a>' +
-					 			'<br/>' +
-				 				'<small>' + snapshot2.val().replyName + '</small>' +
-					 			'<br/>' +
-								'</td>' +
-								'<td class="project-title">' +
-								'<small>접수: ' + snapshot1.val().postDate + '</small>' +
-								'<br/>' +
-								'<small>처리: ' + daygap + '일  ' + hourgap + '시간 ' + minutegap + '분</small>' +
-								'</td>' +
-								'<td onload="setTimeout()" class="project-title ' + key + '">' +
-								'</td>' +
-								'</tr>');
+			$('#postList').each(function(){
+				var state;
+				if(snapshot1.val().status == '해결'){
+					state = 'label-default';
+				} else if(snapshot1.val().status == '보류'){
+					state = 'label-warning';
+				} else{
+					state = 'label-primary';
+				}
+				
+				var type;
+				if(snapshot1.val().type == 'taxLaw'){
+					type = '세법'
+				} else if(snapshot1.val().type == 'system'){
+					type = '시스템'
+				} else {
+					type = '운용'
+				}
+			
+				$('#postList').append('<tr class="call_list">' +
+									'<td class="project-status">' +
+									'<span class="label ' + state + '">' + snapshot1.val().status + '</span>' +
+									'</td>' +
+									'<td class="project-category">' +
+									'<span>' + type + '</span>' +
+									'</td>' +
+									'<td class="title project-title">' +
+									'<a href="#/index/view_call_record?no='+ key +'" id="listTitle">' + snapshot1.val().title + '</a>' +
+									'</td>' +
+									'<td class="project-title">' +
+									'<a id="titleCom">' + snapshot1.val().company + '</a>' +
+									'<br/>' +
+									'<small>' + snapshot1.val().userName + '</small>' +
+									'</td>' +
+									'<td class="project-clientcategory" id="' + key + '">' + 
+									'</td>' +
+	//								'<td class="project-people">' +
+	//								'<a><img alt="image" class="img-circle" src="' + snapshot1.val().userImg + '"></a>' +
+	//								'<br/>' +
+	//								'<small>' + snapshot1.val().username + '</small>' +
+	//								'<br/>' +
+	//								'</td>' +
+									'<td class="project-people replyImgTr">' +
+									'<a><img alt="" class="replyImgli img-circle" src="' + snapshot2.val().replyImg + '"></a>' +
+						 			'<br/>' +
+					 				'<small>' + snapshot2.val().replyName + '</small>' +
+						 			'<br/>' +
+									'</td>' +
+									'<td class="project-title">' +
+									'<small>접수: ' + snapshot1.val().date + '</small>' +
+									'<br/>' +
+									'<small class="replygap">처리: ' + daygap + '일  ' + hourgap + '시간 ' + minutegap + '분</small>' +
+									'</td>' +
+									'<td onload="setTimeout()" class="project-title ' + key + '">' +
+									'</td>' +
+									'</tr>');
 			
 			$('.replyImgli[src=""]').hide();
 	        $('.replyImgli:not([src=""])').show();
+	        
 			
 			/* 실시간 시간차 */
-			var now = snapshot1.val().postDate;
+			var now = snapshot1.val().date;
 	    	var postDate = now.split(' ');
 	    	var postDate1 = postDate[0].split('.');
 	    	var postDate2 = postDate[1].split(':');
@@ -119,7 +130,7 @@ function postList(key){
 	    	var min =	parseInt((gap2%3600)/60);
 	    	var sec = gap2%60;
 	    	
-	    	if(snapshot1.val().postState == '접수' || snapshot1.val().postState == '보류'){
+	    	if(snapshot1.val().status == '접수' || snapshot1.val().status == '보류'){
 		    	$('.' + key).children().remove();
 		    	$('.' + key).append('<h4>' + hour + '시간' + min + '분' + '</h4>');
 	    		$('.' + key).css('color', 'red');
@@ -143,24 +154,26 @@ function postList(key){
 			
 			
 	    	/* 회사 고객 타입 */
-	    	if(snapshot1.val().yeta == '1'){
-	    		$('#' + key).append('<span class="badge badge-success yeta"> Y </span>');
-	    		if(snapshot1.val().sap == '1'){
-	    			$('#' + key).append('<span class="badge badge-info sap"> S </span>');
+	    	firebase.database().ref('company/').orderByChild('name').equalTo(snapshot1.val().company).on('child_added', function(snapshot4){
+	    		if(snapshot4.val().yeta == '1'){
+	    			$('#' + key).append('<span class="badge badge-success yeta"> Y </span>');
+	    			if(snapshot4.val().sap == '1'){
+	    				$('#' + key).append('<span class="badge badge-info sap"> S </span>');
+	    			}
+	    			if(snapshot4.val().cloud == '1'){
+	    				$('#' + key).append('<span class="badge badge-primary cloud"> C </span>');
+	    			}
+	    			if(snapshot4.val().onpremises == '1'){
+	    				$('#' + key).append('<span class="badge badge-danger onpremises"> O </span>');
+	    			}
 	    		}
-	    		if(snapshot1.val().cloud == '1'){
-	    			$('#' + key).append('<span class="badge badge-primary cloud"> C </span>');
+	    		if(snapshot4.val().academy == '1'){
+	    			$('#' + key).append('<span class="badge badge-info academy"> A </span>');
 	    		}
-	    		if(snapshot1.val().onpremises == '1'){
-	    			$('#' + key).append('<span class="badge badge-danger onpremises"> O </span>');
+	    		if(snapshot4.val().consulting == '1'){
+	    			$('#' + key).append('<span class="badge badge-warning consulting"> C </span>');
 	    		}
-	    	}
-	    	if(snapshot1.val().academy == '1'){
-	    		$('#' + key).append('<span class="badge badge-info academy"> A </span>');
-	    	}
-	    	if(snapshot1.val().consulting == '1'){
-	    		$('#' + key).append('<span class="badge badge-warning consulting"> C </span>');
-	    	}
+	    	})
 		})
 		
 		
@@ -192,7 +205,7 @@ function postList(key){
 /* 실시간 시간차 */
 function myFunction(snapshot1, key) {
     setInterval(function(){ 
-    	var now = snapshot1.val().postDate;
+    	var now = snapshot1.val().date;
     	var postDate = now.split(' ');
     	var postDate1 = postDate[0].split('.');
     	var postDate2 = postDate[1].split(':');
@@ -205,7 +218,7 @@ function myFunction(snapshot1, key) {
     	var min = parseInt((gap2%3600)/60);
     	var sec = gap2%60;		
     	
-    	if(snapshot1.val().postState == '접수' || snapshot1.val().postState == '보류'){
+    	if(snapshot1.val().status == '접수' || snapshot1.val().status == '보류'){
     		$('.' + key).children().remove();
 	    	$('.' + key).append('<h4>' + hour + '시간' + min + '분' + '</h4>');
     		$('.' + key).css('color', 'red');
@@ -217,19 +230,19 @@ function myFunction(snapshot1, key) {
 $(document).ready(function(){
 	if(pageType != '' && status == ''){
 		$('#postList').children('.call_list').remove();
-		firebase.database().ref('posts/').orderByChild('postState').equalTo(pageType).on('child_added', function(snapshot){
+		firebase.database().ref('qnaWrite/').orderByChild('status').equalTo(pageType).on('child_added', function(snapshot){
 			postList(snapshot.key);
 		});
 	} else if(status != '' && pageType != ''){
 		$('#postList').children('.call_list').remove();
-		firebase.database().ref('posts/').orderByChild('postState').equalTo(pageType ).on('child_added', function(snapshot){
+		firebase.database().ref('qnaWrite/').orderByChild('status').equalTo(pageType ).on('child_added', function(snapshot){
 			if(snapshot.val().postType == status){
 				postList(snapshot.key);
 			}
 		});
 	} else{
 		/* 전체 리스트 */
-		firebase.database().ref("posts/").on("child_added", function(snapshot){
+		firebase.database().ref("qnaWrite/").on("child_added", function(snapshot){
 			postList(snapshot.key);
 		});
 	}
@@ -240,7 +253,7 @@ $(document).ready(function(){
 		$('#postList').children('.call_list').remove();
 		
 		/* 전체 리스트 */
-		firebase.database().ref("posts/").orderByKey().on("child_added", function(snapshot){
+		firebase.database().ref("qnaWrite/").orderByKey().on("child_added", function(snapshot){
 			postList(snapshot.key);
 		});
 	})
@@ -249,11 +262,11 @@ $(document).ready(function(){
 		$('#postList').children('.call_list').remove();
 		var select = $(this).children("option:selected").text();
 		if(select == '전체'){
-			firebase.database().ref("posts/").on("child_added", function(snapshot){
+			firebase.database().ref("qnaWrite/").on("child_added", function(snapshot){
 				postList(snapshot.key);
 			});
 		} else {
-			firebase.database().ref("posts/").orderByChild('postType').equalTo(select).on('child_added', function(snapshot){
+			firebase.database().ref("qnaWrite/").orderByChild('postType').equalTo(select).on('child_added', function(snapshot){
 				postList(snapshot.key);
 			})
 		}
@@ -261,26 +274,26 @@ $(document).ready(function(){
 	
 	$("#radio1").click(function(){
 		$('#postList').children('.call_list').remove();
-		firebase.database().ref("posts/").on("child_added", function(snapshot){
+		firebase.database().ref("qnaWrite/").on("child_added", function(snapshot){
 			postList(snapshot.key);
 		});
 	})
 	
 	$('#radio2').click(function() {
 		$('#postList').children('.call_list').remove();
-		firebase.database().ref('posts/').orderByChild('postState').equalTo('접수').on('child_added', function(snapshot){
+		firebase.database().ref('qnaWrite/').orderByChild('postState').equalTo('접수').on('child_added', function(snapshot){
 			postList(snapshot.key);
 		});
 	})
 	$('#radio3').click(function() {
 		$('#postList').children('.call_list').remove();
-		firebase.database().ref('posts/').orderByChild('postState').equalTo('해결').on('child_added', function(snapshot){
+		firebase.database().ref('qnaWrite/').orderByChild('postState').equalTo('해결').on('child_added', function(snapshot){
 			postList(snapshot.key);
 		})
 	})
 	$('#radio4').click(function() {
 		$('#postList').children('.call_list').remove();
-		firebase.database().ref('posts/').orderByChild('postState').equalTo('보류').on('child_added', function(snapshot){
+		firebase.database().ref('qnaWrite/').orderByChild('postState').equalTo('보류').on('child_added', function(snapshot){
 			postList(snapshot.key);
 		})
 	})
@@ -290,7 +303,7 @@ $(document).ready(function(){
 $(document).ready(function(){
 	$('#searchBtn').click(function(){
 		$('#postList').children('.call_list').remove();
-		firebase.database().ref("posts/").on("child_added", function(snapshot){
+		firebase.database().ref("qnaWrite/").on("child_added", function(snapshot){
 			postList(snapshot.key);
 		});
 	});
@@ -310,21 +323,15 @@ $('.searchUl').hide();
 
 function typeSelect(){
 	if($('#searchSelect option:selected').val() == 'title'){
-		firebase.database().ref('posts/').on('child_added', function(snapshot){
+		firebase.database().ref('qnaWrite/').on('child_added', function(snapshot){
 			$('.searchUl').append('<li>' + snapshot.val().title + '</li>');
 		})
 	} else if($('#searchSelect option:selected').val() == 'text'){
-		firebase.database().ref('posts/').on('child_added', function(snapshot){
+		firebase.database().ref('qnaWrite/').on('child_added', function(snapshot){
 			$('.searchUl').append('<li>' + snapshot.val().text + '</li>');
 		})
-	} else if($('#searchSelect option:selected').val() == 'tags'){
-		firebase.database().ref('posts/').on('child_added', function(snapshot){
-			if(snapshot.val().tags != undefined){
-				$('.searchUl').append('<li>' + snapshot.val().tags + '</li>');
-			}
-		})
 	} else if($('#searchSelect option:selected').val() == 'username'){
-		firebase.database().ref('posts/').on('child_added', function(snapshot){
+		firebase.database().ref('qnaWrite/').on('child_added', function(snapshot){
 			$('.searchUl').append('<li>' + snapshot.val().username + '</li>');
 		})
 	}
@@ -348,7 +355,7 @@ function typeSelect(){
 				$('#postList').children('.call_list').remove();
 				for(var i=0; i<=searchInput1.length; i++){
 					if(searchInput1[i] != undefined || searchInput1[i] != null){
-						firebase.database().ref('posts/').orderByChild(searchType).equalTo(searchInput1[i]).on('child_added', function(snapshot){
+						firebase.database().ref('qnaWrite/').orderByChild(searchType).equalTo(searchInput1[i]).on('child_added', function(snapshot){
 							postList(snapshot.key);
 						})
 					}
@@ -357,7 +364,7 @@ function typeSelect(){
 			case 'tags':
 				$('#postList').children('.call_list').remove();
 				var tagsIndex = [];
-				firebase.database().ref('posts/').on('child_added', function(snapshot){
+				firebase.database().ref('qnaWrite/').on('child_added', function(snapshot){
 					if(snapshot.val().tags != undefined){
 						for(var i=0; i<=searchInput.length; i++){
 							if(searchInput[i] != undefined || searchInput[i] != null || searchInput[i] != " "){
@@ -373,7 +380,7 @@ function typeSelect(){
 				$('#postList').children('.call_list').remove();
 				$('.searchUl').each(function(i, e){
 					if(searchInput[i] != undefined || searchInput[i] != null){
-						firebase.database().ref('posts/').orderByChild(searchType).equalTo(searchInput[i]).on('child_added', function(snapshot){
+						firebase.database().ref('qnaWrite/').orderByChild(searchType).equalTo(searchInput[i]).on('child_added', function(snapshot){
 							postList(snapshot.key);
 						})
 					}
@@ -383,7 +390,7 @@ function typeSelect(){
 				$('#postList').children('.call_list').remove();
 				for(var i=0; i<=searchInput.length; i++){
 					if(searchInput[i] != undefined || searchInput[i] != null){
-						firebase.database().ref('posts/').orderByChild(searchType).equalTo(searchInput[i]).on('child_added', function(snapshot){
+						firebase.database().ref('qnaWrite/').orderByChild(searchType).equalTo(searchInput[i]).on('child_added', function(snapshot){
 							postList(snapshot.key);
 						})
 					}
@@ -392,7 +399,7 @@ function typeSelect(){
 			}	
 		} else {
 			$('#postList').children('.call_list').remove();
-			firebase.database().ref("posts/").on("child_added", function(snapshot){
+			firebase.database().ref("qnaWrite/").on("child_added", function(snapshot){
 				postList(snapshot.key);
 			});
 		}

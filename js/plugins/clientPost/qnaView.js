@@ -16,6 +16,11 @@ $(document).ready(function(){
 		$('#viewText').text(snapshot.val().text);
 		$('#postDate').text('글 작성일: ' + snapshot.val().date);
 		
+		firebase.database().ref('reply/' + no).on('value', function(snapshot1){
+			$('#replyText').text(snapshot1.val().replyText);
+			$('#replyDate').text('답변 작성일: ' + snapshot1.val().replyDate);
+		})
+		
 		if(snapshot.val().file == ''){
 			$('#viewFile').append('<div class="file-box"><small>no file</small></div>');
 		}else{

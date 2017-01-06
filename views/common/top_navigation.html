@@ -5,27 +5,46 @@
             <button aria-controls="navbar" aria-expanded="false" data-target="#navbar" data-toggle="collapse" class="navbar-toggle collapsed" type="button">
                 <i class="fa fa-reorder"></i>	
             </button>
-            <a ui-sref="cIndex.main" class="navbar-brand">AT&P Partners</a>
+            <a onclick="notifyPage()" class="navbar-brand">YETA2016</a>
         </div>
         <div class="navbar-collapse collapse" id="navbar">
             <ul class="nav navbar-nav">
                 <li>
-                    <a ui-sref="cIndex.notifyPage">공지사항</a>
+                    <a onclick="notifyPage()">공지사항</a>
                 </li>
-                <li>
+                <li uib-dropdown>
+                    <a href uib-dropdown-toggle> 문의 <span class="caret"></span></a>
+                    <ul role="menu" uib-dropdown-menu>
+                        <li>
                     <a onclick="systemBtn()">시스템 문의</a>
                 </li>
-                <li>
+                        <li>
                     <a onclick="managementBtn()">운용 문의</a>
                 </li>
-                <li>
+                        <li>
                     <a onclick="taxLawBtn()">세법 문의</a>
+                </li>
+                    </ul>
                 </li>
                 <li>
                     <a onclick="qnaList()">문의 리스트</a>
                 </li>
             </ul>
             <ul class="nav navbar-top-links navbar-right">
+	            <li uib-dropdown>
+	                <a class="count-info" href uib-dropdown-toggle>
+	                    <i class="fa fa-envelope"></i> <span class="label label-warning alertNum"></span>
+	                </a>
+	                <ul class="dropdown-messages" id="userAlert" uib-dropdown-menu>
+	                	<li>
+	                        <div class="text-center link-block">
+	                            <a href="#/cIndex/user?no=1">
+	                                <i class="fa fa-envelope"></i> <strong>Read All Messages</strong>
+	                            </a>
+	                        </div>
+	                    </li>
+	                </ul>
+	            </li>
                 <li>
                     <a onclick="Clogout()" id="logout"><i class="fa fa-sign-out"></i>logout</a>
                 </li>

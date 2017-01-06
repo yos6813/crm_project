@@ -12,13 +12,13 @@ $('#viewAcademy').hide();
 $('#viewConsulting').hide();
 
 $(document).ready(function(){
-	firebase.database().ref('posts/' + viewPageno).on('value', function(snapshot){
+	firebase.database().ref('qnaWrite/' + viewPageno).on('value', function(snapshot){
 		$('#viewTitle').text(snapshot.val().title);
-		$('#viewCustomer').text(snapshot.val().postCustomer);
-		$('#viewCall').text(snapshot.val().postCusPhone);
+		$('#viewCustomer').text(snapshot.val().userName);
+//		$('#viewCall').text(snapshot.val().postCusPhone);
 
 		if(snapshot.val().postCompany != ''){
-			$('#viewCompany').text(snapshot.val().postCompany);
+			$('#viewCompany').text(snapshot.val().company);
 			var comClient = $('#viewCompany').text();
 			firebase.database().ref("company/").orderByChild('name').equalTo(comClient).on('child_added', function(snapshot){
 				firebase.database().ref("company/" + snapshot.key).on('value', function(snapshot1){
@@ -50,7 +50,7 @@ $('#viewType4').hide();
 
 $(document).ready(function(){
 	
-	firebase.database().ref('posts/' + viewPageno + '/postState').on('value', function(snapshot){
+	firebase.database().ref('qnaWrite/' + viewPageno + '/status').on('value', function(snapshot){
 		if(snapshot.val() == '해결'){
 			$('#acceptSel1').show();
 			$('#postAccept').hide();
@@ -75,7 +75,7 @@ $(document).ready(function(){
 		}
 	})
 	
-	firebase.database().ref('posts/' + viewPageno + '/postType').on('value', function(snapshot){
+	firebase.database().ref('qnaWrite/' + viewPageno + '/type').on('value', function(snapshot){
 		if(snapshot.val() == '세법'){
 			$('#viewTaxLaw').show();
 			$('#viewType1').show();
@@ -85,26 +85,10 @@ $(document).ready(function(){
 		} else if(snapshot.val() == '운용'){
 			$('#viewEmployment').show();
 			$('#viewType3').show();
-		} else if(snapshot.val() == '기타'){
-			$('#viewEtc').show();
-			$('#viewType4').show();
-		}
+		} 
 	})
 	
-	firebase.database().ref('posts/' + viewPageno + '/tags').on('value', function(snapshot){
-		var tags = [];
-		tags.push(snapshot.val());
-		if(tags[0] == null){
-			$('.tag-list').append('<li><a href=""><i class="fa fa-tag"></i>No tags</a></li>');
-		} else {
-			for(var i=0; i<=tags[0].length; i++){
-				if(tags[0][i] != undefined)
-					$('.tag-list').append('<li><a href=""><i class="fa fa-tag"></i>' + tags[0][i] + '</a></li>');
-			}
-		}
-	})
-	
-	firebase.database().ref('posts/' + viewPageno + '/text').on('value', function(snapshot){
+	firebase.database().ref('qnaWrite/' + viewPageno + '/text').on('value', function(snapshot){
 		$('#viewText').append(snapshot.val());
 	})
 	
@@ -112,13 +96,13 @@ $(document).ready(function(){
 		$('#ReplyText').append(snapshot.val());
 	})
 	
-	firebase.database().ref('posts/' + viewPageno + '/uploadfile').on('value', function(snapshot){
-		if(snapshot.val() == undefined || snapshot.val() == 'x'){
+	firebase.database().ref('qnaWrite/' + viewPageno + '/file').on('value', function(snapshot){
+		if(snapshot.val() == undefined || snapshot.val() == ''){
 			$('#viewFile').append('<div class="file-box"><small>no file</small></div>');
 		}else{
-			firebase.database().ref('posts/' + viewPageno).on('value', function(snapshot1){
+			firebase.database().ref('qnaWrite/' + viewPageno).on('value', function(snapshot1){
 				snapshot.forEach(function(data){
-				if(data.val() == 'x' || data.val() == ''){
+				if(data.val() == ''){
 					$('#viewFile').children().remove();
 					$('#viewFile').append('<div class="file-box"><small>no file</small></div>');
 				} else {
@@ -132,7 +116,7 @@ $(document).ready(function(){
 									'</div>' + 
 									'<div class="file-name">' + data.val() +
 									'<br/>' +
-									'<small>Added: ' + snapshot1.val().postDate + '</small>' +
+									'<small>Added: ' + snapshot1.val().date + '</small>' +
 									'</div>' +
 									'</a>' +
 									'<div>' +
@@ -161,7 +145,7 @@ $(document).ready(function(){
 
 		if(state == 'accept'){
 			$('#acceptSel1').show();
-			firebase.database().ref('posts/' + viewPageno).update({
+			firebase.database().ref('qnaWrite/' + viewPageno).update({
 				postState:'접수'
 			})
 			firebase.database().ref('accept/' + viewPageno).update({
@@ -176,7 +160,7 @@ $(document).ready(function(){
 				AcceptDate: '',
 				AcceptUserId:''
 			})
-			firebase.database().ref('posts/' + viewPageno).update({
+			firebase.database().ref('qnaWrite/' + viewPageno).update({
 				postState: '보류'
 			})
 			location.reload();
@@ -187,7 +171,7 @@ $(document).ready(function(){
 				replyName: '',
 				userId: ''
 			});
-			firebase.database().ref('posts/' + viewPageno).update({
+			firebase.database().ref('qnaWrite/' + viewPageno).update({
 				postState:'접수',
 				date: date
 			})
@@ -198,7 +182,7 @@ $(document).ready(function(){
 			})
 			location.reload();
 		} else {
-			firebase.database().ref('posts/' + viewPageno).update({
+			firebase.database().ref('qnaWrite/' + viewPageno).update({
 				postState: '해결'
 			})
 			firebase.database().ref('reply/' + viewPageno).update({
@@ -290,7 +274,7 @@ $(document).ready(function(){
 //		var userId = firebase.auth().currentUser;
 //		firebase.database().ref('user-posts/' + userId.uid + '/' + viewPageno).on('value', function(snapshot){
 //			if(snapshot.val() != null){
-				$('#viewButton').append('<a href="#/index/form_call_record_modify?no=' + viewPageno + '" id="viewModify" class="btn btn-white btn-sm" title="Reply"><i class="fa fa-pencil"></i> 수정</a>' +
+				$('#viewButton').append('<a href="#/index/form_call_record_modify?no=' + viewPageno + '" id="viewModify" class="btn btn-white btn-sm" title="Reply"><i class="fa fa-pencil"></i> 답변</a>' +
 										'<a id="viewDelete" class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Move to trash"><i class="fa fa-trash-o"></i> 삭제</a>');
 //			}
 //		})

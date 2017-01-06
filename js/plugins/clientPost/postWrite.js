@@ -58,7 +58,7 @@ function handleFileSelect(evt) {
 }
 	  document.getElementById('fileButton').addEventListener('change', handleFileSelect, false);
 	 
-function postAdd(user, title, text, file, tag, date, type, status){
+function postAdd(user, title, text, file, tag, date, type, status, company, userId, userName, replyDate, replyName, replyText, replyImg){
 	var postData = {
 			user: user,
 			title: title,
@@ -67,42 +67,91 @@ function postAdd(user, title, text, file, tag, date, type, status){
 			tag: tag,
 			date: date,
 			type: type,
-			status: status
+			status: status,
+			company: company,
+			userName: userName
+	}
+	
+	var replyData = {
+			userId: userId,
+			replyDate: replyDate,
+			replyName: replyName,
+			replyText: replyText,
+			replyImg: replyImg
 	}
 	
 	var newPostKey = firebase.database().ref().child('qnaWrite/').push().key;
+	var todayMonth;
+	if(new Date().getMonth() == 12){
+		todayMonth = 1;
+	} else {
+		todayMonth = new Date().getMonth() + 1;
+	}
 	
 	var updates = {};
 	updates['/qnaWrite/' + newPostKey] = postData;
+	updates['/timePosts/' + todayMonth + '/' + new Date().getDate() + '/' + new Date().getHours() + '/' + newPostKey] = postData;
+	updates['/monthPosts/' + new Date().getFullYear() + '/' + todayMonth + '/' +new Date().getDate() + '/' + newPostKey] = postData;
+	updates['/reply/' + newPostKey] = replyData;
 	
 	return firebase.database().ref().update(updates);
 }
 
 $(document).ready(function(){
+	$('#fileInput').children().remove();
+	$('#qnaText').summernote('code', '');
+	$('#qnaTitle').val('');
+	
+	if(writeType == 'taxLaw')
+		$('#writeType').text('세법');
+	else if(writeType == 'system')
+		$('#writeType').text('시스템');
+	else if(writeType == 'management')
+		$('#writeType').text('운용')
+		
 	$('#qnaSave').click(function(){
-		var user = firebase.auth().currentUser.email;
-		var title = $('#qnaTitle').val();
-		var text = $('#qnaText').val();
-		var file = [];
-		var tag = [];
-		var today = new Date();
-		var date = today.getFullYear() + "." + (today.getMonth()+1) + "." + today.getDate() + " " + today.getHours() + ":" + today.getMinutes();
-		var type = writeType;
-		var status = '접수';
-		
-		for(var i=0; i<=$('#fileInput').children().length; i++){
-			if($('#fileInput').children().eq(i).text() != undefined && $('#fileInput').children().eq(i).text() != null){
-				file.push($('#fileInput').children().eq(i).text());
+		var user = firebase.auth().currentUser.uid;
+		firebase.database().ref('clients/' + user).on('child_added', function(snapshot){
+			checkUnload = false;
+			var title = $('#qnaTitle').val();
+			var text = $('#qnaText').summernote('code');
+			var file = [];
+			var tag = [];
+			var today = new Date();
+			var date = today.getFullYear() + "." + (today.getMonth()+1) + "." + today.getDate() + " " + today.getHours() + ":" + today.getMinutes();
+			var status = '접수';
+			var company = snapshot.val().companyName;
+			var userName = snapshot.val().clientName;
+			
+			var userId = '';
+			var replyName = '';
+			var replyDate = '';
+			var replyName = '';
+			var replyText = '';
+			var replyImg = '';
+			
+			var type;
+			if(writeType == 'taxLaw')
+				type = '세법';
+			else if(writeType == 'system')
+				type = '시스템';
+			else 
+				type = '운용';
+			
+			for(var i=0; i<=$('#fileInput').children().length; i++){
+				if($('#fileInput').children().eq(i).text() != undefined && $('#fileInput').children().eq(i).text() != null){
+					file.push($('#fileInput').children().eq(i).text());
+				}
 			}
-		}
-		
-		$('.tagSel').each(function(){
-			tag.push($(this).text());
+			
+			$('.tagSel').each(function(){
+				tag.push($(this).text());
+			})
+			
+			if(title != '' && text != ''){
+				postAdd(user, title, text, file, tag, date, type, status, company, userId, userName, replyDate, replyName, replyText, replyImg);
+				location.hash = '#/cIndex/qnaList?no=' + user;
+			}
 		})
-		
-		if(title != '' && text != ''){
-			postAdd(user, title, text, file, tag, date, type, status);
-			location.hash = '#/cIndex/qnaList?no' + user;
-		}
 	})
 })

@@ -12,16 +12,15 @@ function handleSignUp() {
       }
       console.log(error);
   });
+  location.hash = '#/clientLogin';
 }
 
 $('#clientRegister').click(function(){
 	var clientEmail = $('#clientEmail').val();
     var password = $('#pw').val();
     
-	  
 	if($('#pw').val() == $('#pwCheck').val()){
 		  handleSignUp();
-		  location.hash = '#/clientLogin';
 	  } else {
 		  $('#pwCheck').val('');
 		  $('#pw').val('');

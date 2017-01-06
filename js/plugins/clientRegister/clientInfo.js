@@ -39,17 +39,16 @@ function sample6_execDaumPostcode() {
     }).open();
 }
 
-function addClient(clientLicense, companyName, clientEmail, password, clientName, clientAddress, clientPosition,
-				   clientJob, clientDepartment, clientWorkPhone, clientPhone, clientExtension, clientFax){
+function addClient(uid, clientLicense, companyName, clientEmail, clientName, clientAddress, clientPosition,
+				   clientDepartment, clientWorkPhone, clientPhone, clientExtension, clientFax){
 	var clientData = {
+		uid:uid,
 		clientLicense: clientLicense,
 		companyName: companyName,
 		clientEmail: clientEmail,
-		password: password,
 		clientName: clientName,
 		clientAddress: clientAddress,
 		clientPosition: clientPosition,
-		clientJob: clientJob,
 		clientDepartment: clientDepartment,
 		clientWorkPhone: clientWorkPhone,
 		clientPhone: clientPhone,
@@ -60,32 +59,41 @@ function addClient(clientLicense, companyName, clientEmail, password, clientName
 	var newClientKey = firebase.database().ref().child('clients').push().key;
 	
 	var updates = {};
-	updates['/clients/' + newClientKey] = clientData;
+	updates['/clients/' + uid + '/' + newClientKey] = clientData;
 	
 	return firebase.database().ref().update(updates);
 }
 
+
 $(document).ready(function(){
-	var corporate = $('#clientCorporate').val();
-	var cor = corporate.split('-');
+	$('#clientEmail').val(firebase.auth().currentUser.email);
 	
 	$('#clientCorporate').blur(function(){
-		console.log('test');
+		var corporate = $('#clientCorporate').val();
+		var cor = corporate.split('-');
 		firebase.database().ref('company/').orderByChild('corporate').equalTo(cor[0] + cor[1] + cor[2]).on('child_added', function(snapshot){
-			console.log('test1');
 			$('#companyName').val(snapshot.val().name);
 		})
 	})
-	var clientLicense = $('#clientCorporate').val();
-    var companyName = $('#companyName').val();
-    var clientName = $('#clientName').val();
-    var clientAddress = $('#sample6_address').val() + ' ' + $('#sample6_address2').val();
-    var clientPosition = $('#cPosition').val();
-    var clientJob = $('#cJob').val();
-    var clientDepartment = $('#cDepartment').val();
-    var clientWorkPhone = $('#clientCall').val();
-    var clientPhone = $('#clientPhone').val();
-    var clientExtension = $('#clientExtension').val();
-    var clientFax = $('#clientFax').val();
+	
+    
+    $('#clientInfo').click(function(){
+    	var clientLicense = $('#clientCorporate').val();
+    	var companyName = $('#companyName').val();
+    	var clientName = $('#clientName').val();
+    	var clientAddress = $('#sample6_address').val() + ' ' + $('#sample6_address2').val();
+    	var clientPosition = $('#cPosition').val();
+    	var clientDepartment = $('#cDepartment').val();
+    	var clientWorkPhone = $('#clientCall').val();
+    	var clientPhone = $('#clientPhone').val();
+    	var clientExtension = $('#clientExtension').val();
+    	var clientFax = $('#clientFax').val();
+    	var uid = firebase.auth().currentUser.uid;
+    	
+    	addClient(uid, clientLicense, companyName, clientEmail, clientName, clientAddress, clientPosition,
+    			clientDepartment, clientWorkPhone, clientPhone, clientExtension, clientFax);
+    	
+    	location.hash = '#/cIndex/notifyPage';
+    })
 })
 

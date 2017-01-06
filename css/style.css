@@ -8507,3 +8507,11 @@ body.md-skin {
     width: 5%;
 }
 
+#elogin{
+	display: block;
+    margin: auto;
+    width: 123px;
+    height: 123px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}

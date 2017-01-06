@@ -5,7 +5,7 @@ function getParameterByName(name) {
 	return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
 
-var email = getParameterByName('email');
+var email = getParameterByName('no');
 
 $(document).ready(function(){
 	firebase.database().ref('qnaWrite/').orderByChild('user').equalTo(email).on('child_added', function(snapshot){

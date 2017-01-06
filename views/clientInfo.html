@@ -2,160 +2,126 @@
 <html>
 
 <head>
-
-  <script src="https://apis.google.com/js/platform.js" async defer></script>
-  <link href="../css/plugins/datapicker/datepicker3.css" rel="stylesheet">
-
-  <!-- Sweet Alert -->
-  <link href="../css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
-  <link href="../css/plugins/iCheck/custom.css" rel="stylesheet">
-
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-
-
-  <title>At&amp;P Partners Intranet | register</title>
-
-  <link href="../css/bootstrap.min.css" rel="stylesheet">
-  <link href="../font-awesome/css/font-awesome.css" rel="stylesheet">
-
-  <link href="../css/animate.css" rel="stylesheet">
-  <link href="../css/style1.css" rel="stylesheet">
-  <link href="../css/plugins/steps/jquery.steps.css" rel="stylesheet">
-
+	<script src="https://apis.google.com/js/platform.js" async defer></script>
+	<link href="../css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+	<!-- Sweet Alert -->
+	<link href="../css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+	<link href="../css/plugins/iCheck/custom.css" rel="stylesheet">
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>At&amp;P Partners Intranet | register</title>
+	<link href="../css/bootstrap.min.css" rel="stylesheet">
+	<link href="../font-awesome/css/font-awesome.css" rel="stylesheet">
+	<link href="../css/animate.css" rel="stylesheet">
+	<link href="../css/style1.css" rel="stylesheet">
+	<link href="../css/plugins/steps/jquery.steps.css" rel="stylesheet">
 </head>
 
 <body class="grey-bg">
 	<div class="registerBox animated fadeInDown">
-	    <div>
-	        <div>
-				<img id="glogin" class="logo-login" src="../img/logo_color.png"  alt="logo">
-      		</div>
-      		 <div class="row">
-            	<div class="col-md-12">
-                	<div class="ibox float-e-margins">
-                    	<div class="ibox-title">
-	                        <h3>회원가입 <small>아래 폼에 맞춰 입력해 주세요</small></h3>
-                    	</div>
-                    	<div class="ibox-content">
-                      		<fieldset class="form-horizontal">
-	        					<form id="registerForm" class="m-t" role="form">
-	                                <div class="form-group">
-	                                    <label class="col-sm-2 control-label">사업자번호:</label>
-	                                    <div class="col-sm-10"><input id="clientCorporate" type="text" class="form-control" data-mask="999-99-99999">
-	                                    </div>
-	                                </div>
-	                                <div class="form-group">
-	                                    <label class="col-sm-2 control-label">사명:</label>
-	                                    <div class="col-sm-10">
-	                                    	<input id="companyName" type="text"  class="form-control" readonly="readonly">
-	                                    </div>
-	                                </div>
-	                                <div class="form-group"><label class="col-sm-2 control-label">이메일:</label>
-	                                    <div class="col-sm-10"><input id="clientEmail" type="email" class="form-control" required></div>
-	                                </div>
-	                                <div class="form-group">
-	                                    <label class="col-sm-2 control-label">비밀번호:</label>
-	                                    <div class="col-sm-10"><input id="pw" name="password" type="password" class="form-control"
-	                                    autocomplete="off" required>
-	                                    </div>
-	                                </div>
-	                                <div class="form-group">
-	                                    <label class="col-sm-2 control-label">비밀번호 확인:</label>
-	                                    <div class="col-sm-10"><input id="pwCheck" autocomplete="off" name="password" type="password" class="form-control" required>
-	                                    </div>
-	                                </div>
-	                                <div class="form-group"><label class="col-sm-2 control-label">성명:</label>
-	                                    <div class="col-sm-10"><input id="clientName" type="text" class="form-control" required></div>
-	                                </div>
-	                                <div class="form-group">
-	                                    <label class="col-sm-2 control-label">주소:</label>
-	                                    <div class="col-sm-10">
-	                                        <button id="address" onclick="sample6_execDaumPostcode()" class="btn btn-default" type="button"><i class="fa fa-search"></i>&nbsp;&nbsp;주소검색</button>
-	                                        <input type="text" class="form-control" id="sample6_address" placeholder="주소" readonly>
-	                                        <input type="text" class="form-control" id="sample6_address2" placeholder="상세주소">
-	                                    </div>
-                                	</div>
-									<div class="form-group"><label class="col-sm-2 control-label">직위:</label>
-	                                    <div class="col-sm-10"><input id="cPosition" type="text" class="form-control" required></div>
-	                                </div>
-	                                <div class="form-group"><label class="col-sm-2 control-label">직책:</label>
-	                                    <div class="col-sm-10"><input id="cJob" type="text" class="form-control" required></div>
-	                                </div>
-	                                <div class="form-group"><label class="col-sm-2 control-label">부서:</label>
-	                                    <div class="col-sm-10"><input id="cDepartment" type="text" class="form-control" required></div>
-	                                </div>
-	                                <div class="form-group">
-	                                    <label class="col-sm-2 control-label">업무전화:</label>
-	                                    <div class="col-sm-10"><input id="clientCall" type="text" class="form-control" required>
-	                                    </div>
-	                                </div>
-	                                <div class="form-group">
-	                                    <label class="col-sm-2 control-label">휴대전화:</label>
-	                                    <div class="col-sm-10"><input id="clientPhone" type="text" class="form-control" required></div>
-	                                </div>
-	
-	                                <div class="form-group">
-	                                    <label class="col-sm-2 control-label">내선:</label>
-	                                    <div class="col-sm-10"><input id="clientExtension" type="text" class="form-control">
-	                                    </div>
-	                                </div>
-	                                
-	                                <div class="form-group">
-	                                    <label class="col-sm-2 control-label">팩스:</label>
-	                                    <div class="col-sm-10"><input id="clientFax" type="text" class="form-control">
-	                                    </div>
-	                                </div>
-	                                <div class="form-group">
-                                    	<label class="col-sm-2 control-label"></label>
-                                    	<div class="col-sm-10"><input type="submit" id="clientRegister" class="btn btn-primary block full-width m-b" value="가입">
-	                                        <p>
-	                                        	입력하신 정보는 내부 관리 목적으로 사용되며, 이 이외의 목적으로 사용되지 않습니다.
-	                                        </p>
-                                    	</div>
-                                	</div>
-                            	</form>
-                            </fieldset>
-                        </div>
-                    </div>
-                </div>
-            </div>
-	    </div>
+		<div>
+			<div>
+				<img id="glogin" class="logo-clogin" src="../img/yeta_logo-1.png" alt="logo">
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<div class="ibox float-e-margins">
+						<div class="ibox-title">
+							<h3>담당자 등록 <small>아래 폼에 맞춰 입력해 주세요</small></h3>
+						</div>
+						<div class="ibox-content">
+							<fieldset class="form-horizontal">
+								<form id="registerForm" class="m-t" role="form">
+									<div class="form-group">
+										<label class="col-sm-2 control-label">사업자번호:</label>
+										<div class="col-sm-10"><input id="clientCorporate" type="text" class="form-control" data-mask="999-99-99999"><span class="help-block m-b-none">사업자번호 10자리를 입력하세요. 사업자 번호를 입력하지 않으면 담당자 등록이 불가 합니다.</span>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-2 control-label">사명:</label>
+										<div class="col-sm-10">
+											<input id="companyName" type="text" class="form-control" readonly="readonly"><span class="help-block m-b-none">위 사업자 번호를 입력하면 자동으로 입력됩니다.</span>
+										</div>
+									</div>
+									<div class="hr-line-dashed"></div>
+									<div class="form-group"><label class="col-sm-2 control-label">아이디:</label>
+										<div class="col-sm-10"><input id="clientEmail" type="email" class="form-control" placeholder="이메일 양식으로 입력" required></div>
+									</div>
+									<div class="form-group"><label class="col-sm-2 control-label">성명:</label>
+										<div class="col-sm-10"><input id="clientName" type="text" class="form-control" required></div>
+									</div>
+									<div class="form-group"><label class="col-sm-2 control-label">부서:</label>
+										<div class="col-sm-10"><input id="cDepartment" type="text" class="form-control" required></div>
+									</div>
+									<div class="form-group"><label class="col-sm-2 control-label">직위/직책:</label>
+										<div class="col-sm-10"><input id="cPosition" type="text" class="form-control" required></div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-2 control-label">근무지 주소:</label>
+										<div class="col-sm-10">
+											<button id="address" onclick="sample6_execDaumPostcode()" class="btn btn-default" type="button"><i class="fa fa-search"></i>&nbsp;&nbsp;주소검색</button>
+											<input type="text" class="form-control" id="sample6_address" placeholder="주소" readonly>
+											<input type="text" class="form-control" id="sample6_address2" placeholder="상세주소">
+										</div>
+									</div>
+									<div class="hr-line-dashed"></div>
+									<div class="form-group">
+										<label class="col-sm-2 control-label">업무전화:</label>
+										<div class="col-sm-7"><input id="clientCall" type="text" class="form-control" required>
+										</div>
+										<div class="col-sm-3"><input id="clientExtension" type="text" class="form-control" placeholder="내선번호">
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-2 control-label">휴대전화:</label>
+										<div class="col-sm-10"><input id="clientPhone" type="text" class="form-control" required></div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-2 control-label">팩스:</label>
+										<div class="col-sm-10"><input id="clientFax" type="text" class="form-control">
+										</div>
+									</div>
+									<div class="hr-line-dashed"></div>
+									<div class="form-group">
+										<label class="col-sm-2 control-label"></label>
+										<div class="col-sm-10"><input type="submit" id="clientInfo" class="btn btn-primary block full-width m-b" value="가입">
+											<p>
+												입력하신 정보는 내부 관리 목적으로 사용되며, 이 이외의 목적으로 사용되지 않습니다.
+											</p>
+										</div>
+									</div>
+								</form>
+							</fieldset>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
-	 <!-- Mainly scripts -->
-    <script src="../js/bootstrap/bootstrap.min.js"></script>
-    <script src="../js/plugins/metisMenu/jquery.metisMenu.js"></script>
-    <script src="../js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
-    <script src="../js/jquery/jquery-ui.custom.min.js"></script>
-    <script src="../js/jquery/jquery-ui-1.10.4.min.js"></script>
-
-    <!-- Custom and plugin javascript -->
-    <script src="../js/inspinia.js"></script>
-    <script src="../js/plugins/pace/pace.min.js"></script>
-
-    <!-- datepicker -->
-    <script src="../js/plugins/datapicker/angular-datepicker.js"></script>
-
-
-    <!-- Date range picker -->
-    <script src="../js/plugins/daterangepicker/angular-daterangepicker.js"></script>
-
-
-    <!-- daum 주소찾기 -->
-    <script src="https://spi.maps.daum.net/imap/map_js_init/postcode.v2.js"></script>
-
-    <!-- input mask -->
-    <script src="../js/plugins/jasny/jasny-bootstrap.min.js"></script>
-
-    <!-- Sweet alert -->
-    <script src="../js/plugins/sweetalert/sweetalert.min.js"></script>
-
-    <!-- iCheck -->
-    <script src="../js/plugins/iCheck/icheck.min.js"></script>
-
-    <!-- Peity -->
-    <script src="../js/plugins/peity/jquery.peity.min.js"></script>
-	
-	<script src="../js/plugins/clientRegister/clientRegister.js"></script>
+	<!-- Mainly scripts -->
+	<script src="../js/bootstrap/bootstrap.min.js"></script>
+	<script src="../js/plugins/metisMenu/jquery.metisMenu.js"></script>
+	<script src="../js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+	<script src="../js/jquery/jquery-ui.custom.min.js"></script>
+	<script src="../js/jquery/jquery-ui-1.10.4.min.js"></script>
+	<!-- Custom and plugin javascript -->
+	<script src="../js/inspinia.js"></script>
+	<script src="../js/plugins/pace/pace.min.js"></script>
+	<!-- datepicker -->
+	<script src="../js/plugins/datapicker/angular-datepicker.js"></script>
+	<!-- Date range picker -->
+	<script src="../js/plugins/daterangepicker/angular-daterangepicker.js"></script>
+	<!-- daum 주소찾기 -->
+	<script src="https://spi.maps.daum.net/imap/map_js_init/postcode.v2.js"></script>
+	<!-- input mask -->
+	<script src="../js/plugins/jasny/jasny-bootstrap.min.js"></script>
+	<!-- Sweet alert -->
+	<script src="../js/plugins/sweetalert/sweetalert.min.js"></script>
+	<!-- iCheck -->
+	<script src="../js/plugins/iCheck/icheck.min.js"></script>
+	<!-- Peity -->
+	<script src="../js/plugins/peity/jquery.peity.min.js"></script>
+	<script src="../js/plugins/clientRegister/clientInfo.js"></script>
 </body>
+
 </html>

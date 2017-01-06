@@ -8457,23 +8457,29 @@ body.md-skin {
 	height: 100px;
 	overflow: auto;
 }
-
-.logo-register{
+.logo-clogin {
 	display: block;
     margin: auto;
-    width: 30%;
+    width: 123px;
     margin-top: 30px;
     margin-bottom: 30px;
 }
+/* .logo-register{ */
+/* 	display: block; */
+/*     margin: auto; */
+/*     width: 30%; */
+/*     margin-top: 30px; */
+/*     margin-bottom: 30px; */
+/* } */
 
-.logo-login {
+/* .logo-login { */
 
-    display: block;
-    margin: auto;
-    width: 100%;
-    margin-top: 30px;
-    margin-bottom: 30px;
-}
+/*     display: block; */
+/*     margin: auto; */
+/*     width: 100%; */
+/*     margin-top: 30px; */
+/*     margin-bottom: 30px; */
+/* } */
 
 #navprofileImg{
 	width: 36px;
@@ -8508,3 +8514,4 @@ body.md-skin {
 	list-style: none;
 	color: gray;
 }
+
