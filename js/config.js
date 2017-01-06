@@ -253,6 +253,13 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
                 pageTitle: '문의 글 보기'
             }
         })
+        .state('cIndex.clientInfo', {
+            url: "/clientInfo",
+            templateUrl: "views/clientInfo.html",
+            data: {
+                pageTitle: '회원정보입력'
+            }
+        })
 }
 angular
     .module('inspinia')

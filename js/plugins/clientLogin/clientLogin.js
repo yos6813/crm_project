@@ -18,13 +18,13 @@ function toggleSignIn() {
 			}
 			console.log(error);
     });
-}
-
-$('#clientLogin').click(function(){
-	toggleSignIn();
-	firebase.auth().onAuthStateChanged(function(user) {
+    firebase.auth().onAuthStateChanged(function(user) {
 		if(user){
 			location.hash = '#/cIndex/main';
 		}
 	})
+}
+
+$('#clientLogin').click(function(){
+	toggleSignIn();
 })
