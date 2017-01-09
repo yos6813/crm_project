@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "crmapp-32675"
+    "default": "crmapp-32675",
+    "staging": "yeta-cscenter"
   }
 }
