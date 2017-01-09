@@ -18,6 +18,7 @@ $(document).ready(function(){
 		
 		firebase.database().ref('reply/' + no).on('value', function(snapshot1){
 			$('#replyText').text(snapshot1.val().replyText);
+			if(snapshot1.val().replyDate != '')
 			$('#replyDate').text('답변 작성일: ' + snapshot1.val().replyDate);
 		})
 		

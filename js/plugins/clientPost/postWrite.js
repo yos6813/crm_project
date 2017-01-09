@@ -48,19 +48,21 @@ function handleFileSelect(evt) {
 				  'contentType': file.type
 		  };
 		  
-		  storageRef.child('files/' + file.name).put(file, metadata).then(function(snapshot) {
-			  var url = snapshot.metadata.downloadURLs[0];
-			  $('#fileInput').append('<span class="fileName">' +  file.name + '</span>&nbsp;&nbsp;&nbsp;&nbsp;');
-		  }).catch(function(error) {
+			  storageRef.child('files/' + file.name).put(file, metadata).then(function(snapshot) {
+				  var url = snapshot.metadata.downloadURLs[0];
+				  $('#fileInput').append('<span class="fileName">' +  file.name + '</span>&nbsp;&nbsp;&nbsp;&nbsp;');
+			  }).catch(function(error) {
 		  });
 	  }
   }
 }
 	  document.getElementById('fileButton').addEventListener('change', handleFileSelect, false);
 	 
-function postAdd(user, title, text, file, tag, date, type, status, company, userId, userName, replyDate, replyName, replyText, replyImg){
+function postAdd(user, bigGroup, smallGroup, title, text, file, tag, date, type, status, company, userId, userName, replyDate, replyName, replyText, replyImg){
 	var postData = {
 			user: user,
+			bigGroup: bigGroup,
+			smallGroup: smallGroup,
 			title: title,
 			text: text,
 			file: file,
@@ -122,6 +124,17 @@ $(document).ready(function(){
 			var status = '접수';
 			var company = snapshot.val().companyName;
 			var userName = snapshot.val().clientName;
+			var type = $('#writeType').text();
+			var bigGroup = '';
+			var smallGroup = '';
+			
+			if($('#bigGroupli').val() != '선택'){
+				bigGroup = $('#bigGroupli').val();
+			}
+			
+			if($('#smallGroupli').val() != ''){
+				smallGroup = $('#smallGroupli').val();
+			}
 			
 			var userId = '';
 			var replyName = '';
@@ -130,13 +143,6 @@ $(document).ready(function(){
 			var replyText = '';
 			var replyImg = '';
 			
-			var type;
-			if(writeType == 'taxLaw')
-				type = '세법';
-			else if(writeType == 'system')
-				type = '시스템';
-			else 
-				type = '운용';
 			
 			for(var i=0; i<=$('#fileInput').children().length; i++){
 				if($('#fileInput').children().eq(i).text() != undefined && $('#fileInput').children().eq(i).text() != null){
@@ -149,9 +155,24 @@ $(document).ready(function(){
 			})
 			
 			if(title != '' && text != ''){
-				postAdd(user, title, text, file, tag, date, type, status, company, userId, userName, replyDate, replyName, replyText, replyImg);
+				postAdd(user, bigGroup, smallGroup, title, text, file, tag, date, type, status, company, userId, userName, replyDate, replyName, replyText, replyImg);
 				location.hash = '#/cIndex/qnaList?no=' + user;
 			}
+		})
+	})
+	
+	var type = $('#writeType').text();
+	firebase.database().ref('bigGroup/' + type).on('child_added', function(snapshot){
+			$('#bigGroupli').append('<option value="' + snapshot.val().bGroup + '">' + snapshot.val().bGroup + '</option>');
+	})
+	
+	
+	
+	$(document).on('click', '#bigGroupli option', function(){
+		var type = $('#writeType').text();
+		$('#smallGroupli').children().remove();
+		firebase.database().ref('smallGroup/' + type + '/' + $(this).val()).on('child_added', function(snapshot){
+			$('#smallGroupli').append('<option value="' + snapshot.val().sGroup + '">' + snapshot.val().sGroup + '</option>');
 		})
 	})
 })

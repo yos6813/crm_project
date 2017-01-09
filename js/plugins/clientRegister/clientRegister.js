@@ -3,27 +3,39 @@ function handleSignUp() {
   var password = $('#pw').val();
   
   firebase.auth().createUserWithEmailAndPassword(clientEmail, password).catch(function(error) {
-      var errorCode = error.code;
-      var errorMessage = error.message;
-      if (errorCode == 'auth/weak-password') {
-	  alert('The password is too weak.');
-      } else {
-        alert(errorMessage);
-      }
-      console.log(error);
+	  if(error){
+	      var errorCode = error.code;
+	      var errorMessage = error.message;
+	      if (errorCode == 'auth/weak-password') {
+	    	  $('#require1').text('비밀번호의 보안이 약합니다.');
+	    	  $('#require1').show();
+	      } else if (errorCode == 'auth/email-already-in-use'){
+	    	  $('#require1').text('이미 있는 이메일 입니다.');
+	    	  $('#require1').show();
+	      } else {
+	    	  $('#require1').text(errorMessage);
+	    	  $('#require1').show();
+	      }
+	      console.log(error);
+	  }
   });
-  location.hash = '#/clientLogin';
 }
 
+$(document).ready(function(){
+	$('#require').hide();
+})
+
 $('#clientRegister').click(function(){
-	var clientEmail = $('#clientEmail').val();
-    var password = $('#pw').val();
-    
 	if($('#pw').val() == $('#pwCheck').val()){
-		  handleSignUp();
-	  } else {
-		  $('#pwCheck').val('');
+		handleSignUp();
+		location.hash = '#/clientLogin';
+	}
+	else {
+  	  $('#pwCheck').val('');
 		  $('#pw').val('');
-		  alert('비밀번호를 확인해주세요');
-	  }
+		  $('#pw').focus();
+		  $('#require1').text('');
+		  $('#require1').text('비밀번호가 일치하지 않습니다.');
+		  $('#require1').show();
+    } 
 })

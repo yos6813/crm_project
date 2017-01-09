@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+  <link href="../css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+
+  <!-- Sweet Alert -->
+  <link href="../css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+  <link href="../css/plugins/iCheck/custom.css" rel="stylesheet">
+
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>At&amp;P Partners Intranet | 준비중</title>
+
+  <link href="../css/bootstrap.min.css" rel="stylesheet">
+  <link href="../font-awesome/css/font-awesome.css" rel="stylesheet">
+
+  <link href="../css/animate.css" rel="stylesheet">
+  <link href="../css/style1.css" rel="stylesheet">
+  <link href="../css/plugins/steps/jquery.steps.css" rel="stylesheet">
+</head>
+<body>
+	<div class="text-center center2">
+		<div>
+			<img id="glogin" class="logo-clogin" src="../img/yeta_logo-1.png" alt="logo">
+		</div>
+		<h2 class="text-info">2017년 01월 15일 오픈</h2>
+		<button id="logout" class="btn btn-outline btn-info">Logout</button>
+	</div>
+	
+	<script>
+		$('#logout').click(function(){
+			firebase.auth().onAuthStateChanged(function(user) {
+				firebase.auth().signOut();
+				location.hash = '#/clientLogin';
+			});
+		})
+	</script>
+</body>
+</html>

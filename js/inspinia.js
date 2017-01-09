@@ -170,7 +170,7 @@ function logout(){
 function Clogout(){
 	firebase.auth().signOut();
 	window.location.hash = '#/clientLogin';
-	location.reload();
+//	location.reload();
 }
 
 function systemBtn(){
@@ -179,21 +179,26 @@ function systemBtn(){
 }
 
 function managementBtn(){
-	window.location.hash = '#/cIndex/postWrite?type=management';
 	location.reload();
+	window.location.hash = '#/cIndex/postWrite?type=management';
 }
 
 function taxLawBtn(){
-	window.location.hash = '#/cIndex/postWrite?type=taxLaw';
 	location.reload();
+	window.location.hash = '#/cIndex/postWrite?type=taxLaw';
 }
 
 function qnaList(){
-	window.location.hash = '#/cIndex/qnaList?no=' + firebase.auth().currentUser.uid;
 	location.reload();
+	window.location.hash = '#/cIndex/qnaList?no=' + firebase.auth().currentUser.uid;
 }
 
 function notifyPage(){
+//	location.reload();
 	window.location.hash = '#/cIndex/notifyPage';
-	location.reload();
 }
+
+//$(document).ready(function(){
+//	$('#verifyEmail').text();
+//})
+

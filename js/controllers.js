@@ -13,6 +13,12 @@ function MainCtrl() {
     this.descriptionText = '';
 };
 
+function wizardCtrl($scope, $rootScope) {
+    $scope.processForm = function() {
+        alert('완료');
+    };
+};
+
 
 angular
     .module('inspinia')

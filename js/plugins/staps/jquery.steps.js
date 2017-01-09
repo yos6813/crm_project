@@ -290,6 +290,32 @@ function finishStep(wizard, state)
     }
 }
 
+/* 회원 추가 */
+function addClient(uid, clientLicense, companyName, clientEmail, clientName, clientAddress, clientPosition,
+		   clientDepartment, clientWorkPhone, clientPhone, clientExtension, clientFax){
+	var clientData = {
+		uid:uid,
+		clientLicense: clientLicense,
+		companyName: companyName,
+		clientEmail: clientEmail,
+		clientName: clientName,
+		clientAddress: clientAddress,
+		clientPosition: clientPosition,
+		clientDepartment: clientDepartment,
+		clientWorkPhone: clientWorkPhone,
+		clientPhone: clientPhone,
+		clientExtension: clientExtension,
+		clientFax: clientFax
+	};
+	
+	var newClientKey = firebase.database().ref().child('clients').push().key;
+	
+	var updates = {};
+	updates['/clients/' + uid + '/' + newClientKey] = clientData;
+	
+	return firebase.database().ref().update(updates);
+}
+
 /**
  * Gets or creates if not exist an unique event namespace for the given wizard instance.
  *
@@ -794,7 +820,23 @@ function paginationClickHandler(event)
             break;
 
         case "finish":
-            finishStep(wizard, state);
+//            finishStep(wizard, state);
+        		var clientLicense = $('#clientCorporate').val();
+        		var companyName = $('#companyName').val();
+        		var clientName = $('#clientName').val();
+        		var clientAddress = $('#sample6_address').val() + ' ' + $('#sample6_address2').val();
+        		var clientPosition = $('#cPosition').val();
+        		var clientDepartment = $('#cDepartment').val();
+        		var clientWorkPhone = $('#clientCall').val();
+        		var clientPhone = $('#clientPhone').val();
+        		var clientExtension = $('#clientExtension').val();
+        		var clientFax = $('#clientFax').val();
+        		var uid = firebase.auth().currentUser.uid;
+        		var clientEmail = firebase.auth().currentUser.email
+        		
+        		addClient(uid, clientLicense, companyName, clientEmail, clientName, clientAddress, clientPosition,
+        				clientDepartment, clientWorkPhone, clientPhone, clientExtension, clientFax);
+        		location.hash = '#/ready';
             break;
 
         case "next":
@@ -1055,7 +1097,7 @@ function renderPagination(wizard, options, state)
     if (options.enablePagination)
     {
         var pagination = "<{0} class=\"actions {1}\"><ul role=\"menu\" aria-label=\"{2}\">{3}</ul></{0}>",
-            buttonTemplate = "<li><a href=\"#{0}\" role=\"menuitem\">{1}</a></li>",
+            buttonTemplate = "<li><a class=\"{0}\" href=\"#{0}\" role=\"menuitem\">{1}</a></li>",
             buttons = "";
 
         if (!options.forceMoveForward)

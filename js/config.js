@@ -264,6 +264,15 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
             templateUrl: "views/clientInfo.html",
             data: {
                 pageTitle: '회원정보입력'
+            },
+            resolve: {
+                loadPlugin: function ($ocLazyLoad) {
+                    return $ocLazyLoad.load([
+                        {
+                            files: ['css/plugins/steps/jquery.steps.css']
+                        }
+                    ]);
+                }
             }
         })
         .state('cIndex.user', {
@@ -280,6 +289,20 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
                 pageTitle: '분류 관리'
             }
         })
+        .state('ready', {
+            url: "/ready",
+            templateUrl: "views/ready.html",
+            data: {
+                pageTitle: '준비중'
+            }
+        })
+//        .state('verifyEmail', {
+//            url: "/verifyEmail",
+//            templateUrl: "views/verifyEmail.html",
+//            data: {
+//                pageTitle: '이메일 인증'
+//            }
+//        })
 }
 angular
     .module('inspinia')

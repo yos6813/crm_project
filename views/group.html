@@ -1,7 +1,7 @@
 <meta charset="utf-8">
 <div class="row wrapper border-bottom white-bg page-heading">
 	<div class="col-sm-4">
-		<h2>구성원 관리</h2>
+		<h2>분류 관리</h2>
 		<ol class="breadcrumb">
 			<li>
 				<a ui-sref="index/chart">Home</a>
@@ -11,5 +11,78 @@
 			</li>
 		</ol>
 	</div>
+</div>
+<div class="panel-body">
+    <div class="wrapper wrapper-content animated fadeInUp">
+    	<div class="row">
+	    	<div class="col-lg-12">
+		    	<div class="ibox float-e-margins">
+			        <div class="ibox-title">
+			        	<h5>글 유형</h5>
+		            </div>
+		            <div class="ibox-content">
+				    	<select class="form-control" id="typeSelect">
+				    		<option value="시스템">시스템</option>
+				    		<option value="운용">운용</option>
+				    		<option value="세법">세법</option>
+				    	</select>
+			    	</div>
+		    	</div>
+	    	</div>
+    	</div>
+    	<div class="row">
+	        <div class="col-lg-6">
+	            <div class="ibox float-e-margins">
+	                <div class="ibox-title">
+	                    <h5>대분류</h5>
+	                </div>
+	                <div class="ibox-content">
+	                    <div class="row m-b-sm m-t-sm">
+	                        <div class="col-md-12">
+	                            <div class="input-group">
+	                                <input type="text" placeholder="생성하고자 하는 대분류를 입력하세요" class="input-sm form-control" id="biggroupInput" required>
+	                                <span class="input-group-btn">
+	                                    <button id="addBigGroup" type="button" class="btn btn-sm btn-primary" value="Add"> 추가</button> 
+	                                </span>
+	                            </div>
+	                        </div>
+	                    </div>
+	                    <div class="project-list">
+	                        <table class="table table-hover">
+	                            <tbody id="bigGroup">
+	                            </tbody>
+	                        </table>
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
+	        <div class="col-lg-6">
+	            <div class="ibox float-e-margins">
+	                <div class="ibox-title">
+	                    <h5>소분류</h5>
+	                </div>
+	                <div class="ibox-content">
+	                    <div class="row m-b-sm m-t-sm">
+	                        <div class="col-md-12">
+	                            	대분류: <span id="bigGroup2"></span>
+	                            <div class="input-group">
+	                                <input type="text" placeholder="생성하고자 하는 소분류를 입력하세요" class="input-sm form-control" id="smallgroupInput" required>
+	                                <span class="input-group-btn">
+	                                    <button id="addSmallGroup" type="button" class="btn btn-sm btn-primary" value="Add"> 추가</button> 
+	                                </span>
+	                            </div>
+	                        </div>
+	                    </div>
+	                    <div class="project-list">
+	                        <table class="table table-hover">
+	                            <tbody id="smallGroup">
+	                            </tbody>
+	                        </table>
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
+        </div>
+    </div>
 </div>
 <script src="../js/plugins/group/group.js"></script>

@@ -14,7 +14,6 @@
 	<link href="../font-awesome/css/font-awesome.css" rel="stylesheet">
 	<link href="../css/animate.css" rel="stylesheet">
 	<link href="../css/style1.css" rel="stylesheet">
-	<link href="../css/plugins/steps/jquery.steps.css" rel="stylesheet">
 </head>
 
 <body class="grey-bg">
@@ -33,16 +32,20 @@
 							<fieldset class="form-horizontal">
 								<form id="registerForm" class="m-t" role="form">
 									<div class="form-group"><label class="col-sm-2 control-label">아이디:</label>
-										<div class="col-sm-10"><input id="clientEmail" type="email" class="form-control" placeholder="이메일 양식으로 입력" required></div>
+										<div class="col-sm-10"><input id="clientEmail" type="email" class="required form-control" placeholder="이메일 양식으로 입력"></div>
 									</div>
 									<div class="form-group">
 										<label class="col-sm-2 control-label">비밀번호:</label>
-										<div class="col-sm-10"><input id="pw" name="password" type="password" class="form-control" placeholder="비밀번호를 입력하세요" required>
+										<div class="col-sm-10"><input id="pw" name="password" type="password" class="required form-control" placeholder="비밀번호를 입력하세요">
 										</div>
 									</div>
 									<div class="form-group">
 										<label class="col-sm-2 control-label">비밀번호 확인:</label>
-										<div class="col-sm-10"><input id="pwCheck" name="password" type="password" class="form-control" placeholder="비밀번호를 한번 더 입력하세요" required>
+										<div class="col-sm-10"><input id="pwCheck" name="password" type="password" class="required form-control" placeholder="비밀번호를 한번 더 입력하세요">
+										</div>
+										<label class="col-sm-2"></label>
+										<div class="col-sm-10">
+											<span id="require1" class="help-block m-b-none"></span>
 										</div>
 									</div>
 									<div class="hr-line-dashed"></div>
@@ -81,6 +84,7 @@
 	<script src="../js/plugins/iCheck/icheck.min.js"></script>
 	<!-- Peity -->
 	<script src="../js/plugins/peity/jquery.peity.min.js"></script>
+	<script src="../js/plugins/validate/jquery.validate.min.js"></script>
 	<script src="../js/plugins/clientRegister/clientRegister.js"></script>
 </body>
 
