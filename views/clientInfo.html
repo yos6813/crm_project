@@ -82,8 +82,8 @@
 				<input id="clientCall" type="text" class="required form-control" placeholder="업무전화" >
 			</div>
 			<div class="form-group">
-				<label>내선번호 *</label>
-				<input id="clientExtension" type="text" class="required form-control" placeholder="내선번호">
+				<label>내선번호 </label>
+				<input id="clientExtension" type="text" class="form-control" placeholder="내선번호">
 			</div>
 			<div class="form-group">
 				<label>휴대전화 *</label>
@@ -176,13 +176,13 @@
                 // Suppress (skip) "Warning" step if the user is old enough.
                 if (currentIndex === 2 && Number($("#age").val()) >= 18)
                 {
-                    $(this).steps("next");
+                    $(this).steps("다음");
                 }
 
                 // Suppress (skip) "Warning" step if the user is old enough and wants to the previous step.
                 if (currentIndex === 2 && priorIndex === 3)
                 {
-                    $(this).steps("previous");
+                    $(this).steps("이전");
                 }
             },
             onFinishing: function (event, currentIndex)
