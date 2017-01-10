@@ -25,10 +25,19 @@ $(document).ready(function(){
 	$('#require').hide();
 })
 
+function demo2(){
+    swal({
+        title: "가입 완료",
+        text: "로그인 후 정보를 입력해주세요.",
+        type: "success"
+    });
+};
+
 $('#clientRegister').click(function(){
 	if($('#pw').val() == $('#pwCheck').val()){
 		handleSignUp();
 		location.hash = '#/clientLogin';
+		demo2();
 	}
 	else {
   	  $('#pwCheck').val('');

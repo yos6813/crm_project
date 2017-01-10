@@ -60,15 +60,6 @@ $(document).ready(function(){
 	
 })
 
-//function demo2() {
-//    SweetAlert.swal({
-//        title: "가입이 완료되었습니다.",
-//        type: "success"
-//    });
-//}
 	
     
-$('a[href="#finish"]').click(function(){
-	console.log('test');
-})
 
