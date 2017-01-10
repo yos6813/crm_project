@@ -12,6 +12,12 @@ $('#viewAcademy').hide();
 $('#viewConsulting').hide();
 
 $(document).ready(function(){
+	firebase.database().ref('user-infos/').on('child_added',function(snapshot){
+		if(snapshot.val().uid != firebase.auth().currentUser.uid){
+			window.location.hash = '#/clientLogin';
+		}
+	})
+	
 	firebase.database().ref('qnaWrite/' + viewPageno).on('value', function(snapshot){
 		$('#viewTitle').text(snapshot.val().title);
 		$('#viewCustomer').text(snapshot.val().userName);

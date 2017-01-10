@@ -7,6 +7,13 @@ function pagereload() {
 }
 
 $(document).ready(function(){
+	console.log(firebase.auth().currentUser.email);
+	firebase.database().ref('user-infos/').on('child_added',function(snapshot){
+		if(snapshot.val().uid != firebase.auth().currentUser.uid){
+			window.location.hash = '#/clientLogin';
+		}
+	})
+	
 	pagestart();
 	var todayMonth = new Date().getMonth() + 1;
 	if(todayMonth == '1'){

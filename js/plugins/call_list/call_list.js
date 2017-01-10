@@ -228,6 +228,13 @@ function myFunction(snapshot1, key) {
 }
 
 $(document).ready(function(){
+	
+	firebase.database().ref('user-infos/').on('child_added',function(snapshot){
+		if(snapshot.val().uid != firebase.auth().currentUser.uid){
+			window.location.hash = '#/clientLogin';
+		}
+	})
+	
 	if(pageType != '' && status == ''){
 		$('#postList').children('.call_list').remove();
 		firebase.database().ref('qnaWrite/').orderByChild('status').equalTo(pageType).on('child_added', function(snapshot){

@@ -91,8 +91,14 @@ $('#Save').click(function(){
 
 $(document).ready(function(){
 	firebase.auth().onAuthStateChanged(function(user) {
-		if(user){
-			
+		if(!user){
+			window.location.hash = '#/login';
+		}
+	})
+	
+	firebase.database().ref('user-infos/').on('child_added',function(snapshot){
+		if(snapshot.val().uid != firebase.auth().currentUser.uid){
+			window.location.hash = '#/clientLogin';
 		}
 	})
 	

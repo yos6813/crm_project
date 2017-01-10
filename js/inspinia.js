@@ -4,6 +4,14 @@
  *
  * Custom scripts
  */
+function getParameterByName(name) {
+	name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+	var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+	results = regex.exec(location.hash);
+	return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
+var no = getParameterByName('no');
 
 function userAlert(user){
 	firebase.database().ref('userAlert/').limitToFirst(5).on('child_added', function(snapshot){
@@ -39,6 +47,9 @@ function userAlert(user){
 					$('.alertNum').text($('#userAlert').children('.alertChild').size());
 					
 					$(document).on('click', '.alertChild', function(){
+						if(no = '0'){
+							location.hash = '#/cIndex/view_qna?no=' + snapshot2.val().replyPost;
+						}
 						location.hash = '#/index/view_call_record?no=' + snapshot2.val().replyPost;
 						
 						firebase.database().ref('userAlert/' + snapshot2.val().replyPost + '/' + user.uid).update({
@@ -175,7 +186,7 @@ function Clogout(){
 
 function systemBtn(){
 	window.location.hash = '#/cIndex/postWrite?type=system';
-	location.reload();
+//	location.reload();
 	firebase.auth().onAuthStateChanged(function(user) {
 		if(!user){
 			window.location.hash = '#/clientLogin';
@@ -184,7 +195,7 @@ function systemBtn(){
 }
 
 function managementBtn(){
-	location.reload();
+//	location.reload();
 	window.location.hash = '#/cIndex/postWrite?type=management';
 	firebase.auth().onAuthStateChanged(function(user) {
 		if(!user){
@@ -194,7 +205,7 @@ function managementBtn(){
 }
 
 function taxLawBtn(){
-	location.reload();
+//	location.reload();
 	window.location.hash = '#/cIndex/postWrite?type=taxLaw';
 	firebase.auth().onAuthStateChanged(function(user) {
 		if(!user){
@@ -204,7 +215,7 @@ function taxLawBtn(){
 }
 
 function qnaList(){
-	location.reload();
+//	location.reload();
 	window.location.hash = '#/cIndex/qnaList?no=' + firebase.auth().currentUser.uid;
 	firebase.auth().onAuthStateChanged(function(user) {
 		if(!user){
@@ -214,7 +225,7 @@ function qnaList(){
 }
 
 function notifyPage(){
-	location.reload();
+//	location.reload();
 	window.location.hash = '#/cIndex/notifyPage';
 	firebase.auth().onAuthStateChanged(function(user) {
 		if(!user){

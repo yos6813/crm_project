@@ -8464,22 +8464,22 @@ body.md-skin {
     margin-top: 30px;
     margin-bottom: 30px;
 }
-/* .logo-register{ */
-/* 	display: block; */
-/*     margin: auto; */
-/*     width: 30%; */
-/*     margin-top: 30px; */
-/*     margin-bottom: 30px; */
-/* } */
+.logo-register{
+	display: block;
+    margin: auto;
+    width: 30%;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
 
-/* .logo-login { */
+.logo-login {
 
-/*     display: block; */
-/*     margin: auto; */
-/*     width: 100%; */
-/*     margin-top: 30px; */
-/*     margin-bottom: 30px; */
-/* } */
+    display: block;
+    margin: auto;
+    width: 100%;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
 
 #navprofileImg{
 	width: 36px;

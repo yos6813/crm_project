@@ -47,6 +47,12 @@ $(document).on('click', '.client_List', function(){
 })
 
 $(document).ready(function(){
+	firebase.database().ref('user-infos/').on('child_added',function(snapshot){
+		if(snapshot.val().uid != firebase.auth().currentUser.uid){
+			window.location.hash = '#/clientLogin';
+		}
+	})
+	
 	$('#client_posts_user_box').hide();
 	$('#client_posts_load').hide();
 	firebase.database().ref('customer/').on('child_added', function(snapshot){

@@ -51,6 +51,12 @@ $('#addSmallGroup').click(function(){
 })
 
 $(document).ready(function(){
+	firebase.database().ref('user-infos/').on('child_added',function(snapshot){
+		if(snapshot.val().uid != firebase.auth().currentUser.uid){
+			window.location.hash = '#/clientLogin';
+		}
+	})
+	
 	var type = $('#typeSelect').val();
 	firebase.database().ref('bigGroup/' + type).on('child_added', function(snapshot){
 		snapshot.forEach(function(data){

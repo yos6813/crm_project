@@ -26,6 +26,12 @@ function writeAlert(uid, replyPhoto, replyUser, replyDay, replyTitle, replyPost,
 }
 
 $(document).ready(function(){
+	firebase.database().ref('user-infos/').on('child_added',function(snapshot){
+		if(snapshot.val().uid != firebase.auth().currentUser.uid){
+			window.location.hash = '#/clientLogin';
+		}
+	})
+	
 	$('#clientEmail').hide();
 	$('#clientTitle').hide();
 	firebase.database().ref('qnaWrite/' + modifyPageno).on('value', function(snapshot){

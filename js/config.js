@@ -250,12 +250,13 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
             templateUrl: "views/postWrite.html",
             data: {
                 pageTitle: '글쓰기'
-            },
-            controller: function(){
-            	var checkUnload = true;
-            	$(window).on("beforeunload", function(){
-            	    if(checkUnload) return "페이지를 벗어나시겠습니까?";
-            	});
+            }
+        })
+        .state('cIndex.postModify', {
+            url: "/postModify",
+            templateUrl: "views/postModify.html",
+            data: {
+                pageTitle: '글 수정'
             }
         })
         .state('cIndex.qnaList', {

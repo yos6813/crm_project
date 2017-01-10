@@ -8,6 +8,12 @@ function getParameterByName(name) {
 var modifyPageno = getParameterByName('no');
 
 $(document).ready(function(){
+	firebase.database().ref('user-infos/').on('child_added',function(snapshot){
+		if(snapshot.val().uid != firebase.auth().currentUser.uid){
+			window.location.hash = '#/clientLogin';
+		}
+	})
+	
 	firebase.database().ref('user-infos/' + modifyPageno).on('child_added', function(snapshot){
 		firebase.database().ref('user-infos/' + modifyPageno + '/' + snapshot.key).on('value', function(snapshot1){
 			$('#modifyprofileImg').attr('src', snapshot1.val().picture); 

@@ -109,7 +109,7 @@ function writeUserData(userId, name, email, imageUrl) {
 
 /* Register Form */
 
-function writeUserInfo(uid, userImg, username, email, nickname, department, job, extension, phone, call, emergency, address, join, birth){
+function writeUserInfo(uid, userImg, username, email, nickname, department, job, extension, phone, call, emergency, address, join, birth, grade){
 	var infoData = {
 		uid: uid,
 		picture: userImg,
@@ -124,7 +124,8 @@ function writeUserInfo(uid, userImg, username, email, nickname, department, job,
 		emergency: emergency,
 		address: address,
 		join: join,
-		birth: birth
+		birth: birth,
+		grade: grade
 	};
 	
 	var newInfoKey = firebase.database().ref().child('infos').push().key;
@@ -156,9 +157,10 @@ $('#registerBtn').click(function(){
 			var address = $('#sample6_address').val() + ' ' + $('#sample6_address2').val();
 			var join = $('.join').val();
 			var birth = $('#birth1').val() + '/' + $('#birth2').val() + '/' + $('#birth3').val();
+			var grade = '1';
 			
-			writeUserInfo(uid, userImg, username, email, nickname, department, job, extension, phone, call, emergency, address, join, birth);
-			window.location.hash="/index/main"
+			writeUserInfo(uid, userImg, username, email, nickname, department, job, extension, phone, call, emergency, address, join, birth, grade);
+			window.location.hash="/index/chart"
 			location.reload();
 	}
 });

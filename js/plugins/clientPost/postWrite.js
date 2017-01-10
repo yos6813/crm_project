@@ -8,10 +8,6 @@ function getParameterByName(name) {
 var writeType = getParameterByName('type');
 var no = getParameterByName('no');
 
-$('.tagsinput').tagsinput({
-    tagClass: 'label label-primary'
-});
-
 $('.summernote').summernote({
   height: 300,                 // set editor height
   minHeight: null,             // set minimum height of editor
@@ -181,4 +177,14 @@ $(document).ready(function(){
 			$('#smallGroupli').append('<option value="' + snapshot.val().sGroup + '">' + snapshot.val().sGroup + '</option>');
 		})
 	})
+	
+//	$(window).on('hashchange', function(e) {
+//		var r = confirm('페이지를 벗어날 경우 작업 내용이 저장되지 않습니다. 나가시겠습니까?');
+//	    if (r) {
+//	        console.log("You pressed OK!");
+//	    } else {
+//	    	location.replace(e.originalEvent.oldURL);
+//	    }
+//	});
 })
+

@@ -64,6 +64,12 @@ function companyClientList(snapshot){
 }
 
 $(document).ready(function(){
+	firebase.database().ref('user-infos/').on('child_added',function(snapshot){
+		if(snapshot.val().uid != firebase.auth().currentUser.uid){
+			window.location.hash = '#/clientLogin';
+		}
+	})
+	
 	$('#company_client_List_box').hide();
 	$('#company_client_load').hide();
 	firebase.database().ref('company/').on('child_added', function(snapshot){

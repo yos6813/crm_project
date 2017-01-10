@@ -292,7 +292,7 @@ function finishStep(wizard, state)
 
 /* 회원 추가 */
 function addClient(uid, clientLicense, companyName, clientEmail, clientName, clientAddress, clientPosition,
-		   clientDepartment, clientWorkPhone, clientPhone, clientExtension, clientFax){
+		   clientDepartment, clientWorkPhone, clientPhone, clientExtension, clientFax, grade){
 	var clientData = {
 		uid:uid,
 		clientLicense: clientLicense,
@@ -305,7 +305,8 @@ function addClient(uid, clientLicense, companyName, clientEmail, clientName, cli
 		clientWorkPhone: clientWorkPhone,
 		clientPhone: clientPhone,
 		clientExtension: clientExtension,
-		clientFax: clientFax
+		clientFax: clientFax,
+		grade: grade
 	};
 	
 	var newClientKey = firebase.database().ref().child('clients').push().key;
@@ -832,10 +833,11 @@ function paginationClickHandler(event)
         		var clientExtension = $('#clientExtension').val();
         		var clientFax = $('#clientFax').val();
         		var uid = firebase.auth().currentUser.uid;
-        		var clientEmail = firebase.auth().currentUser.email
+        		var clientEmail = firebase.auth().currentUser.email;
+        		var grade = '0';
         		
         		addClient(uid, clientLicense, companyName, clientEmail, clientName, clientAddress, clientPosition,
-        				clientDepartment, clientWorkPhone, clientPhone, clientExtension, clientFax);
+        				clientDepartment, clientWorkPhone, clientPhone, clientExtension, clientFax, grade);
         		location.hash = '#/ready';
         		
         		swal({
