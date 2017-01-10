@@ -47,8 +47,8 @@ $(document).on('click', '.client_List', function(){
 })
 
 $(document).ready(function(){
-	firebase.database().ref('user-infos/').on('child_added',function(snapshot){
-		if(snapshot.val().uid != firebase.auth().currentUser.uid){
+	firebase.database().ref('clients/' + firebase.auth().currentUser.uid).on('child_added',function(snapshot){
+		if(snapshot.val().grade == '0'){
 			window.location.hash = '#/clientLogin';
 		}
 	})
