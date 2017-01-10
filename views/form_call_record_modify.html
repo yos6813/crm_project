@@ -4,10 +4,10 @@
         <div class="wrapper wrapper-content animated fadeInUp">
             <div class="ibox">
                 <div class="ibox-content">
-                    <form action="mail.php" method="POST" class="form-horizontal">
+                    <form id="postForm" class="form-horizontal">
                     	<div class="form-group"><label class="col-sm-2 control-label">문의자</label>
                             <div class="col-sm-10">
-                                <div id="viewClient"></div>
+                                <span id="viewClient"></span><input name="reply_to" id="clientEmail">
                             </div>
                         </div>
                         <div class="form-group"><label class="col-sm-2 control-label">회사</label>
@@ -19,7 +19,7 @@
                         </div>
                         <div class="form-group"><label class="col-sm-2 control-label">제목</label>
                             <div class="col-sm-10">
-                                <label id="viewTitle"></label>
+                                <label id="viewTitle"></label><input name="reply_to" id="clientTitle">
                             </div>
                         </div>
                         <div class="form-group"><label class="col-sm-2 control-label">문의 내용</label>

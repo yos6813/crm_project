@@ -8,6 +8,13 @@ function getParameterByName(name) {
 var email = getParameterByName('no');
 
 $(document).ready(function(){
+	
+	firebase.auth().onAuthStateChanged(function(user) {
+		if(!user){
+			window.location.hash = '#/clientLogin';
+		}
+	})
+	
 	firebase.database().ref('qnaWrite/').orderByChild('user').equalTo(email).on('child_added', function(snapshot){
 		var state;
 		if(snapshot.val().status == '해결'){

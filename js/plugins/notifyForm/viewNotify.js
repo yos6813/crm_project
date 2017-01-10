@@ -9,6 +9,13 @@ var type = getParameterByName('no1');
 var no = getParameterByName('no');
 
 $(document).ready(function(){
+	
+	firebase.auth().onAuthStateChanged(function(user) {
+		if(!user){
+			window.location.hash = '#/clientLogin';
+		}
+	})
+	
 	$('#patch').hide();
 	$('#notice').hide();
 	if(type != ''){

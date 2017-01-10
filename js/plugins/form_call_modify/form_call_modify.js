@@ -26,11 +26,15 @@ function writeAlert(uid, replyPhoto, replyUser, replyDay, replyTitle, replyPost,
 }
 
 $(document).ready(function(){
+	$('#clientEmail').hide();
+	$('#clientTitle').hide();
 	firebase.database().ref('qnaWrite/' + modifyPageno).on('value', function(snapshot){
 		$('#viewClient').text(snapshot.val().userName);
 		$('#viewCompany').text(snapshot.val().company);
 		$('#viewTitle').text(snapshot.val().title);
 		$('#viewText').text(snapshot.val().text);
+		$('#clientEmail').val(snapshot.val().userEmail);
+		$('#clientTitle').val(snapshot.val().title);
 	})
 
 	
@@ -142,7 +146,15 @@ $('#replySave').click(function(){
 		firebase.database().ref('qnaWrite/' + modifyPageno).update({
 			status: '해결'
 		})
-	window.location.hash = 'index/view_call_record?no=' + modifyPageno;
+		
+		firebase.database().ref('qnaWrite/' + modifyPageno).on('value', function(snapshot){
+			emailjs.send("gmail", "template_jbvbOZH3", {
+				"reply_to" : snapshot.val().userEmail,
+				"to_name" : snapshot.val().userName,
+				"message_html" : '#/cIndex/view_qna?no=' + modifyPageno,
+				"from_name" : 'YETA2016'
+			});
+		})
 });
 
 

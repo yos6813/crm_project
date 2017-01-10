@@ -8,12 +8,18 @@ function getParameterByName(name) {
 var no = getParameterByName('no');
 
 $(document).ready(function(){
+	firebase.auth().onAuthStateChanged(function(user) {
+		if(!user){
+			window.location.hash = '#/clientLogin';
+		}
+	})
+	
 	$('#viewButton').append('<a href="#/cIndex/postWrite?no=' + no + '" id="qnamodify" class="btn btn-white btn-sm" title="Reply"><i class="fa fa-pencil"></i> 수정</a>' +
 	'<a id="qnadelete" class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Move to trash"><i class="fa fa-trash-o"></i> 삭제</a>');
 	
 	firebase.database().ref('qnaWrite/' + no).on('value', function(snapshot){
 		$('#viewTitle').text(snapshot.val().title);
-		$('#viewText').text(snapshot.val().text);
+		$('#viewText').append(snapshot.val().text);
 		$('#postDate').text('글 작성일: ' + snapshot.val().date);
 		
 		firebase.database().ref('reply/' + no).on('value', function(snapshot1){

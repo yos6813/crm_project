@@ -82,6 +82,12 @@ function notifyList(snapshot){
 }
 
 $(document).ready(function(){
+	firebase.auth().onAuthStateChanged(function(user) {
+		if(!user){
+			window.location.hash = '#/clientLogin';
+		}
+	})
+	
 	$('#writebtn').hide();
 	$('#notifyList').children('.notify_list').remove();
 	

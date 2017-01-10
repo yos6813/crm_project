@@ -90,6 +90,12 @@ $('#Save').click(function(){
 })
 
 $(document).ready(function(){
+	firebase.auth().onAuthStateChanged(function(user) {
+		if(user){
+			
+		}
+	})
+	
 	if(modifyNo != null){
 		firebase.database().ref('notify/' + modifyNo).on('value', function(snapshot){
 			$("#writeTypeSelect").val(snapshot.val().notifyType);

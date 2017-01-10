@@ -92,21 +92,21 @@
 <script src="https://apis.google.com/js/platform.js" async defer></script>
 
  <!--배포용 -->
-<script src="https://www.gstatic.com/firebasejs/3.6.4/firebase.js"></script>
-<script>
-  // Initialize Firebase
-  var config = {
-    apiKey: "AIzaSyDp2pj6WSvpKOtnnRp9NwdTVZAgUalNNa8",
-    authDomain: "yeta-cscenter.firebaseapp.com",
-    databaseURL: "https://yeta-cscenter.firebaseio.com",
-    storageBucket: "yeta-cscenter.appspot.com",
-    messagingSenderId: "304577172613"
-  };
-  firebase.initializeApp(config);
-</script>
+<!-- <script src="https://www.gstatic.com/firebasejs/3.6.4/firebase.js"></script> -->
+<!-- <script> -->
+<!--   // Initialize Firebase -->
+<!--   var config = { -->
+<!--     apiKey: "AIzaSyDp2pj6WSvpKOtnnRp9NwdTVZAgUalNNa8", -->
+<!--     authDomain: "yeta-cscenter.firebaseapp.com", -->
+<!--     databaseURL: "https://yeta-cscenter.firebaseio.com", -->
+<!--     storageBucket: "yeta-cscenter.appspot.com", -->
+<!--     messagingSenderId: "304577172613" -->
+<!--   }; -->
+<!--   firebase.initializeApp(config); -->
+<!-- </script> -->
 
 <!-- 개발용 -->
-<!--<script src="https://www.gstatic.com/firebasejs/3.6.4/firebase.js"></script>
+<script src="https://www.gstatic.com/firebasejs/3.6.4/firebase.js"></script>
 <script>
   // Initialize Firebase
   var config = {
@@ -117,7 +117,7 @@
     messagingSenderId: "805712434179"
   };
   firebase.initializeApp(config);
-</script>-->
+</script>
 
 
 <script>
@@ -132,6 +132,13 @@ firebase.database().ref("company/").orderByKey().on("child_added", function(snap
 
 <!-- Typehead -->
 <script src="js/plugins/typeahead/bootstrap3-typeahead.min.js"></script>
+
+<script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
+<script type="text/javascript">
+   (function(){
+      emailjs.init("user_oilH1E3TLgZrilkkM8Pnh");
+   })();
+</script>
 
 <!-- FooTable -->
 <script src="js/plugins/footable/footable.all.min.js"></script>

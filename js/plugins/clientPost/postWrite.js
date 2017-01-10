@@ -58,9 +58,10 @@ function handleFileSelect(evt) {
 }
 	  document.getElementById('fileButton').addEventListener('change', handleFileSelect, false);
 	 
-function postAdd(user, bigGroup, smallGroup, title, text, file, tag, date, type, status, company, userId, userName, replyDate, replyName, replyText, replyImg){
+function postAdd(user, userEmail, bigGroup, smallGroup, title, text, file, tag, date, type, status, company, userId, userName, replyDate, replyName, replyText, replyImg){
 	var postData = {
 			user: user,
+			userEmail: userEmail,
 			bigGroup: bigGroup,
 			smallGroup: smallGroup,
 			title: title,
@@ -100,6 +101,12 @@ function postAdd(user, bigGroup, smallGroup, title, text, file, tag, date, type,
 }
 
 $(document).ready(function(){
+	firebase.auth().onAuthStateChanged(function(user) {
+		if(!user){
+			window.location.hash = '#/clientLogin';
+		}
+	})
+	
 	$('#fileInput').children().remove();
 	$('#qnaText').summernote('code', '');
 	$('#qnaTitle').val('');
@@ -127,6 +134,7 @@ $(document).ready(function(){
 			var type = $('#writeType').text();
 			var bigGroup = '';
 			var smallGroup = '';
+			var userEmail = firebase.auth().currentUser.email;
 			
 			if($('#bigGroupli').val() != '선택'){
 				bigGroup = $('#bigGroupli').val();
@@ -154,10 +162,8 @@ $(document).ready(function(){
 				tag.push($(this).text());
 			})
 			
-			if(title != '' && text != ''){
-				postAdd(user, bigGroup, smallGroup, title, text, file, tag, date, type, status, company, userId, userName, replyDate, replyName, replyText, replyImg);
-				location.hash = '#/cIndex/qnaList?no=' + user;
-			}
+			postAdd(user, userEmail, bigGroup, smallGroup, title, text, file, tag, date, type, status, company, userId, userName, replyDate, replyName, replyText, replyImg);
+			location.hash = '#/cIndex/qnaList?no=' + user;
 		})
 	})
 	
@@ -168,7 +174,7 @@ $(document).ready(function(){
 	
 	
 	
-	$(document).on('click', '#bigGroupli option', function(){
+	$(document).on('change', '#bigGroupli', function(){
 		var type = $('#writeType').text();
 		$('#smallGroupli').children().remove();
 		firebase.database().ref('smallGroup/' + type + '/' + $(this).val()).on('child_added', function(snapshot){
