@@ -270,6 +270,13 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
                     return $ocLazyLoad.load([
                         {
                             files: ['css/plugins/steps/jquery.steps.css']
+                        },
+                        {
+                            files: ['js/plugins/sweetalert/sweetalert.min.js', 'css/plugins/sweetalert/sweetalert.css']
+                        },
+                        {
+                            name: 'oitozero.ngSweetAlert',
+                            files: ['js/plugins/sweetalert/angular-sweetalert.min.js']
                         }
                     ]);
                 }

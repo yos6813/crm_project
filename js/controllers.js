@@ -19,8 +19,12 @@ function wizardCtrl($scope, $rootScope) {
     };
 };
 
+//function sweetAlertCtrl($scope, SweetAlert) {
+//	$scope.
+//}
 
 angular
     .module('inspinia')
     .controller('MainCtrl', MainCtrl)
+//    .controller('sweetAlertCtrl', sweetAlertCtrl)
 

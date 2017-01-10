@@ -837,6 +837,11 @@ function paginationClickHandler(event)
         		addClient(uid, clientLicense, companyName, clientEmail, clientName, clientAddress, clientPosition,
         				clientDepartment, clientWorkPhone, clientPhone, clientExtension, clientFax);
         		location.hash = '#/ready';
+        		
+        		swal({
+                    title: "회원가입 완료",
+                    type: "success"
+                });
             break;
 
         case "next":
