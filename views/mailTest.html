@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<button onclick="sendMail()" id="mailSend">Send</button>
+<script>
+function sendMail() {
+	console.log('test');
+    var link = "mailto:yos6813@naver.com"
+             + "?cc=yos6813@naver.com"
+             + "&subject=" + escape("This is my subject")
+             + "&body=" + escape($('#mailSend').text());
+
+    window.location.href = link;
+}
+</script>
+</body>
+</html>

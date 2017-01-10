@@ -296,6 +296,13 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
                 pageTitle: '준비중'
             }
         })
+        .state('mailTest', {
+            url: "/mailTest",
+            templateUrl: "views/mailTest.html",
+            data: {
+                pageTitle: '메일 테스트'
+            }
+        })
 //        .state('verifyEmail', {
 //            url: "/verifyEmail",
 //            templateUrl: "views/verifyEmail.html",

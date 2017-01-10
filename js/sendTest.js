@@ -1,0 +1,1 @@
+var fireMail = require('fire-mail');
