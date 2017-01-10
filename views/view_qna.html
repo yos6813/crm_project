@@ -1,42 +1,124 @@
 <meta charset="utf-8">
-            <div class="wrapper wrapper-content">
-                <div class="row">
-                    <div class="col-lg-12 animated fadeInRight">
-                        <div class="mail-box-header">
-                        	<div class="pull-right tooltip-demo" id="viewButton">
-                            
-                            </div>
-                            <h2 class="font-bold" id="viewTitle">
-                          </h2>
-                          <div class="row">
-                                <div class="col-md-12">
-                                    <div class="small text-right">
-                                        <div id="postDate"> </div>
-                                        <div id="replyDate"> </div>
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1 fadeInRight">
+            <div class="mail-box-header">
+                <div class="pull-right tooltip-demo" id="viewButton"></div>
+                <h3>
+                    질문
+                </h3>
+                <div class="mail-tools tooltip-demo m-t-md">
+                    <small class="font font-info">기술문의/어쩌구저쩌구/어쩌구저쩌구
+                        <span class="pull-right font-noraml" id="postDate"></span>
+                    </small>
+                    <br>
+                    <br>
+                    <h2>
+                        <span class="font-warning" id="viewTitle"></span>
+                    </h2>
+                </div>
+            </div>
+            <div class="mail-box">
+                <div class="mail-body" id="viewText"></div>
+                <div class="mail-attachment">
+                    <p>
+                        <span><i class="fa fa-paperclip"></i> 첨부파일 - </span>
+                        <a href="">Download all</a> |
+                        <a href="">View all images</a>
+                    </p>
+                    <div class="attachment">
+                        <div class="file-box">
+                            <div class="file">
+                                <a href="">
+                                    <span class="corner"></span>
+                                    <div class="icon">
+                                        <i class="fa fa-file"></i>
                                     </div>
-                                </div>
+                                    <div class="file-name">
+                                        Document_2014.doc
+                                        <br/>
+                                    </div>
+                                </a>
                             </div>
                         </div>
-                        <div class="mail-box">
-                            <div class="mail-body">
-                                <p><h3>내용</h3></p>
-                                <div id="viewText"></div>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1 fadeInRight">
+            <div class="mail-box-header">
+                <div class="pull-right tooltip-demo" id="viewButton">
+                </div>
+                <h3>
+                    답변
+                </h3>
+                <div class="mail-tools tooltip-demo m-t-md">
+                    <h5>
+                        <span class="pull-right font-noraml" id="replyDate"></span>
+                        <span class="font-noraml">작성자: </span>(주)에이티앤피파트너즈 원정연</br>
+                    </h5>
+                </div>
+            </div>
+            <div class="mail-box">
+                <div class="mail-body" id="viewText"></div>
+                <div class="mail-attachment">
+                    <p>
+                        <span><i class="fa fa-paperclip"></i> 첨부파일 - </span>
+                        <a href="">Download all</a> |
+                        <a href="">View all images</a>
+                    </p>
+                    <div class="attachment">
+                        <div class="file-box">
+                            <div class="attachment" id="viewFile"></div>
+                            <div class="file">
+                                <a href="">
+                                    <span class="corner"></span>
+                                    <div class="icon">
+                                        <i class="fa fa-file"></i>
+                                    </div>
+                                    <div class="file-name">
+                                        Document_2014.doc
+                                        <br/>
+                                    </div>
+                                </a>
                             </div>
-                            <div class="mail-body">
-                                <p><h3>답변</h3></p>
-                                <div id="replyText"></div>
-                            </div>
-                            <div class="mail-attachment">
-                                <p>
-                                    <span><i class="fa fa-paperclip"></i> 첨부파일</span>
-                                </p>
-                                <div class="attachment" id="viewFile">
-                                
-                                </div>
-                            </div>
-                            <div class="clearfix"></div>
                         </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1 fadeInRight">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <table id="postTbl" class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>상태</th>
+                                <th>구분</th>
+                                <th>제목</th>
+                                <th>접수시간</th>
+                            </tr>
+                        </thead>
+                        <tbody id="qnaList">
+                        </tbody>
+                    </table>
+                    <div class="text-center" id="pagination">
+                        <ul class="pagination pagination-sm" id="nav">
+                        </ul>
                     </div>
                 </div>
             </div>
-            <script src="../js/plugins/clientPost/qnaView.js"></script>
+        </div>
+    </div>
+</div>
+</div>
+<script src="../js/plugins/clientPost/qnaList.js"></script>
+<script src="../js/plugins/clientPost/qnaView.js"></script>

@@ -5004,7 +5004,7 @@ a.compose-mail {
 .mail-box-header {
   background-color: #ffffff;
   border: 1px solid #e7eaec;
-  padding: 30px 20px 20px 20px;
+  padding: 30px 20px 5px 20px;
 }
 .mail-box-header h2 {
   margin-top: 0;
