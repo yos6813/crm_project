@@ -12,8 +12,9 @@ $('#viewAcademy').hide();
 $('#viewConsulting').hide();
 
 $(document).ready(function(){
-	firebase.database().ref('user-infos/').on('child_added',function(snapshot){
-		if(snapshot.val().uid != firebase.auth().currentUser.uid){
+	var user = firebase.auth().currentUser;
+	firebase.database().ref('clients/' + user.uid).on('child_added',function(snapshot){
+		if(snapshot.val().grade == '0'){
 			window.location.hash = '#/clientLogin';
 		}
 	})
@@ -21,7 +22,13 @@ $(document).ready(function(){
 	firebase.database().ref('qnaWrite/' + viewPageno).on('value', function(snapshot){
 		$('#viewTitle').text(snapshot.val().title);
 		$('#viewCustomer').text(snapshot.val().userName);
-//		$('#viewCall').text(snapshot.val().postCusPhone);
+		firebase.database().ref('client/' + snapshot.val().user).on('value', function(snapshot1){
+			$('#viewCall').text(snapshot1.val().clientPhone);
+			$('#viewExtension').text(snapshot1.val().clientExtension);
+			$('#viewWorkPhone').text(snapshot1.val().WorkPhone);
+			$('#viewFax').text(snapshot1.val().clientFax);
+			$('#viewEmail').text(snapshot1.val().clientEmail);
+		})
 
 		if(snapshot.val().postCompany != ''){
 			$('#viewCompany').text(snapshot.val().company);
@@ -202,15 +209,8 @@ $(document).ready(function(){
 	})
 	
 	$(document).ready(function(){
-		firebase.database().ref("accept/" + viewPageno).on('value', function(snapshot){
-				if(snapshot.val().AcceptUserId != ''){
-					$('#acceptSel1').show();
-					$('#postAccept').hide();
-					$('#viewAccept').text('접수: ' + snapshot.val().AcceptName +
-										  ' (' + snapshot.val().AcceptDate + ')');
-				} else {
-					$('#viewAccept').text('');
-				}
+		firebase.database().ref("qnaWrite/" + viewPageno).on('value', function(snapshot){
+				$('#viewAccept').text('문의시간: ' + snapshot.val().date);
 		})
 		
 		firebase.database().ref("reply/" + viewPageno).on('value', function(snapshot1){

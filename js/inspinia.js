@@ -80,7 +80,7 @@ $(document).ready(function () {
 		firebase.auth().onAuthStateChanged(function(user) {
 			if(user){
 				firebase.database().ref('user-infos/' + user.uid).on('value', function(snapshot){
-					if(snapshot.val() != null){
+					if(snapshot.val() != undefined){
 						window.location.hash = 'index/chart';
 						$('#navUserName').text(user.displayName);
 						$('#navprofileImg').attr('src', user.photoURL);

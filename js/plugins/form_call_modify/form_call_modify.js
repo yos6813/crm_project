@@ -38,7 +38,7 @@ $(document).ready(function(){
 		$('#viewClient').text(snapshot.val().userName);
 		$('#viewCompany').text(snapshot.val().company);
 		$('#viewTitle').text(snapshot.val().title);
-		$('#viewText').text(snapshot.val().text);
+		$('#viewText').append(snapshot.val().text);
 		$('#clientEmail').val(snapshot.val().userEmail);
 		$('#clientTitle').val(snapshot.val().title);
 	})
