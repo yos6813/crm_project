@@ -1,7 +1,78 @@
 <meta charset="utf-8">
-<div class="row">
+<div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-12">
-        <div class="wrapper wrapper-content animated fadeInUp">
+        <h2>문의하기</h2>
+        <ol class="breadcrumb">
+            <li>
+                예타 사용상 문의사항을 등록하는 곳입니다.
+            </li>
+        </ol>
+    </div>
+</div>
+<div class="wrapper wrapper-content animated fadeInRight ecommerce">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="mail-box-header">
+                <h2 class="text-info" id="writeType">
+                </h2>
+                <ol class="breadcrumb">
+                    <li>
+                        문의 유형을 정확하게 선택하여 주시기 바랍니다.
+                    </li>
+                </ol>
+            </div>
+            <div class="mail-box">
+                <div class="mail-body">
+                    <form method="get" class="form-horizontal">
+                        <div class="form-group"><label class="col-sm-2 control-label">대분류</label>
+                            <div class="col-sm-3">
+                                <select class="form-control" id="bigGroupli">
+                                	<option>선택</option>
+                                </select>
+                            </div>
+                            <label class="col-sm-2 control-label">소분류</label>
+                            <div class="col-sm-3">
+                                <select class="form-control" id="smallGroupli">
+	                                	
+	                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group"><label class="col-sm-2 control-label">제목</label>
+                            <div class="col-sm-10">
+                                <input id="qnaTitle" type="text" class="form-control" required>
+                                <span class="help-block m-b-none">문의 내용을 요약하여 작성해 주세요</span>
+                            </div>
+                        </div>
+                        <div class="form-group"><label class="col-sm-2 control-label">문의 내용</label>
+                            <div class="col-sm-10">
+                                <textarea id="qnaText" class="summernote">
+                              </textarea>
+                            </div>
+                        </div>
+                        <div class="form-group"><label class="col-sm-2 control-label">파일 업로드 <br/></label>
+                            <div class="col-sm-5">
+                                <div class="fileinput fileinput-new" data-provides="fileinput">
+                                    <span class="btn btn-default btn-file">
+		                        	<span class="fileinput-new">Select file</span>
+                                    <span class="fileinput-exists">Change</span>
+                                    <input id="fileButton" type="file" name="..." multiple="multiple"></span>
+                                    <span id="fileInput"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="hr-line-dashed"></div>
+                        <div class="form-group">
+                            <div class="col-sm-4 col-sm-offset-2">
+                                <input id="qnaCancel" class="demo3 btn btn-white" type="button" value="취소">
+                                <input id="qnaSave" class="btn btn-primary" type="submit" value="저장">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+        <!--<div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-content">
                     <form method="get" class="form-horizontal">
@@ -56,8 +127,7 @@
                     </form>
                 </div>
             </div>
-        </div>
+        </div>-->
     </div>
 </div>
-
 <script src="../js/plugins/clientPost/postWrite.js"></script>
