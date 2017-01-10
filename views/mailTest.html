@@ -5,14 +5,16 @@
 <title>Insert title here</title>
 </head>
 <body>
-<form id="mailForm" method="post">
-	<textarea>내용</textarea>
-	<button type="submit" onclick="sendMail()" id="mailSend">Send</button>
+<form id="mailForm" method="post" action="mail.php">
+	<input type="text" id="form_name" name="name">
+	<input type="text" id="form_mail" name="mail">
+	<input type="text" id="form_message" name="message">
+	<button type="submit" id="mailSend">Send</button>
 </form>
-<script>
-function sendMail() {
-  $('#mailForm').attr('action', "mailto:yos6813@naver.com");
-}
+<script src="../js/sendTest.js">
 </script>
+<script src="../js/jquery/jquery-2.1.1.min.js"></script>
+<script src="../js/plugins/jquery-ui/jquery-ui.js"></script>
+<script src="../js/bootstrap/bootstrap.min.js"></script>
 </body>
 </html>
