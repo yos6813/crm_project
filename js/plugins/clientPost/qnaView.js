@@ -46,6 +46,21 @@ $(document).ready(function(){
 	$('#viewButton').append('<a href="#/cIndex/postModify?no=' + no + '" id="qnamodify" class="btn btn-white btn-sm" title="Reply"><i class="fa fa-pencil"></i> 수정</a>' +
 	'<a id="qnadelete" class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Move to trash"><i class="fa fa-trash-o"></i> 삭제</a>');
 	
+	$(document).on('click', '#qnadelete', function(){
+		var today = new Date();
+		var year = today.getFullYear();
+		var month = today.getMonth()+1;
+		var day = today.getDate();
+		var hour = today.getHours();
+		var minutes = today.getMinutes();
+		
+		firebase.database().ref('qnaWrite/' + no).remove();
+		firebase.database().ref('timePosts/' + month + '/' + day + '/' + hour + '/' + no).remove();
+		firebase.database().ref('monthPosts/' + year + '/' + month + '/' + day + '/' + no).remove();
+		
+		location.hash = '#/cIndex/qnaList?no=' + firebase.auth().currentUser.uid;
+	});
+	
 	firebase.database().ref('qnaWrite/' + no).on('value', function(snapshot){
 		$('#viewTitle').text(snapshot.val().title);
 		$('#viewText').append(snapshot.val().text);
@@ -120,10 +135,10 @@ $(document).ready(function(){
 	})
 	
 })
-$(document).on('click','#qnadelete', function(){
-	var postRef = firebase.database().ref('qnaWrite/' + no);
-	postRef.remove();
-	
-	location.hash = '#/cIndex/qnaList?email=' + firebase.auth().currentUser.email;
-	location.reload();
-});
+//$(document).on('click','#qnadelete', function(){
+//	var postRef = firebase.database().ref('qnaWrite/' + no);
+//	postRef.remove();
+//	
+//	location.hash = '#/cIndex/qnaList?no=' + firebase.auth().currentUser.uid;
+//	location.reload();
+//});

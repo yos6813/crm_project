@@ -286,9 +286,11 @@ $(document).ready(function(){
 	$(document).on('click','#viewDelete', function(){
 		window.location.hash = 'index/call_list';
 		var uid = firebase.auth().currentUser.uid;
-		var postRef = firebase.database().ref('posts/' + viewPageno);
+		var postRef = firebase.database().ref('qnaWrite/' + viewPageno);
 		var userPostRef = firebase.database().ref('user-posts/' + uid + '/' + viewPageno);
 		var replyRef = firebase.database().ref('reply/' + viewPageno);
+		firebase.database().ref('timePosts/' + month + '/' + day + '/' + hour + '/' + viewPageno).remove();
+		firebase.database().ref('monthPosts/' + year + '/' + month + '/' + day + '/' + viewPageno).remove();
 		
 		postRef.remove();
 		
