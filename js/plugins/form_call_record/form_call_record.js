@@ -312,6 +312,8 @@ $('#postSave').click(function(){
 				 AcceptDate, AcceptUserId, postType, cusKey);
 		}
 		window.location.hash = 'index/call_list';
+		
+		
 })
 
 $('.tagsinput').tagsinput({

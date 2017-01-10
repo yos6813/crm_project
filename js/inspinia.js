@@ -176,26 +176,51 @@ function Clogout(){
 function systemBtn(){
 	window.location.hash = '#/cIndex/postWrite?type=system';
 	location.reload();
+	firebase.auth().onAuthStateChanged(function(user) {
+		if(!user){
+			window.location.hash = '#/clientLogin';
+		}
+	})
 }
 
 function managementBtn(){
 	location.reload();
 	window.location.hash = '#/cIndex/postWrite?type=management';
+	firebase.auth().onAuthStateChanged(function(user) {
+		if(!user){
+			window.location.hash = '#/clientLogin';
+		}
+	})
 }
 
 function taxLawBtn(){
 	location.reload();
 	window.location.hash = '#/cIndex/postWrite?type=taxLaw';
+	firebase.auth().onAuthStateChanged(function(user) {
+		if(!user){
+			window.location.hash = '#/clientLogin';
+		}
+	})
 }
 
 function qnaList(){
 	location.reload();
 	window.location.hash = '#/cIndex/qnaList?no=' + firebase.auth().currentUser.uid;
+	firebase.auth().onAuthStateChanged(function(user) {
+		if(!user){
+			window.location.hash = '#/clientLogin';
+		}
+	})
 }
 
 function notifyPage(){
-//	location.reload();
+	location.reload();
 	window.location.hash = '#/cIndex/notifyPage';
+	firebase.auth().onAuthStateChanged(function(user) {
+		if(!user){
+			window.location.hash = '#/clientLogin';
+		}
+	})
 }
 
 //$(document).ready(function(){
