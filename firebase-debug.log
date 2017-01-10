@@ -1,0 +1,14 @@
+[debug] ----------------------------------------------------------------------
+[debug] Command:      /usr/local/bin/node /usr/local/bin/firebase serve
+[debug] CLI Version:  3.2.1
+[debug] Platform:     darwin
+[debug] Node Version: v7.2.1
+[debug] Time:         Tue Jan 10 2017 09:50:17 GMT+0900 (KST)
+[debug] ----------------------------------------------------------------------
+[debug] 
+[info] Starting Firebase development server...
+[info] 
+[info] Project Directory: /Users/warrenwon/Documents/Documents - 원정연의 MacBook Pro/NAS_Backup/Web_Dev/crm_project
+[info] Public Directory: /
+[info] 
+[info] Server listening at: http://localhost:5000
