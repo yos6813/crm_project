@@ -22,7 +22,8 @@ $(document).ready(function(){
 	firebase.database().ref('qnaWrite/' + viewPageno).on('value', function(snapshot){
 		$('#viewTitle').text(snapshot.val().title);
 		$('#viewCustomer').text(snapshot.val().userName);
-		firebase.database().ref('client/' + snapshot.val().user).on('value', function(snapshot1){
+		
+		firebase.database().ref('clients/' + snapshot.val().user).on('child_added', function(snapshot1){
 			$('#viewCall').text(snapshot1.val().clientPhone);
 			$('#viewExtension').text(snapshot1.val().clientExtension);
 			$('#viewWorkPhone').text(snapshot1.val().WorkPhone);
@@ -110,36 +111,32 @@ $(document).ready(function(){
 	})
 	
 	firebase.database().ref('qnaWrite/' + viewPageno + '/file').on('value', function(snapshot){
-		if(snapshot.val() == undefined || snapshot.val() == ''){
-			$('#viewFile').append('<div class="file-box"><small>no file</small></div>');
-		}else{
-			firebase.database().ref('qnaWrite/' + viewPageno).on('value', function(snapshot1){
-				snapshot.forEach(function(data){
-				if(data.val() == ''){
-					$('#viewFile').children().remove();
-					$('#viewFile').append('<div class="file-box"><small>no file</small></div>');
-				} else {
-						firebase.storage().ref('files/' + data.val()).getDownloadURL().then(function(url){
-							$('#viewFile').append('<div class="file-box">' +
-									'<div class="file">' + 
-									'<a href="' + url + '">' + 
-									'<span class="corner"></span>' + 
-									'<div class="image">' + 
-									'<img alt="file" class="img-responsive" src="' + url + '">' + 
-									'</div>' + 
-									'<div class="file-name">' + data.val() +
-									'<br/>' +
-									'<small>Added: ' + snapshot1.val().date + '</small>' +
-									'</div>' +
-									'</a>' +
-									'<div>' +
-									'</div>' +
-							'<div class="clearfix"></div>');
-						})
-					}
-				})
+		firebase.database().ref('qnaWrite/' + viewPageno).on('value', function(snapshot1){
+			snapshot.forEach(function(data){
+			if(data.val() == ''&& snapshot.val().length <= 0){
+				$('#viewFile').children().remove();
+				$('#viewFile').append('<div class="file-box"><small>no file</small></div>');
+			} else {
+					firebase.storage().ref('files/' + data.val()).getDownloadURL().then(function(url){
+						$('#viewFile').append('<div class="file-box">' +
+								'<div class="file">' + 
+								'<a href="' + url + '">' + 
+								'<span class="corner"></span>' + 
+								'<div class="image">' + 
+								'<img alt="file" class="img-responsive" src="' + url + '">' + 
+								'</div>' + 
+								'<div class="file-name">' + data.val() +
+								'<br/>' +
+								'<small>Added: ' + snapshot1.val().date + '</small>' +
+								'</div>' +
+								'</a>' +
+								'<div>' +
+								'</div>' +
+						'<div class="clearfix"></div>');
+					})
+				}
 			})
-		}
+		})
 	})
 	
 	

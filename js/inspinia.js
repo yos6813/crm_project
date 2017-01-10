@@ -186,7 +186,7 @@ function Clogout(){
 
 function systemBtn(){
 	window.location.hash = '#/cIndex/postWrite?type=system';
-//	location.reload();
+	location.reload();
 	firebase.auth().onAuthStateChanged(function(user) {
 		if(!user){
 			window.location.hash = '#/clientLogin';
@@ -195,8 +195,8 @@ function systemBtn(){
 }
 
 function managementBtn(){
-//	location.reload();
 	window.location.hash = '#/cIndex/postWrite?type=management';
+	location.reload();
 	firebase.auth().onAuthStateChanged(function(user) {
 		if(!user){
 			window.location.hash = '#/clientLogin';
@@ -205,8 +205,8 @@ function managementBtn(){
 }
 
 function taxLawBtn(){
-//	location.reload();
 	window.location.hash = '#/cIndex/postWrite?type=taxLaw';
+	location.reload();
 	firebase.auth().onAuthStateChanged(function(user) {
 		if(!user){
 			window.location.hash = '#/clientLogin';

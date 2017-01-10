@@ -23,7 +23,7 @@ $(document).ready(function(){
 		'<a id="delete" class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Move to trash"><i class="fa fa-trash-o"></i> 삭제</a>');
 	}
 	firebase.database().ref('notify/' + no).on('value', function(snapshot){
-		$("#viewText").text(snapshot.val().text);
+		$("#viewText").append(snapshot.val().text);
 		$('#viewTitle').text(snapshot.val().title);
 		$('#notifyDate').append('<i class="fa fa-clock-o"></i>' +snapshot.val().date);
 		

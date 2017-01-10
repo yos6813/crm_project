@@ -106,6 +106,8 @@ function postAdd(user, userEmail, bigGroup, smallGroup, title, text, file, tag, 
 }
 
 $(document).ready(function(){
+	$('#smallGroup').hide();
+	$('#smallGroupli').hide();
 	firebase.auth().onAuthStateChanged(function(user) {
 		if(!user){
 			window.location.hash = '#/clientLogin';
@@ -177,23 +179,16 @@ $(document).ready(function(){
 			$('#bigGroupli').append('<option value="' + snapshot.val().bGroup + '">' + snapshot.val().bGroup + '</option>');
 	})
 	
-	
-	
 	$(document).on('change', '#bigGroupli', function(){
 		var type = $('#writeType').text();
 		$('#smallGroupli').children().remove();
+		$('#smallGroupli').hide();
+		$('#smallGroup').hide();
 		firebase.database().ref('smallGroup/' + type + '/' + $(this).val()).on('child_added', function(snapshot){
+			$('#smallGroupli').show();
+			$('#smallGroup').show();
 			$('#smallGroupli').append('<option value="' + snapshot.val().sGroup + '">' + snapshot.val().sGroup + '</option>');
 		})
 	})
-	
-//	$(window).on('hashchange', function(e) {
-//		var r = confirm('페이지를 벗어날 경우 작업 내용이 저장되지 않습니다. 나가시겠습니까?');
-//	    if (r) {
-//	        console.log("You pressed OK!");
-//	    } else {
-//	    	location.replace(e.originalEvent.oldURL);
-//	    }
-//	});
 })
 

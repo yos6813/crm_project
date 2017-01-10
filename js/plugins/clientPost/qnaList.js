@@ -24,7 +24,7 @@ $(document).ready(function(){
 		} else{
 			state = 'label-primary';
 		}
-		$('#qnaList').append('<tr class="call_list">' +
+		$('#qnaList').append('<tr class="call_list" value="' + snapshot.key + '">' +
 				'<td class="project-status">' +
 				'<span class="label ' + state + '">' + snapshot.val().status + '</span>' +
 				'</td>' +
@@ -32,8 +32,12 @@ $(document).ready(function(){
 				'<span>' + snapshot.val().type + '</span>' +
 				'</td>' +
 				'<td class="title project-title">' +
-				'<a href="#/cIndex/view_qna?no='+ snapshot.key +'" id="listTitle">' + snapshot.val().title + '</a>' +
+				snapshot.val().title +
 				'</td>' +
 				'<td class="project-title">' + snapshot.val().date + '</td></tr>');
 	})
+})
+
+$(document).on('click', '.call_list', function(){
+	location.hash = '#/cIndex/view_qna?no=' + $(this).attr('value') + '&email=' + firebase.auth().currentUser.email;
 })

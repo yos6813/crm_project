@@ -9,15 +9,16 @@ var cType = getParameterByName('no');
 
 function cNotifyList(snapshot){
 	/* 리스트 생성 */
-	$('#notifyList').append('<tr class="notify_list">' +
+	$('#notifyList').append('<tr class="notify_list" value="' + snapshot.key + '">' + 
+//			'<a href="#/cIndex/view_notify?no='+ snapshot.key +'">' +
 			'<td class="project-category">' +
 			'<span>' + snapshot.val().notifyType + '</span>' +
 			'</td>' +
 			'<td class="title project-title">' +
-			'<a href="#/cIndex/view_notify?no='+ snapshot.key +'">' +
-			snapshot.val().title + '</a>' +
+			snapshot.val().title +
 			'</td>' +
 			'<td class="project-title">' + snapshot.val().date +
+//			 '</a>' +
 			'</td></tr>');
 
 	/* 페이지 */
@@ -80,6 +81,10 @@ function notifyList(snapshot){
 	css('display','table-row').animate({opacity:1}, 300);
 	});
 }
+
+$(document).on('click', '.notify_list', function(){
+	location.hash = '#/cIndex/view_notify?no=' + $(this).attr('value');
+})
 
 $(document).ready(function(){
 	firebase.auth().onAuthStateChanged(function(user) {

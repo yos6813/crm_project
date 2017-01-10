@@ -104,7 +104,7 @@ function handleFileSelect(evt) {
 
 
 
-$('#fileInput').hide();
+//$('#fileInput').hide();
 
 var postState = '';
 var postCusPhone = '';

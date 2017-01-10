@@ -73,15 +73,14 @@ function postList(key){
 					type = '운용'
 				}
 			
-				$('#postList').append('<tr class="call_list">' +
+				$('#postList').append('<tr class="call_list" value="' + key + '">' +
 									'<td class="project-status">' +
 									'<span class="label ' + state + '">' + snapshot1.val().status + '</span>' +
 									'</td>' +
 									'<td class="project-category">' +
 									'<span>' + type + '</span>' +
 									'</td>' +
-									'<td class="title project-title">' +
-									'<a href="#/index/view_call_record?no='+ key +'" id="listTitle">' + snapshot1.val().title + '</a>' +
+									'<td class="title project-title">' + snapshot1.val().title +
 									'</td>' +
 									'<td class="project-title">' +
 									'<a id="titleCom">' + snapshot1.val().company + '</a>' +
@@ -226,6 +225,10 @@ function myFunction(snapshot1, key) {
 
     }, 3000);
 }
+
+$(document).on('click', '.call_list', function(){
+	location.hash = '#/index/view_call_record?no=' + $(this).attr('value');
+})
 
 $(document).ready(function(){
 	
