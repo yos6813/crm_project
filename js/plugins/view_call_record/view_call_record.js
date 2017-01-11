@@ -73,7 +73,7 @@ $(document).ready(function(){
 			$('#postAccept').hide();
 			$('#acceptSel1').children().remove();
 			$('#acceptSel1').append('<option value="resolve">해결</option>' +
-			            		   '<option value="accept1">접수</option>' + 
+			            		   '<option value="accept">접수</option>' + 
 			            		   '<option value="defer">보류</option>');
 		} else if(snapshot.val() == '접수'){
 			$('#acceptSel1').show();
@@ -153,6 +153,7 @@ $(document).ready(function(){
 	
 	$('#acceptSel1').change(function(){
 		var user = firebase.auth().currentUser;
+		var img = user.photoURL;
 		var name = user.displayName;
 		var today = new Date();
 		var year = today.getFullYear();
@@ -171,29 +172,30 @@ $(document).ready(function(){
 			firebase.database().ref('accept/' + viewPageno).update({
 				AcceptName: user.displayName,
 				AcceptDate: date,
-				AcceptUserId: user.uid
+				AcceptUserId: user.uid,
+				post: post
 			})
 			location.reload();
 		} else if(state == 'defer'){
 			firebase.database().ref('qnaWrite/' + viewPageno).update({
 				status: '보류'
 			})
-			firebase.database().ref("accept/" + viewPageno).update({
-				AcceptName: '',
-				AcceptDate: '',
-				AcceptUserId:''
-			})
+//			firebase.database().ref("accept/" + viewPageno).update({
+//				AcceptName: '',
+//				AcceptDate: '',
+//				AcceptUserId:''
+//			})
 			location.reload();
 		} else {
 			firebase.database().ref('qnaWrite/' + viewPageno).update({
 				status: '해결'
 			})
-			firebase.database().ref('reply/' + viewPageno).update({
-				replyDate: date,
-				replyImg: user.photoURL,
-				replyName: name,
-				userId: user.uid
-			})
+//			firebase.database().ref('reply/' + viewPageno).update({
+//				replyDate: date,
+//				replyImg: user.photoURL,
+//				replyName: name,
+//				userId: user.uid
+//			})
 			location.reload();
 		}
 	})

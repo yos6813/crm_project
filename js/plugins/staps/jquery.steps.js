@@ -291,12 +291,12 @@ function finishStep(wizard, state)
 }
 
 /* 회원 추가 */
-function addClient(uid, clientLicense, companyName, clientEmail, clientName, clientAddress, clientPosition,
+function addClient(uid, clientLicense, company, clientEmail, clientName, clientAddress, clientPosition,
 		   clientDepartment, clientWorkPhone, clientPhone, clientExtension, clientFax, grade){
 	var clientData = {
 		uid:uid,
 		clientLicense: clientLicense,
-		companyName: companyName,
+		company: company,
 		clientEmail: clientEmail,
 		clientName: clientName,
 		clientAddress: clientAddress,
@@ -804,6 +804,7 @@ function paginationClick(wizard, options, state, index)
  * @event click
  * @param event {Object} An event object
  */
+
 function paginationClickHandler(event)
 {
     event.preventDefault();
@@ -823,7 +824,6 @@ function paginationClickHandler(event)
         case "finish":
 //            finishStep(wizard, state);
         		var clientLicense = $('#clientCorporate').val();
-        		var companyName = $('#companyName').val();
         		var clientName = $('#clientName').val();
         		var clientAddress = $('#sample6_address').val() + ' ' + $('#sample6_address2').val();
         		var clientPosition = $('#cPosition').val();
@@ -835,15 +835,18 @@ function paginationClickHandler(event)
         		var uid = firebase.auth().currentUser.uid;
         		var clientEmail = firebase.auth().currentUser.email;
         		var grade = '0';
+        		var company = $('#companykey').text();
+        			
+    			addClient(uid, clientLicense, company, clientEmail, clientName, clientAddress, clientPosition,
+    					clientDepartment, clientWorkPhone, clientPhone, clientExtension, clientFax, grade);
+    		
+    			swal({
+    	            title: "회원가입 완료",
+    	            type: "success"
+    	        });
+
+    			location.hash = '#/ready';
         		
-        		addClient(uid, clientLicense, companyName, clientEmail, clientName, clientAddress, clientPosition,
-        				clientDepartment, clientWorkPhone, clientPhone, clientExtension, clientFax, grade);
-        		location.hash = '#/ready';
-        		
-        		swal({
-                    title: "회원가입 완료",
-                    type: "success"
-                });
             break;
 
         case "next":

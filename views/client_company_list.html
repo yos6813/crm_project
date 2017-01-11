@@ -20,7 +20,7 @@
                     <span class="text-muted small pull-right"><a href="#/company" target="_blank" class="btn btn-w-m btn-default">고객사등록</a></span>
                     <h2>고객사관리</h2>
                     <p>
-                        고객사를 관리하는 페이지 입니다.
+                        	고객사를 관리하는 페이지 입니다.
                     </p>
                     <select id="search_company1" class=" form-control input-s-sm">
                    		<option value="name">이름</option>
@@ -69,7 +69,7 @@
             <div class="ibox">
                 <div class="col-lg-12">
                     <div class="contact-box">
-                        <div class="col-md-10">
+                        <div id="companyBox" class="col-md-12">
                             <h3><strong id="company_Name"></strong></h3><h5 id="company_Type"></h5>
                             <p id="company_addr"></p>
                             <div class="m-t-xs" id="company_Coporate"></div>
@@ -99,4 +99,22 @@
         </div>
     </div>
 </div>
+  
+<div class="modal inmodal fade" id="myModal6" tabindex="-1" role="dialog"  aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">담당자 리스트</h4>
+            </div>
+            <div class="modal-body" id="list">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="modalSave">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="../js/plugins/client_company_list/client_company_list.js"></script>

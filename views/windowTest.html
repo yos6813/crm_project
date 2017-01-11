@@ -1,209 +1,39 @@
-<!DOCTYPE html>
-<html>
-<head>
+<script>
+function(startIndex) {
+				var pagingHTML 		= "";
+				var page 			= parseInt($("#page").val());
+				var totalCount		= parseInt($("#totalCount").val());
+				var pageBlock		= parseInt($("#pageBlock").val());
+				var navigatorNum    = 10;
+				var firstPageNum	= 1;
+				var lastPageNum		= Math.floor((totalCount-1)/pageBlock) + 1;
+				var previewPageNum  = page == 1 ? 1 : page-1;
+				var nextPageNum		= page == lastPageNum ? lastPageNum : page+1;
+				var indexNum		= startIndex <= navigatorNum  ? 0 : parseInt((startIndex-1)/navigatorNum) * navigatorNum;
+				
+				if (totalCount > 1) {
+					if (startIndex > 1) {
+						pagingHTML += "<a class='btn_first disabled' href='#' id='"+firstPageNum+"'><em>Go First</em></a> ";
+						pagingHTML += "<a class='btn_prev disabled' href='#' id='"+previewPageNum+"'><em>Preview</em></a> ";
+					}
+					for (var i=1; i<=navigatorNum; i++) {
+						var pageNum = i + indexNum;
+						if (pageNum == startIndex) 
+							pagingHTML += "<a class='selected' href='#' id='"+pageNum+"'>"+pageNum+"</a> ";
+						else 
+							pagingHTML += "<a href='#' id='"+pageNum+"'>"+pageNum+"</a>  ";
+						if (pageNum==lastPageNum)
+							break;
+					}
+					if (startIndex < lastPageNum) {
+						pagingHTML += "<a class='btn_next' href='#' id='"+nextPageNum+"'><em>Next</em></a> ";
+						pagingHTML += "<a class='btn_end' href='#' id='"+lastPageNum+"'><em>Go End</em></a>";
+					}
+				}
+				$(".paging").html(pagingHTML);
+				$(".paging a").click(function (e) {
+					paging($(this).attr('id'));
+				});
+			}
+</script>
 
-  <script src="https://apis.google.com/js/platform.js" async defer></script>
-  <link href="../css/plugins/datapicker/datepicker3.css" rel="stylesheet">
-
-  <!-- Sweet Alert -->
-  <link href="../css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
-  <link href="../css/plugins/iCheck/custom.css" rel="stylesheet">
-
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-
-
-  <title>At&amp;P Partners Intranet | register</title>
-
-  <link href="../css/bootstrap.min.css" rel="stylesheet">
-  <link href="../font-awesome/css/font-awesome.css" rel="stylesheet">
-
-  <link href="../css/animate.css" rel="stylesheet">
-  <link href="../css/style1.css" rel="stylesheet">
-
-
-</head>
-
-<body class="grey-bg">
-<div class="center">
-	<div>
-		<img id="glogin" class="logo-clogin" src="../img/yeta_logo-1.png" alt="logo">
-	</div>
-<form id="form" class="wizard-big">
-    <h1>소속 회사 입력</h1>
-    <fieldset>
-        <h3>사업자 번호를 입력해 주세요.</h3>
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="form-group">
-					<label>사업자번호 *</label>
-						<input id="clientCorporate" type="text" class="required form-control" data-mask="999-99-99999">
-						<span class="help-block m-b-none">사업자번호 10자리를 입력하세요. 사업자 번호를 입력하지 않으면 담당자 등록이 불가 합니다.</span>
-				</div>
-				<div class="form-group">
-					<label>사명</label>
-					<input id="companyName" type="text" class="form-control required" readonly>
-					<span class="help-block m-b-none">위 사업자 번호를 입력하면 자동으로 입력됩니다.</span>
-				</div>
-			</div>
-      	</div>
-  </fieldset>
-  <h1>Profile</h1>
-  <fieldset>
-      <h2>Profile Information</h2>
-      <div class="row">
-          <div class="col-lg-6">
-              <div class="form-group">
-                  <label>First name *</label>
-                  <input id="name" name="name" type="text" class="form-control required">
-              </div>
-              <div class="form-group">
-                  <label>Last name *</label>
-                  <input id="surname" name="surname" type="text" class="form-control required">
-              </div>
-          </div>
-          <div class="col-lg-6">
-              <div class="form-group">
-                  <label>Email *</label>
-                  <input id="email" name="email" type="text" class="form-control required email">
-              </div>
-              <div class="form-group">
-                  <label>Address *</label>
-                  <input id="address" name="address" type="text" class="form-control">
-              </div>
-          </div>
-      </div>
-  </fieldset>
-  <h1>Warning</h1>
-  <fieldset>
-      <div class="text-center" style="margin-top: 120px">
-                <h2>You did it Man :-)</h2>
-            </div>
-        </fieldset>
-
-        <h1>Finish</h1>
-        <fieldset>
-            <h2>Terms and Conditions</h2>
-            <input id="acceptTerms" name="acceptTerms" type="checkbox" class="required"> <label for="acceptTerms">I agree with the Terms and Conditions.</label>
-        </fieldset>
-    </form>
-</div>
-<!-- Mainly scripts -->
-    <script src="../js/bootstrap/bootstrap.min.js"></script>
-    <script src="../js/plugins/metisMenu/jquery.metisMenu.js"></script>
-    <script src="../js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
-    <script src="../js/jquery/jquery-ui.custom.min.js"></script>
-    <script src="../js/jquery/jquery-ui-1.10.4.min.js"></script>
-
-    <!-- Custom and plugin javascript -->
-    <script src="../js/inspinia.js"></script>
-    <script src="../js/plugins/pace/pace.min.js"></script>
-
-    <!-- datepicker -->
-    <script src="../js/plugins/datapicker/angular-datepicker.js"></script>
-
-
-    <!-- Date range picker -->
-    <script src="../js/plugins/daterangepicker/angular-daterangepicker.js"></script>
-
-
-    <!-- daum 주소찾기 -->
-    <script src="https://spi.maps.daum.net/imap/map_js_init/postcode.v2.js"></script>
-
-    <!-- input mask -->
-    <script src="../js/plugins/jasny/jasny-bootstrap.min.js"></script>
-
-    <!-- Sweet alert -->
-    <script src="../js/plugins/sweetalert/sweetalert.min.js"></script>
-
-    <!-- iCheck -->
-    <script src="../js/plugins/iCheck/icheck.min.js"></script>
-
-    <!-- Peity -->
-    <script src="../js/plugins/peity/jquery.peity.min.js"></script>
-	
-	<script src="../js/plugins/validate/jquery.validate.min.js"></script>
-	<script src="../js/plugins/staps/jquery.steps.min.js"></script>
-<!-- 	<script src="../js/plugins/register/register.js"></script> -->
-	<script>
-	$(document).ready(function(){
-        $("#wizard").steps();
-        $("#form").steps({
-            bodyTag: "fieldset",
-            onStepChanging: function (event, currentIndex, newIndex)
-            {
-                // Always allow going backward even if the current step contains invalid fields!
-                if (currentIndex > newIndex)
-                {
-                    return true;
-                }
-
-                // Forbid suppressing "Warning" step if the user is to young
-                if (newIndex === 3 && Number($("#age").val()) < 18)
-                {
-                    return false;
-                }
-
-                var form = $(this);
-
-                // Clean up if user went backward before
-                if (currentIndex < newIndex)
-                {
-                    // To remove error styles
-                    $(".body:eq(" + newIndex + ") label.error", form).remove();
-                    $(".body:eq(" + newIndex + ") .error", form).removeClass("error");
-                }
-
-                // Disable validation on fields that are disabled or hidden.
-                form.validate().settings.ignore = ":disabled,:hidden";
-
-                // Start validation; Prevent going forward if false
-                return form.valid();
-            },
-            onStepChanged: function (event, currentIndex, priorIndex)
-            {
-                // Suppress (skip) "Warning" step if the user is old enough.
-                if (currentIndex === 2 && Number($("#age").val()) >= 18)
-                {
-                    $(this).steps("next");
-                }
-
-                // Suppress (skip) "Warning" step if the user is old enough and wants to the previous step.
-                if (currentIndex === 2 && priorIndex === 3)
-                {
-                    $(this).steps("previous");
-                }
-            },
-            onFinishing: function (event, currentIndex)
-            {
-                var form = $(this);
-
-                // Disable validation on fields that are disabled.
-                // At this point it's recommended to do an overall check (mean ignoring only disabled fields)
-                form.validate().settings.ignore = ":disabled";
-
-                // Start validation; Prevent form submission if false
-                return form.valid();
-            },
-            onFinished: function (event, currentIndex)
-            {
-                var form = $(this);
-
-                // Submit form input
-                form.submit();
-            }
-        }).validate({
-                    errorPlacement: function (error, element)
-                    {
-                        element.before(error);
-                    },
-                    rules: {
-                        confirm: {
-                            equalTo: "#password"
-                        }
-                    }
-                });
-   });
-	</script>
-</body>
-</html>

@@ -6,19 +6,6 @@ function companyList(snapshot) {
 		'<td id="' + snapshot.key + '"></td>' +
 		'</a></tr>');
 
-	// if(snapshot.val().yeta == '1'){
-	// 	$('#' + snapshot.key).append('<span class="badge badge-success yeta"> Y </span>');
-	// 	if(snapshot.val().sap == '1'){
-	// 		$('#' + snapshot.key).append('<span class="badge badge-info sap"> S </span>');
-	// 	}
-	// 	if(snapshot.val().cloud == '1'){
-	// 		$('#' + snapshot.key).append('<span class="badge badge-primary cloud"> C </span>');
-	// 	}
-	// 	if(snapshot.val().onpremises == '1'){
-	// 		$('#' + snapshot.key).append('<span class="badge badge-danger onpremises"> O </span>');
-	// 	}
-	// }
-
 	if (snapshot.val().sap == '1') {
 		$('#' + snapshot.key).append('<span class="badge badge-info sap"> SAP </span>');
 	}
@@ -29,55 +16,79 @@ function companyList(snapshot) {
 		$('#' + snapshot.key).append('<span class="badge badge-danger onpremises"> On Premise </span>');
 	}
 
-	// if (snapshot.val().academy == '1') {
-	// 	$('#' + snapshot.key).append('<span class="badge badge-info academy"> A </span>');
-	// }
-	// if (snapshot.val().consulting == '1') {
-	// 	$('#' + snapshot.key).append('<span class="badge badge-warning consulting"> C </span>');
-	// }
+	//pagination
+	$('#company_nav a').remove();
+	var rowsShown = 9;
+	var rowsTotal = $('#company_list').children('.company_list1').size();
+	var numPages = Math.ceil(rowsTotal / rowsShown);
+	
+		for (i = 0; i < numPages; i++) {
+			var pageNum = i + 1;
+			$('#company_nav').append('<li><a rel="' + i + '">' + pageNum + '</a></li>');
+		}
+		
+	$('#company_list').children('.company_list1').hide();
+	$('#company_list').children('.company_list1').slice(0, rowsShown).show();
+	$('#company_nav a:first').addClass('active');
+	$('#company_nav a').bind('click', function () {
+		$('#company_nav a').removeClass('active');
+		$(this).addClass('active');
+		var currPage = $(this).attr('rel');
+		var startItem = currPage * rowsShown;
+		var endItem = startItem + rowsShown;
+		$('#company_list').children('.company_list1').css('opacity', '0.0').hide().slice(startItem, endItem).
+		css('display', 'table-row').animate({
+			opacity: 1
+		}, 300);
+	});
 }
 
 function companyClientList(snapshot) {
 	$('#company_client_List').children().remove();
 	$('#company_client_List_box').show();
-	firebase.database().ref('clients/').orderByChild('companyName').equalTo(snapshot).on('child_added', function (snapshot1) {
-		$('#company_client_List').append('<tr class="clientlist"  value="' + snapshot1.key + '">' +
-			'<td>' + snapshot1.val().clientName + '</td>' +
-			'<td>' + snapshot1.val().clientDepartment + '</td>' +
-			'<td>' + snapshot1.val().clientPosition + '</td>' +
-			'</tr>');
-
-		var rowsShown = 5;
-		var rowsTotal = $('#company_client_List').children('.clientlist').size();
-		if (rowsTotal > rowsShown) {
-			$('#company_client_load').show();
-		}
-		var numPages = Math.ceil(rowsTotal / rowsShown);
-		$('#company_client_List').children('.clientlist').hide();
-		$('#company_client_List').children('.clientlist').slice(0, rowsShown).show();
-		$('#company_client_load').bind('click', function () {
-			if (rowsTotal < rowsShown) {
-				$('#company_client_load').hide();
+	firebase.database().ref('clients/').on('child_added', function (snapshot2) {
+		firebase.database().ref('clients/' + snapshot2.key).orderByChild('companyName').equalTo(snapshot).on('child_added', function(snapshot1){
+			$('#company_client_List').append('<tr class="clientlist"  value="' + snapshot1.key + '">' +
+				'<td>' + snapshot1.val().clientName + '</td>' +
+				'<td>' + snapshot1.val().clientDepartment + '</td>' +
+				'<td>' + snapshot1.val().clientPosition + '</td>' +
+				'</tr>');
+	
+			var rowsShown = 5;
+			var rowsTotal = $('#company_client_List').children('.clientlist').size();
+			if (rowsTotal > rowsShown) {
+				$('#company_client_load').show();
 			}
-			rowsShown++;
-			rowsShown++;
-			rowsShown++;
-			rowsShown++;
-			rowsShown++;
-			console.log(rowsShown);
-			var endItem = rowsShown;
-			$('#company_client_List').children('.clientlist').css('opacity', '0.0').hide().slice(0, endItem).
-			css('display', 'table-row').animate({
-				opacity: 1
-			}, 300);
-		});
+			var numPages = Math.ceil(rowsTotal / rowsShown);
+			$('#company_client_List').children('.clientlist').hide();
+			$('#company_client_List').children('.clientlist').slice(0, rowsShown).show();
+			$('#company_client_load').bind('click', function () {
+				if (rowsTotal < rowsShown) {
+					$('#company_client_load').hide();
+				}
+				rowsShown++;
+				rowsShown++;
+				rowsShown++;
+				rowsShown++;
+				rowsShown++;
+				var endItem = rowsShown;
+				$('#company_client_List').children('.clientlist').css('opacity', '0.0').hide().slice(0, endItem).
+				css('display', 'table-row').animate({
+					opacity: 1
+				}, 300);
+			});
+		})
 	})
 }
 
 $(document).ready(function () {
-	firebase.database().ref('clients/' + firebase.auth().currentUser.uid).on('child_added', function (snapshot) {
-		if (snapshot.val().grade == '0') {
-			window.location.hash = '#/clientLogin';
+	firebase.auth().onAuthStateChanged(function(user) {
+		if(user){
+			firebase.database().ref('clients/' + firebase.auth().currentUser.uid).on('child_added', function (snapshot) {
+				if (snapshot.val().grade == '0') {
+					window.location.hash = '#/clientLogin';
+				}
+			})
 		}
 	})
 
@@ -85,31 +96,6 @@ $(document).ready(function () {
 	$('#company_client_load').hide();
 	firebase.database().ref('company/').on('child_added', function (snapshot) {
 		companyList(snapshot);
-
-		//pagination
-		$('#company_nav a').remove();
-		var rowsShown = 9;
-		var rowsTotal = $('#company_list').children('.company_list1').size();
-		var numPages = Math.ceil(rowsTotal / rowsShown);
-		for (i = 0; i < numPages; i++) {
-			var pageNum = i + 1;
-			$('#company_nav').append('<li><a rel="' + i + '">' + pageNum + '</a></li>');
-		}
-		$('#company_list').children('.company_list1').hide();
-		$('#company_list').children('.company_list1').slice(0, rowsShown).show();
-		$('#company_nav a:first').addClass('active');
-		$('#company_nav a').bind('click', function () {
-
-			$('#company_nav a').removeClass('active');
-			$(this).addClass('active');
-			var currPage = $(this).attr('rel');
-			var startItem = currPage * rowsShown;
-			var endItem = startItem + rowsShown;
-			$('#company_list').children('.company_list1').css('opacity', '0.0').hide().slice(startItem, endItem).
-			css('display', 'table-row').animate({
-				opacity: 1
-			}, 300);
-		});
 	})
 	$(document).on('click', '.company_list1', function () {
 		var comType;
@@ -132,9 +118,32 @@ $(document).ready(function () {
 					$('#company_Type').append('<span class="badge badge-danger onpremises"> ONPREMISES </span>');
 				}
 			}
+			$('#companyUser').remove();
+			$('#companyBox').append('<div class="pull-right" id="companyUser"><button class="btn btn-default btn-xs" data-toggle="modal" data-target="#myModal6">책임자 선택</button>' +
+									 '<button class="btn btn-default btn-xs" id="companyModify">수정</button></div>');
+			
 			$('#company_addr').children().remove();
 			$('#company_addr').text('');
 			$('#company_addr').append('<i class="fa fa-map-marker"></i>' + snapshot.val().addr);
+			
+			
+			firebase.database().ref('user-infos/').on('child_added', function(snapshot2){
+				firebase.database().ref('user-infos/' + snapshot2.key).on('child_added', function(snapshot1){
+					$('#list').append('<div class="row"><div class="col-lg-12 text-center"><div class="col-md-4 radio radio-info radio-inline">' +
+									  '<input type="radio" value="' + snapshot2.key + '" name="radioInline" checked="">' +
+									  '<label for="inlineRadio1"></label>' +
+									  '</div>' +
+									  '<div class="listImg col-md-8"><img alt="image" class="img-circle" src="' + snapshot1.val().picture + '">' +
+									  '<br/><small>' + snapshot1.val().username + '</small></div></div></div>');
+					$('#modalSave').val(snapshot.key);
+				})
+			})
+			
+			$('#modalSave').click(function(){
+				firebase.database().ref('company/' + $(this).attr('value')).update({
+					officer: $('input[type=radio]:checked').val()
+				})
+			})
 		})
 	})
 })

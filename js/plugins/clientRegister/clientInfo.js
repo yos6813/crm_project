@@ -42,6 +42,7 @@ function sample6_execDaumPostcode() {
 
 
 $(document).ready(function(){
+	$('#companykey').hide();
 	firebase.auth().onAuthStateChanged(function(user) {
 		if(user){
 			$('#clientCorporate').blur(function(){
@@ -49,6 +50,7 @@ $(document).ready(function(){
 				var cor = corporate.split('-');
 				firebase.database().ref('company/').orderByChild('corporate').equalTo(cor[0] + cor[1] + cor[2]).on('child_added', function(snapshot){
 					$('#companyName').val(snapshot.val().name);
+					$('#companykey').text(snapshot.key);
 				})
 			})
 			$('#clientCorporate').focus(function(){

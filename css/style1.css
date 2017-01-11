@@ -8527,3 +8527,8 @@ body.md-skin {
 #require {
 	color: red;
 }
+
+.listImg .img-circle{
+	width: 38px;
+	height: 38px;
+}

@@ -59,42 +59,45 @@ $(document).ready(function(){
 	$('#client_posts_load').hide();
 	firebase.database().ref('clients/').on('child_added', function(snapshot){
 		firebase.database().ref('clients/' + snapshot.key).on('child_added', function(snapshot1){
-			$('#client_user').append('<tr class="clientList"  value="' + snapshot.key + '">' +
-					'<td>' + snapshot1.val().clientName + '</td>' +
-					'<td>' + snapshot1.val().companyName + '</td>' +
-					'<td>' + snapshot1.val().clientDepartment + '</td>' +
-					'<td>' + snapshot1.val().clientPosition + '</td>' +
-					'</tr>');
-		})
+			firebase.database().ref('company/' + snapshot1.val().company).on('value', function(snapshot2){
+				$('#client_user').append('<tr class="clientList"  value="' + snapshot.key + '">' +
+						'<td>' + snapshot1.val().clientName + '</td>' +
+						'<td>' + snapshot2.val().name + '</td>' +
+						'<td>' + snapshot1.val().clientDepartment + '</td>' +
+						'<td>' + snapshot1.val().clientPosition + '</td>' +
+						'</tr>');
 		
-		//pagination
-		$('#client_nav a').remove();
-		var rowsShown = 9;
-		var rowsTotal = $('#client_user').children('.clientList').size();
-		var numPages = Math.ceil(rowsTotal/rowsShown);
-		for(i = 0;i < numPages;i++) {
-			var pageNum = i + 1;
-			$('#client_nav').append('<li><a rel="'+i+'">'+pageNum+'</a></li>');
-		}
-		$('#client_user').children('.clientList').hide();
-		$('#client_user').children('.clientList').slice(0, rowsShown).show();
-		$('#client_nav a:first').addClass('active');
-		$('#client_nav a').bind('click', function(){
-			
-			$('#client_nav a').removeClass('active');
-			$(this).addClass('active');
-			var currPage = $(this).attr('rel');
-			var startItem = currPage * rowsShown;
-			var endItem = startItem + rowsShown;
-			$('#client_user').children('.clientList').css('opacity','0.0').hide().slice(startItem, endItem).
-			css('display','table-row').animate({opacity:1}, 300);
-		});
+				//pagination
+				$('#client_nav a').remove();
+				var rowsShown = 9;
+				var rowsTotal = $('#client_user').children('.clientList').size();
+				var numPages = Math.ceil(rowsTotal/rowsShown);
+				for(i = 0;i < numPages;i++) {
+					var pageNum = i + 1;
+					$('#client_nav').append('<li><a rel="'+i+'">'+pageNum+'</a></li>');
+				}
+				$('#client_user').children('.clientList').hide();
+				$('#client_user').children('.clientList').slice(0, rowsShown).show();
+				$('#client_nav a:first').addClass('active');
+				$('#client_nav a').bind('click', function(){
+					
+					$('#client_nav a').removeClass('active');
+					$(this).addClass('active');
+					var currPage = $(this).attr('rel');
+					var startItem = currPage * rowsShown;
+					var endItem = startItem + rowsShown;
+					$('#client_user').children('.clientList').css('opacity','0.0').hide().slice(startItem, endItem).
+					css('display','table-row').animate({opacity:1}, 300);
+				});
+			})
+		})
 	})
 	
 	$(document).on('click', '.clientList', function(){
 			clientPost($(this).attr('value'));
 			firebase.database().ref('clients/' + $(this).attr('value')).on('child_added', function(snapshot){
-				$('#client_company').text(snapshot.val().companyName);
+				firebase.database().ref('company/' + snapshot.val().company).on('value', function(snapshot2){
+				$('#client_company').text(snapshot2.val().name);
 				$('#client_name').text(snapshot.val().clientName);
 				$('#client_department').text(snapshot.val().clientDepartment);
 				$('#client_job').text(snapshot.val().clientPosition);
@@ -119,6 +122,7 @@ $(document).ready(function(){
 					$('#client_address').append('<i class="fa fa-map-marker"></i>' + snapshot1.val().addr);
 				})
 			})
+		})
 		
 	})
 })
@@ -139,6 +143,29 @@ $(document).ready(function(){
 						'<td>' + snapshot1.val().clientPosition + '</td>' +
 						'</tr>');
 			})
+		});
+		
+		//pagination
+		$('#client_nav a').remove();
+		var rowsShown = 9;
+		var rowsTotal = $('#client_user').children('.clientList').size();
+		var numPages = Math.ceil(rowsTotal/rowsShown);
+		for(i = 0;i < numPages;i++) {
+			var pageNum = i + 1;
+			$('#client_nav').append('<li><a rel="'+i+'">'+pageNum+'</a></li>');
+		}
+		$('#client_user').children('.clientList').hide();
+		$('#client_user').children('.clientList').slice(0, rowsShown).show();
+		$('#client_nav a:first').addClass('active');
+		$('#client_nav a').bind('click', function(){
+			
+			$('#client_nav a').removeClass('active');
+			$(this).addClass('active');
+			var currPage = $(this).attr('rel');
+			var startItem = currPage * rowsShown;
+			var endItem = startItem + rowsShown;
+			$('#client_user').children('.clientList').css('opacity','0.0').hide().slice(startItem, endItem).
+			css('display','table-row').animate({opacity:1}, 300);
 		});
 	});
 	typeSelect();
@@ -212,6 +239,28 @@ function typeSelect(){
 									'</tr>');
 						})
 					})
+					//pagination
+					$('#client_nav a').remove();
+					var rowsShown = 9;
+					var rowsTotal = $('#client_user').children('.clientList').size();
+					var numPages = Math.ceil(rowsTotal/rowsShown);
+					for(i = 0;i < numPages;i++) {
+						var pageNum = i + 1;
+						$('#client_nav').append('<li><a rel="'+i+'">'+pageNum+'</a></li>');
+					}
+					$('#client_user').children('.clientList').hide();
+					$('#client_user').children('.clientList').slice(0, rowsShown).show();
+					$('#client_nav a:first').addClass('active');
+					$('#client_nav a').bind('click', function(){
+						
+						$('#client_nav a').removeClass('active');
+						$(this).addClass('active');
+						var currPage = $(this).attr('rel');
+						var startItem = currPage * rowsShown;
+						var endItem = startItem + rowsShown;
+						$('#client_user').children('.clientList').css('opacity','0.0').hide().slice(startItem, endItem).
+						css('display','table-row').animate({opacity:1}, 300);
+					});
 				}
 			}	
 		} else {
@@ -225,6 +274,28 @@ function typeSelect(){
 							'<td>' + snapshot1.val().clientPosition + '</td>' +
 							'</tr>');
 				})
+			});
+			//pagination
+			$('#client_nav a').remove();
+			var rowsShown = 9;
+			var rowsTotal = $('#client_user').children('.clientList').size();
+			var numPages = Math.ceil(rowsTotal/rowsShown);
+			for(i = 0;i < numPages;i++) {
+				var pageNum = i + 1;
+				$('#client_nav').append('<li><a rel="'+i+'">'+pageNum+'</a></li>');
+			}
+			$('#client_user').children('.clientList').hide();
+			$('#client_user').children('.clientList').slice(0, rowsShown).show();
+			$('#client_nav a:first').addClass('active');
+			$('#client_nav a').bind('click', function(){
+				
+				$('#client_nav a').removeClass('active');
+				$(this).addClass('active');
+				var currPage = $(this).attr('rel');
+				var startItem = currPage * rowsShown;
+				var endItem = startItem + rowsShown;
+				$('#client_user').children('.clientList').css('opacity','0.0').hide().slice(startItem, endItem).
+				css('display','table-row').animate({opacity:1}, 300);
 			});
 		}
 	});
