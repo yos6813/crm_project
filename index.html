@@ -3,11 +3,11 @@
 * Version 2.6
 *
 -->
-
 <!DOCTYPE html>
 <html ng-app="inspinia">
 
 <head>
+<<<<<<< HEAD
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -36,24 +36,32 @@
 	<!-- Sweet Alert -->
     <link href="css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
 
+=======
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <!-- Page title set in pageTitle directive -->
+  <title page-title></title>
+  <!-- Font awesome -->
+  <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
+  <!-- Bootstrap and Fonts -->
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <!-- Main Inspinia CSS files -->
+  <link href="css/animate.css" rel="stylesheet">
+  <link id="loadBefore" href="css/style.css" rel="stylesheet">
+  <link href="css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+  <link href="css/plugins/bootstrap-tagsinput/bootstrap-tagsinput.css" rel="stylesheet">
+  <link href="css/plugins/jasny/jasny-bootstrap.min.css" rel="stylesheet">
+  <link href="css/plugins/footable/footable.core.css" rel="stylesheet">
+  <link href="css/plugins/summernote/summernote.css" rel="stylesheet">
+  <link href="css/plugins/summernote/summernote-bs3.css" rel="stylesheet">
+  <link href="https://cdn.datatables.net/1.10.13/css/dataTables.bootstrap.min.css">
+>>>>>>> f51406db2a14bce648b7fa8f9a18f1e46af74dab
 </head>
-
 <!-- ControllerAs syntax -->
 <!-- Main controller with serveral data used in Inspinia theme on diferent view -->
-<body ng-controller="MainCtrl as main">
-<div class="se-pre-con"></div>
 
-<!-- Main view  -->
-<div ui-view></div>
-
-<!-- jQuery and Bootstrap -->
-<script src="js/jquery/jquery-2.1.1.min.js"></script>
-<script src="js/plugins/jquery-ui/jquery-ui.js"></script>
-<script src="js/bootstrap/bootstrap.min.js"></script>
-
-<!-- require -->
-<script></script>
-
+<<<<<<< HEAD
 <!-- MetsiMenu -->
 <script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
 
@@ -112,6 +120,65 @@
 
 <!-- 개발용 -->
 <script src="https://www.gstatic.com/firebasejs/3.6.4/firebase.js"></script>
+=======
+<body ng-controller="MainCtrl as main">
+  <div class="se-pre-con"></div>
+  <!-- Main view  -->
+  <div ui-view></div>
+  <!-- jQuery and Bootstrap -->
+  <script src="js/jquery/jquery-2.1.1.min.js"></script>
+  <script src="js/plugins/jquery-ui/jquery-ui.js"></script>
+  <script src="js/bootstrap/bootstrap.min.js"></script>
+  <!-- require -->
+  <script></script>
+  <!-- MetsiMenu -->
+  <script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
+  <!-- SlimScroll -->
+  <script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+  <!-- Peace JS -->
+  <script src="js/plugins/pace/pace.min.js"></script>
+  <script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.10.13/js/dataTables.bootstrap.min.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <!-- hide seek -->
+  <script src="js/jquery.hideseek.min.js"></script>
+  <script src="js/jquery.hideseek.js"></script>
+  <!-- Custom and plugin javascript -->
+  <script src="js/inspinia.js"></script>
+  <!-- AngularJS -->
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+  <!-- AngularFire -->
+  <script src="https://cdn.firebase.com/libs/angularfire/2.1.0/angularfire.min.js"></script>
+  <script src="js/plugins/oclazyload/dist/ocLazyLoad.min.js"></script>
+  <script src="js/ui-router/angular-ui-router.min.js"></script>
+  <script src="js/bootstrap/ui-bootstrap-tpls-1.1.2.min.js"></script>
+  <script src="js/angular/angular-route.js"></script>
+  <!-- Anglar App Script -->
+  <script src="js/app.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/directives.js"></script>
+  <script src="js/controllers.js"></script>
+  <script src="https://spi.maps.daum.net/imap/map_js_init/postcode.v2.js"></script>
+  <script src="https://apis.google.com/js/platform.js" async defer></script>
+  
+  <!--배포용 -->
+  <script src="https://www.gstatic.com/firebasejs/3.6.4/firebase.js"></script>
+  <script>
+    // Initialize Firebase
+    var config = {
+      apiKey: "AIzaSyDp2pj6WSvpKOtnnRp9NwdTVZAgUalNNa8",
+      authDomain: "yeta-cscenter.firebaseapp.com",
+      databaseURL: "https://yeta-cscenter.firebaseio.com",
+      storageBucket: "yeta-cscenter.appspot.com",
+      messagingSenderId: "304577172613"
+    };
+    firebase.initializeApp(config);
+  </script>
+  
+  
+  <!-- 개발용 -->
+  <!--<script src="https://www.gstatic.com/firebasejs/3.6.4/firebase.js"></script>
+>>>>>>> f51406db2a14bce648b7fa8f9a18f1e46af74dab
 <script>
   // Initialize Firebase
   var config = {
@@ -122,6 +189,7 @@
     messagingSenderId: "805712434179"
   };
   firebase.initializeApp(config);
+<<<<<<< HEAD
 </script>
 
 
@@ -141,46 +209,56 @@ firebase.database().ref("company/").orderByKey().on("child_added", function(snap
 <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
 <script type="text/javascript">
    (function(){
+=======
+</script>-->
+  <script>
+    var comName = [];
+    firebase.database().ref("company/").orderByKey().on("child_added", function (snapshot) {
+      firebase.database().ref("company/" + snapshot.key + '/name').on('value', function (snapshot1) {
+        comName.push(snapshot1.val());
+        $(".typeahead_2").typeahead({
+          source: comName
+        });
+      });
+    });
+  </script>
+  <!-- Typehead -->
+  <script src="js/plugins/typeahead/bootstrap3-typeahead.min.js"></script>
+  <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
+  <script type="text/javascript">
+    (function () {
+>>>>>>> f51406db2a14bce648b7fa8f9a18f1e46af74dab
       emailjs.init("user_oilH1E3TLgZrilkkM8Pnh");
-   })();
-</script>
-
-<!-- FooTable -->
-<script src="js/plugins/footable/footable.all.min.js"></script>
-
-<script>
-$('.footable').footable();
-$('.footable2').footable();
-</script>
-
-<!-- iCheck -->
-<script src="js/plugins/iCheck/icheck.min.js"></script>
-
-<script>
-$('.i-checks').iCheck({
-    checkboxClass: 'icheckbox_square-green',
-    radioClass: 'iradio_square-green',
-});
-</script>
-
-<!-- SUMMERNOTE -->
-<script src="js/plugins/summernote/summernote.min.js"></script>
-<script src="js/plugins/bootstrap-tagsinput/bootstrap-tagsinput.js"></script>
-
-<!-- Jasny -->
-<script src="js/plugins/jasny/jasny-bootstrap.min.js"></script>
-
-<!-- DevExtreme dependencies -->
-<script type="text/javascript" src="https://ajax.aspnetcdn.com/ajax/globalize/0.1.1/globalize.min.js"></script>
-
-<!-- The AngularJS library -->
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.11/angular-sanitize.min.js"></script>
-
-<!-- A DevExtreme library -->
-<script type="text/javascript" src="https://cdn3.devexpress.com/jslib/15.1.11/js/dx.chartjs.js"></script>
-<script type="text/javascript" src="https://cdn3.devexpress.com/jslib/15.1.11/js/dx.all.js"></script>
-
-<!-- cookie -->
-<script src="jquery-cookie/src/jquery.cookie.js"></script>
+    })();
+  </script>
+  <!-- FooTable -->
+  <script src="js/plugins/footable/footable.all.min.js"></script>
+  <script>
+    $('.footable').footable();
+    $('.footable2').footable();
+  </script>
+  <!-- iCheck -->
+  <script src="js/plugins/iCheck/icheck.min.js"></script>
+  <script>
+    $('.i-checks').iCheck({
+      checkboxClass: 'icheckbox_square-green',
+      radioClass: 'iradio_square-green',
+    });
+  </script>
+  <!-- SUMMERNOTE -->
+  <script src="js/plugins/summernote/summernote.min.js"></script>
+  <script src="js/plugins/bootstrap-tagsinput/bootstrap-tagsinput.js"></script>
+  <!-- Jasny -->
+  <script src="js/plugins/jasny/jasny-bootstrap.min.js"></script>
+  <!-- DevExtreme dependencies -->
+  <script type="text/javascript" src="https://ajax.aspnetcdn.com/ajax/globalize/0.1.1/globalize.min.js"></script>
+  <!-- The AngularJS library -->
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.11/angular-sanitize.min.js"></script>
+  <!-- A DevExtreme library -->
+  <script type="text/javascript" src="https://cdn3.devexpress.com/jslib/15.1.11/js/dx.chartjs.js"></script>
+  <script type="text/javascript" src="https://cdn3.devexpress.com/jslib/15.1.11/js/dx.all.js"></script>
+  <!-- cookie -->
+  <script src="jquery-cookie/src/jquery.cookie.js"></script>
 </body>
+
 </html>

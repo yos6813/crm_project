@@ -20,8 +20,134 @@ firebase.database().ref("types/").orderByKey().endAt("type").on("child_added", f
 function postList(key) {
 	firebase.database().ref('qnaWrite/' + key).on('value', function (snapshot1) {
 		firebase.database().ref('reply/' + key).on('value', function (snapshot2) {
+<<<<<<< HEAD
 			firebase.database().ref('comment/').orderByChild('post').equalTo(key).on('value', function(snapshot3){
 				firebase.database().ref('accept/' + key).on('value', function(snapshot4){
+=======
+			var old = snapshot2.val().replyDate;
+			if (old != '') {
+				var replyDate1 = old.split(' ');
+				var replyDate = replyDate1[0].split('.');
+				var replyDate2 = replyDate1[1].split(':');
+				var replyDate3 = new Date(replyDate[0], replyDate[1] - 1, replyDate[2]).getTime() / 1000;
+
+				var now = snapshot1.val().date;
+				var postDate = now.split(' ');
+				var postDate1 = postDate[0].split('.');
+				var postDate2 = postDate[1].split(':');
+				var postDate3 = new Date(postDate1[0], postDate1[1] - 1, postDate1[2]).getTime() / 1000;
+
+				var gap = replyDate3 - postDate3;
+				var gap2 = gap / 1000;
+
+				var hour = gap / 3600;
+				var hourgap = replyDate2[0] - postDate2[0];
+				var minutegap = replyDate2[1] - postDate2[1];
+				var daygap = hour / 24;
+
+				if (hourgap < 0) {
+					hourgap += 24;
+					daygap -= 1;
+				}
+				if (minutegap < 0) {
+					minutegap += 60;
+					hourgap -= 1;
+				}
+
+			} else {
+				daygap = '-';
+				minutegap = '-';
+				hourgap = '-';
+			}
+
+			$('#postList').each(function () {
+				var state;
+				if (snapshot1.val().status == '해결') {
+					state = 'label-default';
+				} else if (snapshot1.val().status == '보류') {
+					state = 'label-warning';
+
+
+
+				} else if (snapshot1.val().status == '등록') {
+					state = 'label-info';
+				} else {
+
+					state = 'label-primary';
+				}
+
+				var type;
+				if (snapshot1.val().type == 'taxLaw') {
+					type = '세법'
+				} else if (snapshot1.val().type == 'system') {
+					type = '시스템'
+				} else {
+					type = '운용'
+				}
+
+				$('#postList').append('<tr class="call_list" value="' + key + '">' +
+					'<td class="project-status">' +
+					'<span class="label ' + state + '">' + snapshot1.val().status + '</span>' +
+					'</td>' +
+					'<td class="project-category">' +
+					'<span>' + type + '</span>' +
+					'</td>' +
+					'<td class="title project-title">' + snapshot1.val().title +
+					'</td>' +
+					'<td class="project-title">' +
+					'<a id="titleCom">' + snapshot1.val().company + '</a>' +
+					'<br/>' +
+					'<small>' + snapshot1.val().userName + '</small>' +
+					'</td>' +
+					'<td class="project-clientcategory" id="' + key + '">' +
+					'</td>' +
+					//								'<td class="project-people">' +
+					//								'<a><img alt="image" class="img-circle" src="' + snapshot1.val().userImg + '"></a>' +
+					//								'<br/>' +
+					//								'<small>' + snapshot1.val().username + '</small>' +
+					//								'<br/>' +
+					//								'</td>' +
+					'<td class="project-people replyImgTr">' +
+					'<a><img alt="" class="replyImgli img-circle" src="' + snapshot2.val().replyImg + '"></a>' +
+					'<br/>' +
+					'<small>' + snapshot2.val().replyName + '</small>' +
+					'<br/>' +
+					'</td>' +
+					'<td class="project-title">' +
+					'<small>접수: ' + snapshot1.val().date + '</small>' +
+					'<br/>' +
+					'<small class="replygap">처리: ' + daygap + '일  ' + hourgap + '시간 ' + minutegap + '분</small>' +
+					'</td>' +
+					'<td onload="setTimeout()" class="project-title ' + key + '">' +
+					'</td>' +
+					'</tr>');
+
+				$('.replyImgli[src=""]').hide();
+				$('.replyImgli:not([src=""])').show();
+
+
+				/* 실시간 시간차 */
+				var now = snapshot1.val().date;
+				var postDate = now.split(' ');
+				var postDate1 = postDate[0].split('.');
+				var postDate2 = postDate[1].split(':');
+				var postDate3 = new Date(postDate1[0], postDate1[1] - 1, postDate1[2], postDate2[0], postDate2[1]).getTime() / 1000;
+
+
+				var gap = new Date().getTime() / 1000;
+				var gap2 = gap - postDate3;
+
+				var hour = parseInt(gap2 / 3600);
+				var min = parseInt((gap2 % 3600) / 60);
+				var sec = gap2 % 60;
+
+				if (snapshot1.val().status == '접수' || snapshot1.val().status == '보류') {
+					$('.' + key).children().remove();
+					$('.' + key).append('<h4>' + hour + '시간' + min + '분' + '</h4>');
+					$('.' + key).css('color', 'red');
+					myFunction(snapshot1, key);
+				} else {
+>>>>>>> f51406db2a14bce648b7fa8f9a18f1e46af74dab
 					var old = snapshot2.val().replyDate;
 					var check = '';
 					var comment = '';
@@ -265,6 +391,7 @@ $(document).on('click', '.call_list', function () {
 	location.hash = '#/index/view_call_record?no=' + $(this).attr('value');
 })
 
+<<<<<<< HEAD
 $(document).ready(function () {
 
 	firebase.auth().onAuthStateChanged(function(user) {
@@ -274,6 +401,18 @@ $(document).ready(function () {
 					window.location.hash = '#/clientLogin';
 				}
 			})
+=======
+
+$(document).ready(function () {
+	firebase.auth().onAuthStateChanged(function (user) {
+		if (user) {
+			firebase.database().ref('clients/' + user.uid).on('child_added', function (snapshot) {
+				if (snapshot.val().grade == '0') {
+					window.location.hash = '#/clientLogin';
+				}
+			})
+
+>>>>>>> f51406db2a14bce648b7fa8f9a18f1e46af74dab
 		}
 	})
 	if (pageType != '' && status == '') {
