@@ -135,7 +135,7 @@ $(document).ready(function(){
 			var tag = [];
 			var today = new Date();
 			var date = today.getFullYear() + "." + (today.getMonth()+1) + "." + today.getDate() + " " + today.getHours() + ":" + today.getMinutes();
-			var status = '접수';
+			var status = '등록';
 			var company = snapshot.val().companyName;
 			var userName = snapshot.val().clientName;
 			var type = $('#writeType').text();
@@ -171,6 +171,37 @@ $(document).ready(function(){
 			
 			postAdd(user, userEmail, bigGroup, smallGroup, title, text, file, tag, date, type, status, company, userId, userName, replyDate, replyName, replyText, replyImg);
 			location.hash = '#/cIndex/qnaList?no=' + user;
+			
+			var types = "<http://yeta.center/#/index/call_list?name=" + userName + "&title=" + title + "|문의 글 리스트 가기>";
+			var url;
+			var channel;
+			if(type == '시스템'){
+				url = "https://hooks.slack.com/services/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";
+				channel = '#tech'
+			} else if(type == '세법'){
+				url = "https://hooks.slack.com/services/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";
+				channel = '#tax'
+			} else if(type == '운용'){
+				url = "https://hooks.slack.com/services/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";
+				channel = '#operating'
+			}
+			
+			var payload = {
+				"attachments":[
+					{
+						"fallback":type + " 문의 등록",
+				        "pretext":type + " 문의 등록",
+						"channel": channel,
+						"color":"#D00000",
+						"fields":[{
+							"value": "이름: " + userName + "\n" + "제목: " + title + "\n" + types,
+							"short":false
+						}]
+					}
+				]
+			}
+			
+			sendToSlack_(url,payload)
 		})
 	})
 	
@@ -191,4 +222,15 @@ $(document).ready(function(){
 		})
 	})
 })
+
+
+
+function sendToSlack_(url,payload) {
+	$.ajax({
+        url: url,
+        type: "POST",
+        data: JSON.stringify(payload),
+        dataType: "application/json",
+    });
+}
 

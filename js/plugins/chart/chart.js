@@ -7,10 +7,14 @@ function pagereload() {
 }
 
 $(document).ready(function(){
-	console.log(firebase.auth().currentUser.email);
-	firebase.database().ref('clients/' + firebase.auth().currentUser.uid).on('child_added',function(snapshot){
-		if(snapshot.val().grade == '0'){
-			window.location.hash = '#/clientLogin';
+//	console.log(firebase.auth().currentUser.email);
+	firebase.auth().onAuthStateChanged(function(user) {
+		if(user){
+			firebase.database().ref('clients/' + user.uid).on('child_added',function(snapshot){
+				if(snapshot.val().grade == '0'){
+					window.location.hash = '#/clientLogin';
+				}
+			})
 		}
 	})
 	
@@ -25,49 +29,53 @@ $(document).ready(function(){
 	firebase.database().ref('qnaWrite/').orderByChild('status').equalTo('해결').on('value', function(snapshot1){
 		firebase.database().ref('qnaWrite/').orderByChild('status').equalTo('접수').on('value', function(snapshot2){
 			firebase.database().ref('qnaWrite/').orderByChild('status').equalTo('보류').on('value', function(snapshot3){
-				var chartResolve = snapshot1.numChildren();
-				var chartDefer = snapshot3.numChildren();
-				var chartAccept = snapshot2.numChildren();
-				
-			    var dataSource = [
-			        { status: '해결', value: chartResolve },
-			        { status: '보류', value: chartDefer },
-			        { status: '접수', value: chartAccept },
-			    ];
-			     
-			    $("#doughnutChart").dxPieChart({
-			        dataSource: dataSource,
-			        palette: 'Soft Pastel',
-			        series: {
-			            type: 'doughnut',
-			            argumentField: 'status',
-			            valueField: 'value',
-			            label: {
-			                visible: true,
-			                connector: {
-			                    visible: true
-			                }
-			            }
-			        },
-			        tooltip: {
-			        	enabled: true,
-			        	customizeTooltip: function (arg) {
-			                return {
-			                    text: arg.argumentText + " - " + arg.valueText
-			                };
-			            }
-			        },
-			        onPointClick: function (info) {
-			            var clickedPoint = info.target;
-			            var name = clickedPoint.argument;
-			            var url = '#/index/call_list?type=' + name
-			            clickedPoint.isSelected() ? '': window.open(url, "_blank");
-			        },
-			        "export": {
-			            enabled: true
-			        }
-			        
-			    });
+				firebase.database().ref('qnaWrite/').orderByChild('status').equalTo('등록').on('value', function(snapshot4){
+					var chartResolve = snapshot1.numChildren();
+					var chartDefer = snapshot3.numChildren();
+					var chartAccept = snapshot2.numChildren();
+					var chartcheck = snapshot4.numChildren();
+					
+				    var dataSource = [
+				        { status: '해결', value: chartResolve },
+				        { status: '보류', value: chartDefer },
+				        { status: '접수', value: chartAccept },
+				        { status: '등록', value: chartcheck },
+				    ];
+				     
+				    $("#doughnutChart").dxPieChart({
+				        dataSource: dataSource,
+				        palette: 'Soft Pastel',
+				        series: {
+				            type: 'doughnut',
+				            argumentField: 'status',
+				            valueField: 'value',
+				            label: {
+				                visible: true,
+				                connector: {
+				                    visible: true
+				                }
+				            }
+				        },
+				        tooltip: {
+				        	enabled: true,
+				        	customizeTooltip: function (arg) {
+				                return {
+				                    text: arg.argumentText + " - " + arg.valueText
+				                };
+				            }
+				        },
+				        onPointClick: function (info) {
+				            var clickedPoint = info.target;
+				            var name = clickedPoint.argument;
+				            var url = '#/index/call_list?type=' + name
+				            clickedPoint.isSelected() ? '': window.open(url, "_blank");
+				        },
+				        "export": {
+				            enabled: true
+				        }
+				        
+				    });
+				})
 			})
 		})
 	})

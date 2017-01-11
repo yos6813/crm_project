@@ -6,7 +6,9 @@ function getParameterByName(name) {
 }
 
 var pageType = getParameterByName('type');
-var status = getParameterByName('status')
+var status = getParameterByName('status');
+var name = getParameterByName('name');
+var title = getParameterByName('title');
 
 firebase.database().ref("types/").orderByKey().endAt("type").on("child_added", function(snapshot){
 	snapshot.forEach(function(data){
@@ -60,6 +62,8 @@ function postList(key){
 					state = 'label-default';
 				} else if(snapshot1.val().status == '보류'){
 					state = 'label-warning';
+				} else if(snapshot1.val().status == '등록'){
+					state = 'label-info';
 				} else{
 					state = 'label-primary';
 				}
@@ -232,9 +236,13 @@ $(document).on('click', '.call_list', function(){
 
 $(document).ready(function(){
 	
-	firebase.database().ref('clients/' + firebase.auth().currentUser.uid).on('child_added',function(snapshot){
-		if(snapshot.val().grade == '0'){
-			window.location.hash = '#/clientLogin';
+	firebase.auth().onAuthStateChanged(function(user) {
+		if(user){
+			firebase.database().ref('clients/' + user.uid).on('child_added',function(snapshot){
+				if(snapshot.val().grade == '0'){
+					window.location.hash = '#/clientLogin';
+				}
+			})
 		}
 	})
 	
