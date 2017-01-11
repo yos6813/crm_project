@@ -1,5 +1,13 @@
-/* 다음 주소 찾기 */
+function getParameterByName(name) {
+	name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+	var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+		results = regex.exec(location.hash);
+	return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
 
+var no = getParameterByName('no');
+
+/* 다음 주소 찾기 */
 function sample6_execDaumPostcode() {
     new daum.Postcode({
         oncomplete: function(data) {
@@ -43,11 +51,11 @@ function sample6_execDaumPostcode() {
 
 /* 회사 등록 */
 
-function addCompany(name, addr, license, corporate, yeta, academy, consulting, sap, cloud, onpremises){
+function addCompany(name, addr, corporate, yeta, academy, consulting, sap, cloud, onpremises){
 	var companyData = {
 		name: name,
 		addr: addr,
-		license: license,
+//		license: license,
 		corporate: corporate,
 		yeta: yeta,
 		academy: academy,
@@ -66,54 +74,82 @@ function addCompany(name, addr, license, corporate, yeta, academy, consulting, s
 }
 
 $(document).ready(function(){
-	$('input[name=yetacheck]').change(function(){
-	 if($(this).is(":checked")){
-		 $('.yetaList').append('<label class="col-sm-2 control-label">YETA 고객구분 <br/><small class="text-navy">복수 선택 가능</small></label>' +
-			 	   		       '<div class="i-checks"><label> <input class="checkBox1" type="checkbox" name="sapcheck" value="SAP"> <i></i> SAP </label></div>' +
-			 	   		       '<div class="i-checks"><label> <input class="checkBox1" type="checkbox" name="cloudcheck" value="cloud"> <i></i> Cloud </label></div>' +
-	           				   '<div class="i-checks"><label> <input class="checkBox1" type="checkbox" name="precheck" value="OnPremises"> <i></i> On Premises </label></div>');
-        }else{
-            $('.yetaList').children().remove();
-        }
-	})
+//	$('input[name=yetacheck]').change(function(){
+//	 if($(this).is(":checked")){
+//		 $('.yetaList').append('<label class="col-sm-2 control-label">YETA 고객구분 <br/><small class="text-navy">복수 선택 가능</small></label>' +
+//			 	   		       '<div class="i-checks"><label> <input class="checkBox1" type="checkbox" name="sapcheck" value="SAP"> <i></i> SAP </label></div>' +
+//			 	   		       '<div class="i-checks"><label> <input class="checkBox1" type="checkbox" name="cloudcheck" value="cloud"> <i></i> Cloud </label></div>' +
+//	           				   '<div class="i-checks"><label> <input class="checkBox1" type="checkbox" name="precheck" value="OnPremises"> <i></i> On Premises </label></div>');
+//        }else{
+//            $('.yetaList').children().remove();
+//        }
+//	})
+	if(no != ''){
+		firebase.database().ref('company/' + no).on('value', function(snapshot){
+			$('#comName').val(snapshot.val().name);
+			$('#addr').val(snapshot.val().addr);
+			$('#licenseeNum').val(snapshot.val().license);
+			
+			if(snapshot.val().sap == '1'){
+				$('.SAP').prop('checked', true)
+			} if(snapshot.val().cloud == '1'){
+				$('.cloud').prop('checked', true)
+			} if(snapshot.val().onpremises == '1'){
+				$('.OnPremises').prop('checked', true)
+			}
+		})
+	}
 })
 
 function submitCompany(){
 	var name = $('#comName').val();
 	var addr = $('#addr').val() + ' ' + $("#addr2").val();
-	var license = $('#licenseeNum').val();
-	var corporate = $('#corporateNum').val();
-	var yeta = '0';
+	var corporate = $('#licenseeNum').val();
+//	var corporate = $('#corporateNum').val();
+	var yeta = '1';
 	var academy = '0';
 	var consulting = '0';
 	var sap = '0';
 	var cloud = '0';
 	var onpremises = '0';
 	
-	if($('input[name="yetacheck"]').filter(':checked').val() != undefined){
-		yeta = '1';
-		if($('input[name="sapcheck"]').filter(':checked').val() != undefined){
+//	if($('input[name="yetacheck"]').filter(':checked').val() != undefined){
+//		yeta = '1';
+		if($('.SAP').is(':checked')){
 			sap = '1';
 		} 
-		if($('input[name="cloudcheck"]').filter(':checked').val() != undefined){
+		if($('.cloud').is(':checked')){
 			cloud = '1';
 		} 
-		if($('input[name="precheck"]').filter(':checked').val() != undefined){
+		if($('.OnPremises').is(':checked')){
 			onpremises = '1';
 		}
-	}
-	if($('input[name="academycheck"]').filter(':checked').val() != undefined){
-		academy = '1';
-	}
-	if($('input[name="consultingcheck"]').filter(':checked').val() != undefined){
-		consulting = '1';
-	} 
+//	}
+//	if($('input[name="academycheck"]').filter(':checked').val() != undefined){
+//		academy = '1';
+//	}
+//	if($('input[name="consultingcheck"]').filter(':checked').val() != undefined){
+//		consulting = '1';
+//	} 
 	
-	addCompany(name, addr, license, corporate, yeta, academy, consulting, sap, cloud, onpremises);
+	if(no != ''){
+		firebase.database().ref('company/' + no).update({
+			name: name,
+			addr: addr,
+			corporate: corporate,
+			yeta: yeta,
+			sap: sap,
+			cloud: cloud,
+			onpremises: onpremises
+		})
+	} else {
+		addCompany(name, addr, corporate, yeta, academy, consulting, sap, cloud, onpremises);
+	}
 	
 	$('#comName').val('');
 	$('#addr').val('');
 	$('#addr2').val('');
 	$('#licenseeNum').val('');
-	$('#corporateNum').val('');
+//	$('#corporateNum').val('');
+	location.hash = '#/index/client_company_list';
 }

@@ -172,36 +172,65 @@ $(document).ready(function(){
 				postAdd(user, userEmail, bigGroup, smallGroup, title, text, file, tag, date, type, status, company, userId, userName, replyDate, replyName, replyText, replyImg);
 				location.hash = '#/cIndex/qnaList?no=' + user;
 				
-				var types = "<http://yeta.center/#/index/call_list?name=" + userName + "&title=" + title + "|문의 글 리스트 가기>";
+				var types = "<http://yeta.center/#/index/call_list?name=" + userName + "&title=" +  title + "|문의 글 리스트 가기>";
 				var url;
 				var channel;
 				if(type == '시스템'){
 					url = "https://hooks.slack.com/services/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";
-					channel = '#tech'
 				} else if(type == '세법'){
 					url = "https://hooks.slack.com/services/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";
-					channel = '#tax'
 				} else if(type == '운용'){
 					url = "https://hooks.slack.com/services/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";
-					channel = '#operating'
 				}
-				
-				var payload = {
-					"attachments":[
-						{
-							"fallback":type + " 문의 등록",
-					        "pretext":type + " 문의 등록",
-							"channel": channel,
-							"color":"#D00000",
-							"fields":[{
-								"value": "이름: " + userName + "\n" + "제목: " + title + "\n" + types,
-								"short":false
-							}]
+				var payload;
+				if(snapshot1.val().officer != undefined){
+					firebase.database().ref('user-infos/' + snapshot1.val().officer).on('child_added', function(snapshot5){
+						console.log(snapshot5.val().slack);
+						payload = {
+								"attachments":[
+									{
+//										"channel": "@" + snapshot5.val().slack,
+										"fallback":type + " 문의 등록",
+										"pretext":type + " 문의 등록",
+										"color":"#D00000",
+										"fields":[{
+											"value": "이름: " + userName + "\n" + "제목: " + title + "\n" + types,
+											"short":false
+										}]
+									}
+								]
 						}
-					]
+						payload2={
+								"channel": "@" + snapshot5.val().slack,
+								"username": "YETA2016",
+								"fields":[{
+									"value": "이름: " + userName + "\n" + "제목: " + title + "\n" + types,
+									"short":false
+								}]
+						}
+						console.log(payload);
+						sendToSlack_(url,payload);
+						sendToSlack_(url,payload2);
+					})
+				} else {
+					console.log('test2');
+					payload = {
+						"attachments":[
+							{
+								"fallback":type + " 문의 등록",
+								"pretext":type + " 문의 등록",
+								"color":"#D00000",
+								"fields":[{
+									"value": "이름: " + userName + "\n" + "제목: " + title + "\n" + types,
+									"short":false
+								}]
+							}
+						]
+					}
+					sendToSlack_(url,payload)
 				}
 				
-				sendToSlack_(url,payload)
+				
 			})
 		})
 	})

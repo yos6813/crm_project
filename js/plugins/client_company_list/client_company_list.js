@@ -47,7 +47,7 @@ function companyClientList(snapshot) {
 	$('#company_client_List').children().remove();
 	$('#company_client_List_box').show();
 	firebase.database().ref('clients/').on('child_added', function (snapshot2) {
-		firebase.database().ref('clients/' + snapshot2.key).orderByChild('companyName').equalTo(snapshot).on('child_added', function (snapshot1) {
+		firebase.database().ref('clients/' + snapshot2.key).orderByChild('company').equalTo(snapshot).on('child_added', function (snapshot1) {
 			$('#company_client_List').append('<tr class="clientlist"  value="' + snapshot1.key + '">' +
 				'<td>' + snapshot1.val().clientName + '</td>' +
 				'<td>' + snapshot1.val().clientDepartment + '</td>' +
@@ -101,23 +101,23 @@ $(document).ready(function () {
 		var comType;
 		$('#company_Type').children().remove();
 		firebase.database().ref('company/' + $(this).attr('value')).on('value', function (snapshot) {
-			companyClientList(snapshot.val().name);
+			companyClientList(snapshot.key);
 			$('#company_Name').text(snapshot.val().name);
 			$('#company_Coporate').text('사업자: ' + snapshot.val().corporate);
 			$('#company_license').text('법인: ' + snapshot.val().license);
 
-				if (snapshot.val().sap == '1') {
-					$('#company_Type').append('<span class="badge badge-info sap"> SAP </span>');
-				}
-				if (snapshot.val().cloud == '1') {
-					$('#company_Type').append('<span class="badge badge-primary cloud"> CLOUD </span>');
-				}
-				if (snapshot.val().onpremises == '1') {
-					$('#company_Type').append('<span class="badge badge-danger onpremises"> ONPREMISES </span>');
-				}
+			if (snapshot.val().sap == '1') {
+				$('#company_Type').append('<span class="badge badge-info sap"> SAP </span>');
+			}
+			if (snapshot.val().cloud == '1') {
+				$('#company_Type').append('<span class="badge badge-primary cloud"> CLOUD </span>');
+			}
+			if (snapshot.val().onpremises == '1') {
+				$('#company_Type').append('<span class="badge badge-danger onpremises"> ONPREMISES </span>');
+			}
 			
 			$('#csIncharge').remove();
-			$('#inchargeBox').append('<div class="pull-right" id="csIncharge"><button class="btn btn-default btn-xs" data-toggle="modal" data-target="#myModal6">책임자 선택</button></div>');
+			$('#inchargeBox').append('<div class="pull-right" id="csIncharge"><button id="inchargeBtn" class="btn btn-default btn-xs" data-toggle="modal" data-target="#myModal6">책임자 선택</button></div>');
 
 			$('#companyUser').remove();
 			$('#companyBox').append('<div class="pull-right" id="companyUser"><button class="btn btn-default btn-xs" id="companyModify">고객사 정보 수정</button></div>');
@@ -125,25 +125,38 @@ $(document).ready(function () {
 			$('#company_addr').children().remove();
 			$('#company_addr').text('');
 			$('#company_addr').append('<i class="fa fa-map-marker"></i>' + snapshot.val().addr);
-
-			$('#list').children().remove();
-			firebase.database().ref('user-infos/').on('child_added', function (snapshot2) {
-				firebase.database().ref('user-infos/' + snapshot2.key).on('child_added', function (snapshot1) {
-					$('#list').append('<tr><td><input type="radio" value="' + snapshot2.key + '" name="radioInline" ></td>' +
-						'<td><img alt="image" class="img-circle" src="' + snapshot1.val().picture + '"></td>' +
-						'<td>' + snapshot1.val().username + '</td><td>1</td></tr>');
-
-					$('#modalSave').val(snapshot.key);
-				})
-			})
-
-			$('#modalSave').click(function () {
-				firebase.database().ref('company/' + $(this).attr('value')).update({
-					officer: $('input[type=radio]:checked').val()
-				})
+			
+			$('#modalSave').val(snapshot.key);
+			$('#companyModify').val(snapshot.key);
+			
+			
+			firebase.database().ref('users/' + snapshot.val().officer).on('value', function(snapshot1){
+				$('#offiser').text(snapshot1.val().username);
 			})
 		})
 	})
+	
+	
+	$('#list').children().remove();
+//	firebase.database().ref('user-infos/').on('child_added', function (snapshot2) {
+		firebase.database().ref('users/').on('child_added', function (snapshot1) {
+			firebase.database().ref('accept/').orderByChild('AcceptUserId').equalTo(snapshot1.key).on('value', function(snapshot3){
+			$('#list').append('<tr><td><input type="radio" value="' + snapshot1.key + '" name="radioInline" ></td>' +
+				'<td><img alt="image" class="img-circle" src="' + snapshot1.val().picture + '"></td>' +
+				'<td>' + snapshot1.val().username + '</td><td>' + snapshot3.numChildren() + '</td></tr>');
+			})
+		})
+//	})
+	$('#modalSave').click(function () {
+		firebase.database().ref('company/' + $(this).attr('value')).update({
+			officer: $('input[type=radio]:checked').val()
+		})
+		$('#myModal6').modal('hide');
+	})
+})
+
+$(document).on('click', '#companyModify', function(){
+	location.hash = '#/company?no=' + $(this).attr('value');
 })
 
 $(document).ready(function () {

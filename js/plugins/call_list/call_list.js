@@ -117,14 +117,14 @@ $(document).ready(function () {
 	} else if (status != '' && pageType != '') {
 		$('#postList').children('.call_list').remove();
 		firebase.database().ref('qnaWrite/').orderByChild('status').equalTo(pageType).on('child_added', function (snapshot1) {
-			if (snapshot.val().postType == status) {
+			if (snapshot1.val().postType == status) {
 				postList(snapshot1);
 			}
 		});
 	} else if(name != '' && title != ''){
 		$('#postList').children('.call_list').remove();
-		firebase.database().ref('qnaWrite/').orderByChild('userName').equalTo(name).on('child_added', function (snapshot1) {
-			if (snapshot.val().title == title) {
+		firebase.database().ref('qnaWrite/').on('child_added', function (snapshot1) {
+			if (snapshot1.val().title == title && snapshot1.val().userName == name) {
 				postList(snapshot1);
 			}
 		});
@@ -134,6 +134,8 @@ $(document).ready(function () {
 			postList(snapshot1);
 		});
 	}
+	
+	
 })
 
 $(document).ready(function () {
