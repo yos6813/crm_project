@@ -25,6 +25,20 @@ function writeAlert(uid, replyPhoto, replyUser, replyDay, replyTitle, replyPost,
 	return firebase.database().ref().update(updates);
 }
 
+$('#replyCancel').click(function(){
+	swal({
+        title: "글 작성을 취소하시겠습니까?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Yes",
+        closeOnConfirm: false
+    }, function () {
+        swal("취소", "success");
+        location.hash = '#/index/call_list';
+    });
+})
+
 $(document).ready(function(){
 	firebase.auth().onAuthStateChanged(function(user) {
 		if(user){

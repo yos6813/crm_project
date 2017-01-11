@@ -21,12 +21,12 @@ function companyList(snapshot) {
 	var rowsShown = 9;
 	var rowsTotal = $('#company_list').children('.company_list1').size();
 	var numPages = Math.ceil(rowsTotal / rowsShown);
-	
-		for (i = 0; i < numPages; i++) {
-			var pageNum = i + 1;
-			$('#company_nav').append('<li><a rel="' + i + '">' + pageNum + '</a></li>');
-		}
-		
+
+	for (i = 0; i < numPages; i++) {
+		var pageNum = i + 1;
+		$('#company_nav').append('<li><a rel="' + i + '">' + pageNum + '</a></li>');
+	}
+
 	$('#company_list').children('.company_list1').hide();
 	$('#company_list').children('.company_list1').slice(0, rowsShown).show();
 	$('#company_nav a:first').addClass('active');
@@ -47,13 +47,13 @@ function companyClientList(snapshot) {
 	$('#company_client_List').children().remove();
 	$('#company_client_List_box').show();
 	firebase.database().ref('clients/').on('child_added', function (snapshot2) {
-		firebase.database().ref('clients/' + snapshot2.key).orderByChild('companyName').equalTo(snapshot).on('child_added', function(snapshot1){
+		firebase.database().ref('clients/' + snapshot2.key).orderByChild('companyName').equalTo(snapshot).on('child_added', function (snapshot1) {
 			$('#company_client_List').append('<tr class="clientlist"  value="' + snapshot1.key + '">' +
 				'<td>' + snapshot1.val().clientName + '</td>' +
 				'<td>' + snapshot1.val().clientDepartment + '</td>' +
 				'<td>' + snapshot1.val().clientPosition + '</td>' +
 				'</tr>');
-	
+
 			var rowsShown = 5;
 			var rowsTotal = $('#company_client_List').children('.clientlist').size();
 			if (rowsTotal > rowsShown) {
@@ -82,8 +82,8 @@ function companyClientList(snapshot) {
 }
 
 $(document).ready(function () {
-	firebase.auth().onAuthStateChanged(function(user) {
-		if(user){
+	firebase.auth().onAuthStateChanged(function (user) {
+		if (user) {
 			firebase.database().ref('clients/' + firebase.auth().currentUser.uid).on('child_added', function (snapshot) {
 				if (snapshot.val().grade == '0') {
 					window.location.hash = '#/clientLogin';
@@ -106,8 +106,6 @@ $(document).ready(function () {
 			$('#company_Coporate').text('사업자: ' + snapshot.val().corporate);
 			$('#company_license').text('법인: ' + snapshot.val().license);
 
-			if (snapshot.val().yeta == '1') {
-				$('#company_Type').append('<span class="badge badge-success yeta"> YETA </span>');
 				if (snapshot.val().sap == '1') {
 					$('#company_Type').append('<span class="badge badge-info sap"> SAP </span>');
 				}
@@ -117,29 +115,29 @@ $(document).ready(function () {
 				if (snapshot.val().onpremises == '1') {
 					$('#company_Type').append('<span class="badge badge-danger onpremises"> ONPREMISES </span>');
 				}
-			}
-			$('#companyUser').remove();
-			$('#companyBox').append('<div class="pull-right" id="companyUser"><button class="btn btn-default btn-xs" data-toggle="modal" data-target="#myModal6">책임자 선택</button>' +
-									 '<button class="btn btn-default btn-xs" id="companyModify">수정</button></div>');
 			
+			$('#csIncharge').remove();
+			$('#inchargeBox').append('<div class="pull-right" id="csIncharge"><button class="btn btn-default btn-xs" data-toggle="modal" data-target="#myModal6">책임자 선택</button></div>');
+
+			$('#companyUser').remove();
+			$('#companyBox').append('<div class="pull-right" id="companyUser"><button class="btn btn-default btn-xs" id="companyModify">고객사 정보 수정</button></div>');
+
 			$('#company_addr').children().remove();
 			$('#company_addr').text('');
 			$('#company_addr').append('<i class="fa fa-map-marker"></i>' + snapshot.val().addr);
-			
-			
-			firebase.database().ref('user-infos/').on('child_added', function(snapshot2){
-				firebase.database().ref('user-infos/' + snapshot2.key).on('child_added', function(snapshot1){
-					$('#list').append('<div class="row"><div class="col-lg-12 text-center"><div class="col-md-4 radio radio-info radio-inline">' +
-									  '<input type="radio" value="' + snapshot2.key + '" name="radioInline" checked="">' +
-									  '<label for="inlineRadio1"></label>' +
-									  '</div>' +
-									  '<div class="listImg col-md-8"><img alt="image" class="img-circle" src="' + snapshot1.val().picture + '">' +
-									  '<br/><small>' + snapshot1.val().username + '</small></div></div></div>');
+
+			$('#list').children().remove();
+			firebase.database().ref('user-infos/').on('child_added', function (snapshot2) {
+				firebase.database().ref('user-infos/' + snapshot2.key).on('child_added', function (snapshot1) {
+					$('#list').append('<tr><td><input type="radio" value="' + snapshot2.key + '" name="radioInline" ></td>' +
+						'<td><img alt="image" class="img-circle" src="' + snapshot1.val().picture + '"></td>' +
+						'<td>' + snapshot1.val().username + '</td><td>1</td></tr>');
+
 					$('#modalSave').val(snapshot.key);
 				})
 			})
-			
-			$('#modalSave').click(function(){
+
+			$('#modalSave').click(function () {
 				firebase.database().ref('company/' + $(this).attr('value')).update({
 					officer: $('input[type=radio]:checked').val()
 				})

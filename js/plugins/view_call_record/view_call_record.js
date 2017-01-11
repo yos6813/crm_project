@@ -25,13 +25,13 @@ $(document).ready(function(){
 	firebase.database().ref('qnaWrite/' + viewPageno).on('value', function(snapshot){
 		$('#viewTitle').text(snapshot.val().title);
 		$('#viewCustomer').text(snapshot.val().userName);
-		
+		console.log(snapshot.val().userEmail);
 		firebase.database().ref('clients/' + snapshot.val().user).on('child_added', function(snapshot1){
-			$('#viewCall').text(snapshot1.val().clientPhone);
-			$('#viewExtension').text(snapshot1.val().clientExtension);
-			$('#viewWorkPhone').text(snapshot1.val().WorkPhone);
-			$('#viewFax').text(snapshot1.val().clientFax);
-			$('#viewEmail').text(snapshot1.val().clientEmail);
+				$('#viewCall').text(snapshot1.val().clientPhone);
+				$('#viewExtension').text(snapshot1.val().clientExtension);
+				$('#viewWorkPhone').text(snapshot1.val().WorkPhone);
+				$('#viewFax').text(snapshot1.val().clientFax);
+				$('#viewEmail').text(snapshot1.val().clientEmail);
 		})
 
 		if(snapshot.val().postCompany != ''){

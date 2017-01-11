@@ -128,80 +128,81 @@ $(document).ready(function(){
 	$('#qnaSave').click(function(){
 		var user = firebase.auth().currentUser.uid;
 		firebase.database().ref('clients/' + user).on('child_added', function(snapshot){
-			checkUnload = false;
-			var title = $('#qnaTitle').val();
-			var text = $('#qnaText').summernote('code');
-			var file = [];
-			var tag = [];
-			var today = new Date();
-			var date = today.getFullYear() + "." + (today.getMonth()+1) + "." + today.getDate() + " " + today.getHours() + ":" + today.getMinutes();
-			var status = '등록';
-			var company = snapshot.val().companyName;
-			var userName = snapshot.val().clientName;
-			var type = $('#writeType').text();
-			var bigGroup = '';
-			var smallGroup = '';
-			var userEmail = firebase.auth().currentUser.email;
-			
-			if($('#bigGroupli').val() != '선택'){
-				bigGroup = $('#bigGroupli').val();
-			}
-			
-			if($('#smallGroupli').val() != ''){
-				smallGroup = $('#smallGroupli').val();
-			}
-			
-			var userId = '';
-			var replyName = '';
-			var replyDate = '';
-			var replyName = '';
-			var replyText = '';
-			var replyImg = '';
-			
-			
-			for(var i=0; i<=$('#fileInput').children().length; i++){
-				if($('#fileInput').children().eq(i).text() != undefined && $('#fileInput').children().eq(i).text() != null){
-					file.push($('#fileInput').children().eq(i).text());
+			firebase.database().ref('company/' + snapshot.val().company).on('value', function(snapshot1){
+				var title = $('#qnaTitle').val();
+				var text = $('#qnaText').summernote('code');
+				var file = [];
+				var tag = [];
+				var today = new Date();
+				var date = today.getFullYear() + "." + (today.getMonth()+1) + "." + today.getDate() + " " + today.getHours() + ":" + today.getMinutes();
+				var status = '등록';
+				var company = snapshot1.val().name;
+				var userName = snapshot.val().clientName;
+				var type = $('#writeType').text();
+				var bigGroup = '';
+				var smallGroup = '';
+				var userEmail = firebase.auth().currentUser.email;
+				
+				if($('#bigGroupli').val() != '선택'){
+					bigGroup = $('#bigGroupli').val();
 				}
-			}
-			
-			$('.tagSel').each(function(){
-				tag.push($(this).text());
-			})
-			
-			postAdd(user, userEmail, bigGroup, smallGroup, title, text, file, tag, date, type, status, company, userId, userName, replyDate, replyName, replyText, replyImg);
-			location.hash = '#/cIndex/qnaList?no=' + user;
-			
-			var types = "<http://yeta.center/#/index/call_list?name=" + userName + "&title=" + title + "|문의 글 리스트 가기>";
-			var url;
-			var channel;
-			if(type == '시스템'){
-				url = "https://hooks.slack.com/services/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";
-				channel = '#tech'
-			} else if(type == '세법'){
-				url = "https://hooks.slack.com/services/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";
-				channel = '#tax'
-			} else if(type == '운용'){
-				url = "https://hooks.slack.com/services/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";
-				channel = '#operating'
-			}
-			
-			var payload = {
-				"attachments":[
-					{
-						"fallback":type + " 문의 등록",
-				        "pretext":type + " 문의 등록",
-						"channel": channel,
-						"color":"#D00000",
-						"fields":[{
-							"value": "이름: " + userName + "\n" + "제목: " + title + "\n" + types,
-							"short":false
-						}]
+				
+				if($('#smallGroupli').val() != ''){
+					smallGroup = $('#smallGroupli').val();
+				}
+				
+				var userId = '';
+				var replyName = '';
+				var replyDate = '';
+				var replyName = '';
+				var replyText = '';
+				var replyImg = '';
+				
+				
+				for(var i=0; i<=$('#fileInput').children().length; i++){
+					if($('#fileInput').children().eq(i).text() != undefined && $('#fileInput').children().eq(i).text() != null){
+						file.push($('#fileInput').children().eq(i).text());
 					}
-				]
-			}
-			
-			sendToSlack_(url,payload)
+				}
+				
+				$('.tagSel').each(function(){
+					tag.push($(this).text());
+				})
+				
+				postAdd(user, userEmail, bigGroup, smallGroup, title, text, file, tag, date, type, status, company, userId, userName, replyDate, replyName, replyText, replyImg);
+				location.hash = '#/cIndex/qnaList?no=' + user;
+				
+				var types = "<http://yeta.center/#/index/call_list?name=" + userName + "&title=" + title + "|문의 글 리스트 가기>";
+				var url;
+				var channel;
+				if(type == '시스템'){
+					url = "https://hooks.slack.com/services/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";
+					channel = '#tech'
+				} else if(type == '세법'){
+					url = "https://hooks.slack.com/services/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";
+					channel = '#tax'
+				} else if(type == '운용'){
+					url = "https://hooks.slack.com/services/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";
+					channel = '#operating'
+				}
+				
+				var payload = {
+					"attachments":[
+						{
+							"fallback":type + " 문의 등록",
+					        "pretext":type + " 문의 등록",
+							"channel": channel,
+							"color":"#D00000",
+							"fields":[{
+								"value": "이름: " + userName + "\n" + "제목: " + title + "\n" + types,
+								"short":false
+							}]
+						}
+					]
+				}
+				
+				sendToSlack_(url,payload)
+			})
 		})
 	})
 	

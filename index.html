@@ -35,25 +35,6 @@
 	<!-- Sweet Alert -->
     <link href="css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
 
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <!-- Page title set in pageTitle directive -->
-  <title page-title></title>
-  <!-- Font awesome -->
-  <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
-  <!-- Bootstrap and Fonts -->
-  <link href="css/bootstrap.min.css" rel="stylesheet">
-  <!-- Main Inspinia CSS files -->
-  <link href="css/animate.css" rel="stylesheet">
-  <link id="loadBefore" href="css/style.css" rel="stylesheet">
-  <link href="css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
-  <link href="css/plugins/bootstrap-tagsinput/bootstrap-tagsinput.css" rel="stylesheet">
-  <link href="css/plugins/jasny/jasny-bootstrap.min.css" rel="stylesheet">
-  <link href="css/plugins/footable/footable.core.css" rel="stylesheet">
-  <link href="css/plugins/summernote/summernote.css" rel="stylesheet">
-  <link href="css/plugins/summernote/summernote-bs3.css" rel="stylesheet">
-  <link href="https://cdn.datatables.net/1.10.13/css/dataTables.bootstrap.min.css">
 </head>
 <body ng-controller="MainCtrl as main">
   <div class="se-pre-con"></div>
@@ -96,7 +77,7 @@
   <script src="https://apis.google.com/js/platform.js" async defer></script>
   
   <!--배포용 -->
-  <script src="https://www.gstatic.com/firebasejs/3.6.4/firebase.js"></script>
+  <!--<script src="https://www.gstatic.com/firebasejs/3.6.4/firebase.js"></script>
   <script>
     // Initialize Firebase
     var config = {
@@ -107,12 +88,11 @@
       messagingSenderId: "304577172613"
     };
     firebase.initializeApp(config);
-  </script>
+  </script> -->
   
   
   <!-- 개발용 -->
-  <!--<script src="https://www.gstatic.com/firebasejs/3.6.4/firebase.js"></script>
->>>>>>> f51406db2a14bce648b7fa8f9a18f1e46af74dab
+  <script src="https://www.gstatic.com/firebasejs/3.6.4/firebase.js"></script>
 <script>
   // Initialize Firebase
   var config = {
@@ -123,7 +103,6 @@
     messagingSenderId: "805712434179"
   };
   firebase.initializeApp(config);
-<<<<<<< HEAD
 </script>
 
 
@@ -152,9 +131,6 @@ firebase.database().ref("company/").orderByKey().on("child_added", function(snap
       });
     });
   </script>
-  <!-- Typehead -->
-  <script src="js/plugins/typeahead/bootstrap3-typeahead.min.js"></script>
-  <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
   <script type="text/javascript">
     (function () {
       emailjs.init("user_oilH1E3TLgZrilkkM8Pnh");
@@ -174,6 +150,8 @@ firebase.database().ref("company/").orderByKey().on("child_added", function(snap
       radioClass: 'iradio_square-green',
     });
   </script>
+   <!-- Sweet alert -->
+    <script src="js/plugins/sweetalert/sweetalert.min.js"></script>
   <!-- SUMMERNOTE -->
   <script src="js/plugins/summernote/summernote.min.js"></script>
   <script src="js/plugins/bootstrap-tagsinput/bootstrap-tagsinput.js"></script>
