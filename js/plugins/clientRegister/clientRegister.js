@@ -30,15 +30,6 @@ function demo2(){
     });
 };
 
-//$('#pw').keypress(function(){
-//	if($('#pw').val().length < 6) {
-//		$('#require1').text('비밀번호는 6자 이상으로 생성해주세요.');
-//		$('#require1').show();
-//    } else {
-//    	$('#require1').hide();
-//    }
-//})
-
 $('#clientRegister').click(function(){
 	if($('#pw').val() == $('#pwCheck').val() && $('#pw').val().length > 6){
 		handleSignUp();
