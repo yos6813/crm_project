@@ -62,13 +62,13 @@ function postList(key) {
 					state = 'label-default';
 				} else if (snapshot1.val().status == '보류') {
 					state = 'label-warning';
-<<<<<<< HEAD
-				} else {
-=======
-				} else if(snapshot1.val().status == '등록'){
+
+
+
+				} else if (snapshot1.val().status == '등록') {
 					state = 'label-info';
-				} else{
->>>>>>> origin/master
+				} else {
+
 					state = 'label-primary';
 				}
 
@@ -250,23 +250,16 @@ $(document).on('click', '.call_list', function () {
 	location.hash = '#/index/view_call_record?no=' + $(this).attr('value');
 })
 
-<<<<<<< HEAD
-$(document).ready(function () {
 
-	firebase.database().ref('clients/' + firebase.auth().currentUser.uid).on('child_added', function (snapshot) {
-		if (snapshot.val().grade == '0') {
-			window.location.hash = '#/clientLogin';
-=======
-$(document).ready(function(){
-	
-	firebase.auth().onAuthStateChanged(function(user) {
-		if(user){
-			firebase.database().ref('clients/' + user.uid).on('child_added',function(snapshot){
-				if(snapshot.val().grade == '0'){
+$(document).ready(function () {
+	firebase.auth().onAuthStateChanged(function (user) {
+		if (user) {
+			firebase.database().ref('clients/' + user.uid).on('child_added', function (snapshot) {
+				if (snapshot.val().grade == '0') {
 					window.location.hash = '#/clientLogin';
 				}
 			})
->>>>>>> origin/master
+
 		}
 	})
 
