@@ -118,8 +118,8 @@ $(document).ready(function () {
 		snapshot.forEach(function (data) {
 			$('#userList').append('<tr><td><img class="img-circle adminUser" src="' + data.val().picture + '"></td>' +
 				'<td>' + data.val().username + '</td>' +
-				'<td>' + data.val().department + '</td>' +
-				'<td>' + data.val().job + '</td>' +
+				'<td>' + data.val().nickname + '</td>' +
+				'<td>' + data.val().slack + '</td>' +
 				'<td>' + data.val().phone + '</td>' +
 				'<td>' + data.val().extension + '</td>' +
 				'<td class="text-right">' +

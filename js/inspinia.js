@@ -86,7 +86,7 @@ $(document).ready(function () {
 						$('#navprofileImg').attr('src', user.photoURL);
 						firebase.database().ref('user-infos/' + user.uid).once('child_added', function(snapshot1){
 							firebase.database().ref('user-infos/' + user.uid + '/' + snapshot1.key).on('value', function(snapshot2){
-								$('#navjob').text(snapshot2.val().department + ' / ' + snapshot2.val().job);
+								$('#navjob').text(snapshot2.val().nickname + ' / ' + snapshot2.val().slack);
 							})
 						})
 						userAlert(user);
@@ -105,7 +105,7 @@ $(document).ready(function () {
 
 			firebase.database().ref('user-infos/' + user.uid).on('child_added', function(snapshot){
 				firebase.database().ref('user-infos/' + user.uid + '/' + snapshot.key).on('value', function(snapshot2){
-					$('#navjob').text(snapshot2.val().department + ' / ' + snapshot2.val().job);
+					$('#navjob').text(snapshot2.val().nickname + ' / ' + snapshot2.val().slack);
 				});
 			});
 			$('#navprofileImg').attr('src', user.photoURL);

@@ -176,13 +176,13 @@ $(document).ready(function(){
 			var url;
 			var channel;
 			if(type == '시스템'){
-				url = "https://hooks.slack.com/services/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";
+				url = "https://hooks.slack.com/services/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";
 				channel = '#tech'
 			} else if(type == '세법'){
-				url = "https://hooks.slack.com/services/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";
+				url = "https://hooks.slack.com/services/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";
 				channel = '#tax'
 			} else if(type == '운용'){
-				url = "https://hooks.slack.com/services/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";
+				url = "https://hooks.slack.com/services/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";
 				channel = '#operating'
 			}
 			

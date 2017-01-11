@@ -12,10 +12,13 @@ $('#viewAcademy').hide();
 $('#viewConsulting').hide();
 
 $(document).ready(function(){
-	var user = firebase.auth().currentUser;
-	firebase.database().ref('clients/' + user.uid).on('child_added',function(snapshot){
-		if(snapshot.val().grade == '0'){
-			window.location.hash = '#/clientLogin';
+	firebase.auth().onAuthStateChanged(function(user) {
+		if(user){
+			firebase.database().ref('clients/' + user.uid).on('child_added',function(snapshot){
+				if(snapshot.val().grade == '0'){
+					window.location.hash = '#/clientLogin';
+				}
+			})
 		}
 	})
 	
@@ -86,6 +89,14 @@ $(document).ready(function(){
 			$('#acceptSel1').append('<option value="defer">보류</option>' + 
 									'<option value="resolve">해결</option>' +
 			            		   	'<option value="accept">접수</option>');
+		} else if(snapshot.val() == '등록'){
+			$('#acceptSel1').show();
+			$('#postAccept').hide();
+			$('#acceptSel1').children().remove();
+			$('#acceptSel1').append('<option value="update">등록</option>' +
+									'<option value="accept">접수</option>' + 
+									'<option value="resolve">해결</option>' +
+					    		   	'<option value="defer">보류</option>');
 		}
 	})
 	
@@ -151,12 +162,11 @@ $(document).ready(function(){
 		var minutes = today.getMinutes();
 		var date = year + '.' + month + '.' + day + ' ' + hour + ':' + minutes;
 		var post = viewPageno;
-		var state = $(this).children("option:selected").val();
+		var state = $(this).val();
 
 		if(state == 'accept'){
-			$('#acceptSel1').show();
 			firebase.database().ref('qnaWrite/' + viewPageno).update({
-				postState:'접수'
+				status:'접수'
 			})
 			firebase.database().ref('accept/' + viewPageno).update({
 				AcceptName: user.displayName,
@@ -165,35 +175,18 @@ $(document).ready(function(){
 			})
 			location.reload();
 		} else if(state == 'defer'){
+			firebase.database().ref('qnaWrite/' + viewPageno).update({
+				status: '보류'
+			})
 			firebase.database().ref("accept/" + viewPageno).update({
 				AcceptName: '',
 				AcceptDate: '',
 				AcceptUserId:''
 			})
-			firebase.database().ref('qnaWrite/' + viewPageno).update({
-				postState: '보류'
-			})
-			location.reload();
-		} else if(state == 'accept1'){
-			firebase.database().ref('reply/' + viewPageno).update({
-				replyDate: '',
-				replyImg: '',
-				replyName: '',
-				userId: ''
-			});
-			firebase.database().ref('qnaWrite/' + viewPageno).update({
-				postState:'접수',
-				date: date
-			})
-			firebase.database().ref('accept/' + viewPageno).update({
-				AcceptName: user.displayName,
-				AcceptDate: date,
-				AcceptUserId: user.uid
-			})
 			location.reload();
 		} else {
 			firebase.database().ref('qnaWrite/' + viewPageno).update({
-				postState: '해결'
+				status: '해결'
 			})
 			firebase.database().ref('reply/' + viewPageno).update({
 				replyDate: date,
@@ -284,18 +277,36 @@ $(document).ready(function(){
 //	});
 	
 	$(document).on('click','#viewDelete', function(){
-		window.location.hash = 'index/call_list';
-		var uid = firebase.auth().currentUser.uid;
-		var postRef = firebase.database().ref('qnaWrite/' + viewPageno);
-		var userPostRef = firebase.database().ref('user-posts/' + uid + '/' + viewPageno);
-		var replyRef = firebase.database().ref('reply/' + viewPageno);
-		firebase.database().ref('timePosts/' + month + '/' + day + '/' + hour + '/' + viewPageno).remove();
-		firebase.database().ref('monthPosts/' + year + '/' + month + '/' + day + '/' + viewPageno).remove();
-		
-		postRef.remove();
-		
-		replyRef.remove();
-		
-		userPostRef.remove();
+		swal({
+            title: "정말 삭제하시겠습니까?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes",
+            cancelButtonText: "No",
+            closeOnConfirm: false,
+            closeOnCancel: false },
+        function (isConfirm) {
+            if (isConfirm) {
+                var today = new Date();
+        		var year = today.getFullYear();
+        		var month = today.getMonth()+1;
+        		var day = today.getDate();
+        		var hour = today.getHours();
+        		var minutes = today.getMinutes();
+        		var postRef = firebase.database().ref('qnaWrite/' + viewPageno);
+        		var replyRef = firebase.database().ref('reply/' + viewPageno);
+        		firebase.database().ref('timePosts/' + month + '/' + day + '/' + hour + '/' + viewPageno).remove();
+        		firebase.database().ref('monthPosts/' + year + '/' + month + '/' + day + '/' + viewPageno).remove();
+        		
+        		postRef.remove();
+        		replyRef.remove();
+        		window.location.hash = 'index/call_list';
+                
+        		swal("삭제되었습니다.", "Your imaginary file has been deleted.", "success");
+            } else {
+                swal("취소되었습니다.", "Your imaginary file is safe :)", "error");
+            }
+        });
 	});
 })

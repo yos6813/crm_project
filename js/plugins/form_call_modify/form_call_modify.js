@@ -26,9 +26,13 @@ function writeAlert(uid, replyPhoto, replyUser, replyDay, replyTitle, replyPost,
 }
 
 $(document).ready(function(){
-	firebase.database().ref('clients/' + firebase.auth().currentUser.uid).on('child_added',function(snapshot){
-		if(snapshot.val().grade == '0'){
-			window.location.hash = '#/clientLogin';
+	firebase.auth().onAuthStateChanged(function(user) {
+		if(user){
+			firebase.database().ref('clients/' + firebase.auth().currentUser.uid).on('child_added',function(snapshot){
+				if(snapshot.val().grade == '0'){
+					window.location.hash = '#/clientLogin';
+				}
+			})
 		}
 	})
 	
@@ -161,6 +165,13 @@ $('#replySave').click(function(){
 				"from_name" : 'YETA2016'
 			});
 		})
+		
+		swal({
+            title: "답변을 등록하였습니다.",
+            type: "success"
+        });
+		
+		location.hash = '#/index/view_call_record?no=' + modifyPageno;
 });
 
 

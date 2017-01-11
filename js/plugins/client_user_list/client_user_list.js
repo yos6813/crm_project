@@ -1,7 +1,7 @@
 function clientPost(snapshot){
 		$('#client_posts_user_box').show();
 		$('#client_posts_user').children().remove();
-		firebase.database().ref('qnaWrite/').orderByChild('user').equalTo(snapshot.key).on('child_added', function(snapshot1){
+		firebase.database().ref('qnaWrite/').orderByChild('user').equalTo(snapshot).on('child_added', function(snapshot1){
 			$('#client_posts_user').each(function(){
 			var state;
 			if(snapshot1.val().status == '해결'){
@@ -92,6 +92,7 @@ $(document).ready(function(){
 	})
 	
 	$(document).on('click', '.clientList', function(){
+			clientPost($(this).attr('value'));
 			firebase.database().ref('clients/' + $(this).attr('value')).on('child_added', function(snapshot){
 				$('#client_company').text(snapshot.val().companyName);
 				$('#client_name').text(snapshot.val().clientName);
@@ -117,7 +118,6 @@ $(document).ready(function(){
 				firebase.database().ref('company/').orderByChild('name').equalTo($('#client_company').text()).on('child_added', function(snapshot1){
 					$('#client_address').append('<i class="fa fa-map-marker"></i>' + snapshot1.val().addr);
 				})
-				clientPost(snapshot);
 			})
 		
 	})

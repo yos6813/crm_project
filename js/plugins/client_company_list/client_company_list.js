@@ -40,23 +40,21 @@ function companyList(snapshot) {
 function companyClientList(snapshot) {
 	$('#company_client_List').children().remove();
 	$('#company_client_List_box').show();
-	firebase.database().ref('customer/').orderByChild('cusCompany').equalTo(snapshot.val().name).on('child_added', function (snapshot1) {
-
+	firebase.database().ref('clients/').orderByChild('companyName').equalTo(snapshot).on('child_added', function (snapshot1) {
 		$('#company_client_List').append('<tr class="clientlist"  value="' + snapshot1.key + '">' +
-			'<td>' + snapshot1.val().cusName + '</td>' +
-			'<td>' + snapshot1.val().cusDepartment + '</td>' +
-			'<td>' + snapshot1.val().cusPosition + '</td>' +
-			'<td>' + snapshot1.val().cusJob + '</td>' +
+			'<td>' + snapshot1.val().clientName + '</td>' +
+			'<td>' + snapshot1.val().clientDepartment + '</td>' +
+			'<td>' + snapshot1.val().clientPosition + '</td>' +
 			'</tr>');
 
 		var rowsShown = 5;
-		var rowsTotal = $('#company_client_List').children('.client_list').size();
+		var rowsTotal = $('#company_client_List').children('.clientlist').size();
 		if (rowsTotal > rowsShown) {
 			$('#company_client_load').show();
 		}
 		var numPages = Math.ceil(rowsTotal / rowsShown);
-		$('#company_client_List').children('.client_list').hide();
-		$('#company_client_List').children('.client_list').slice(0, rowsShown).show();
+		$('#company_client_List').children('.clientlist').hide();
+		$('#company_client_List').children('.clientlist').slice(0, rowsShown).show();
 		$('#company_client_load').bind('click', function () {
 			if (rowsTotal < rowsShown) {
 				$('#company_client_load').hide();
@@ -68,7 +66,7 @@ function companyClientList(snapshot) {
 			rowsShown++;
 			console.log(rowsShown);
 			var endItem = rowsShown;
-			$('#company_client_List').children('.client_list').css('opacity', '0.0').hide().slice(0, endItem).
+			$('#company_client_List').children('.clientlist').css('opacity', '0.0').hide().slice(0, endItem).
 			css('display', 'table-row').animate({
 				opacity: 1
 			}, 300);
@@ -117,6 +115,7 @@ $(document).ready(function () {
 		var comType;
 		$('#company_Type').children().remove();
 		firebase.database().ref('company/' + $(this).attr('value')).on('value', function (snapshot) {
+			companyClientList(snapshot.val().name);
 			$('#company_Name').text(snapshot.val().name);
 			$('#company_Coporate').text('사업자: ' + snapshot.val().corporate);
 			$('#company_license').text('법인: ' + snapshot.val().license);
@@ -133,16 +132,9 @@ $(document).ready(function () {
 					$('#company_Type').append('<span class="badge badge-danger onpremises"> ONPREMISES </span>');
 				}
 			}
-			if (snapshot.val().academy == '1') {
-				$('#company_Type').append('<span class="badge badge-info academy"> ACADEMY </span>');
-			}
-			if (snapshot.val().consulting == '1') {
-				$('#company_Type').append('<span class="badge badge-warning consulting"> CONSULTING </span>');
-			}
 			$('#company_addr').children().remove();
 			$('#company_addr').text('');
 			$('#company_addr').append('<i class="fa fa-map-marker"></i>' + snapshot.val().addr);
-			companyClientList(snapshot);
 		})
 	})
 })

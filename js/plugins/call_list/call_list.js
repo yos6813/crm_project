@@ -62,13 +62,9 @@ function postList(key) {
 					state = 'label-default';
 				} else if (snapshot1.val().status == '보류') {
 					state = 'label-warning';
-<<<<<<< HEAD
-				} else {
-=======
 				} else if(snapshot1.val().status == '등록'){
 					state = 'label-info';
 				} else{
->>>>>>> origin/master
 					state = 'label-primary';
 				}
 
@@ -97,12 +93,13 @@ function postList(key) {
 					'</td>' +
 					'<td class="project-clientcategory" id="' + key + '">' +
 					'</td>' +
-					//								'<td class="project-people">' +
-					//								'<a><img alt="image" class="img-circle" src="' + snapshot1.val().userImg + '"></a>' +
-					//								'<br/>' +
-					//								'<small>' + snapshot1.val().username + '</small>' +
-					//								'<br/>' +
-					//								'</td>' +
+					// '<td class="project-people">' +
+					// '<a><img alt="image" class="img-circle" src="' +
+					// snapshot1.val().userImg + '"></a>' +
+					// '<br/>' +
+					// '<small>' + snapshot1.val().username + '</small>' +
+					// '<br/>' +
+					// '</td>' +
 					'<td class="project-people replyImgTr">' +
 					'<a><img alt="" class="replyImgli img-circle" src="' + snapshot2.val().replyImg + '"></a>' +
 					'<br/>' +
@@ -137,7 +134,7 @@ function postList(key) {
 				var min = parseInt((gap2 % 3600) / 60);
 				var sec = gap2 % 60;
 
-				if (snapshot1.val().status == '접수' || snapshot1.val().status == '보류') {
+				if (snapshot1.val().status == '접수' || snapshot1.val().status == '보류' || snapshot1.val().status == '등록') {
 					$('.' + key).children().remove();
 					$('.' + key).append('<h4>' + hour + '시간' + min + '분' + '</h4>');
 					$('.' + key).css('color', 'red');
@@ -163,16 +160,20 @@ function postList(key) {
 				/* 회사 고객 타입 */
 				firebase.database().ref('company/').orderByChild('name').equalTo(snapshot1.val().company).on('child_added', function (snapshot4) {
 					// if(snapshot4.val().yeta == '1'){
-					// 	$('#' + key).append('<span class="badge badge-success yeta"> Y </span>');
-					// 	if(snapshot4.val().sap == '1'){
-					// 		$('#' + key).append('<span class="badge badge-info sap"> S </span>');
-					// 	}
-					// 	if(snapshot4.val().cloud == '1'){
-					// 		$('#' + key).append('<span class="badge badge-primary cloud"> C </span>');
-					// 	}
-					// 	if(snapshot4.val().onpremises == '1'){
-					// 		$('#' + key).append('<span class="badge badge-danger onpremises"> O </span>');
-					// 	}
+					// $('#' + key).append('<span class="badge badge-success
+					// yeta"> Y </span>');
+					// if(snapshot4.val().sap == '1'){
+					// $('#' + key).append('<span class="badge badge-info sap">
+					// S </span>');
+					// }
+					// if(snapshot4.val().cloud == '1'){
+					// $('#' + key).append('<span class="badge badge-primary
+					// cloud"> C </span>');
+					// }
+					// if(snapshot4.val().onpremises == '1'){
+					// $('#' + key).append('<span class="badge badge-danger
+					// onpremises"> O </span>');
+					// }
 					// }
 					if (snapshot4.val().sap == '1') {
 						$('#' + key).append('<span class="badge badge-info sap"> SAP </span>');
@@ -184,10 +185,12 @@ function postList(key) {
 						$('#' + key).append('<span class="badge badge-danger onpremises"> On Premise </span>');
 					}
 					// if (snapshot4.val().academy == '1') {
-					// 	$('#' + key).append('<span class="badge badge-info academy"> A </span>');
+					// $('#' + key).append('<span class="badge badge-info
+					// academy"> A </span>');
 					// }
 					// if (snapshot4.val().consulting == '1') {
-					// 	$('#' + key).append('<span class="badge badge-warning consulting"> C </span>');
+					// $('#' + key).append('<span class="badge badge-warning
+					// consulting"> C </span>');
 					// }
 				})
 			})
@@ -250,15 +253,8 @@ $(document).on('click', '.call_list', function () {
 	location.hash = '#/index/view_call_record?no=' + $(this).attr('value');
 })
 
-<<<<<<< HEAD
 $(document).ready(function () {
 
-	firebase.database().ref('clients/' + firebase.auth().currentUser.uid).on('child_added', function (snapshot) {
-		if (snapshot.val().grade == '0') {
-			window.location.hash = '#/clientLogin';
-=======
-$(document).ready(function(){
-	
 	firebase.auth().onAuthStateChanged(function(user) {
 		if(user){
 			firebase.database().ref('clients/' + user.uid).on('child_added',function(snapshot){
@@ -266,10 +262,8 @@ $(document).ready(function(){
 					window.location.hash = '#/clientLogin';
 				}
 			})
->>>>>>> origin/master
 		}
 	})
-
 	if (pageType != '' && status == '') {
 		$('#postList').children('.call_list').remove();
 		firebase.database().ref('qnaWrite/').orderByChild('status').equalTo(pageType).on('child_added', function (snapshot) {
@@ -279,6 +273,13 @@ $(document).ready(function(){
 		$('#postList').children('.call_list').remove();
 		firebase.database().ref('qnaWrite/').orderByChild('status').equalTo(pageType).on('child_added', function (snapshot) {
 			if (snapshot.val().postType == status) {
+				postList(snapshot.key);
+			}
+		});
+	} else if(name != '' && title != ''){
+		$('#postList').children('.call_list').remove();
+		firebase.database().ref('qnaWrite/').orderByChild('userName').equalTo(name).on('child_added', function (snapshot) {
+			if (snapshot.val().title == title) {
 				postList(snapshot.key);
 			}
 		});
