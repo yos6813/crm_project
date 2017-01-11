@@ -6,10 +6,7 @@ function handleSignUp() {
 	  if(error){
 	      var errorCode = error.code;
 	      var errorMessage = error.message;
-	      if (errorCode == 'auth/weak-password') {
-	    	  $('#require1').text('비밀번호의 보안이 약합니다.');
-	    	  $('#require1').show();
-	      } else if (errorCode == 'auth/email-already-in-use'){
+	      if (errorCode == 'auth/email-already-in-use'){
 	    	  $('#require1').text('이미 있는 이메일 입니다.');
 	    	  $('#require1').show();
 	      } else {
@@ -33,18 +30,33 @@ function demo2(){
     });
 };
 
+//$('#pw').keypress(function(){
+//	if($('#pw').val().length < 6) {
+//		$('#require1').text('비밀번호는 6자 이상으로 생성해주세요.');
+//		$('#require1').show();
+//    } else {
+//    	$('#require1').hide();
+//    }
+//})
+
 $('#clientRegister').click(function(){
-	if($('#pw').val() == $('#pwCheck').val()){
+	if($('#pw').val() == $('#pwCheck').val() && $('#pw').val().length > 6){
 		handleSignUp();
 		location.hash = '#/clientLogin';
 		demo2();
-	}
-	else {
-  	  $('#pwCheck').val('');
+	} else if($('#pw').val() != $('#pwCheck').val()){
+  	  	  $('#pwCheck').val('');
 		  $('#pw').val('');
 		  $('#pw').focus();
 		  $('#require1').text('');
 		  $('#require1').text('비밀번호가 일치하지 않습니다.');
 		  $('#require1').show();
-    } 
+    } else if($('#pw').val().length < 6){
+    	  $('#pwCheck').val('');
+    	  $('#pw').val('');
+		  $('#pw').focus();
+		  $('#require1').text('');
+		  $('#require1').text('비밀번호는 6자 이상으로 생성해주세요.');
+		  $('#require1').show();
+    }
 })

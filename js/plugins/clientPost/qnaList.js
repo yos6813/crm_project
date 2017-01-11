@@ -21,6 +21,8 @@ $(document).ready(function(){
 			state = 'label-default';
 		} else if(snapshot.val().status == '보류'){
 			state = 'label-warning';
+		} else if(snapshot.val().status == '등록'){
+			state = 'label-info';
 		} else{
 			state = 'label-primary';
 		}

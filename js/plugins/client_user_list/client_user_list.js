@@ -8,6 +8,8 @@ function clientPost(snapshot){
 				state = 'label-default';
 			} else if(snapshot1.val().status == '접수'){
 				state = 'label-primary';
+			} else if(snapshot1.val().status == '등록'){
+				state = 'label-info';
 			} else if(snapshot1.val().status == '보류'){
 				state = 'label-warning';
 			}
