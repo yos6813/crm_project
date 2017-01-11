@@ -55,67 +55,6 @@
   <link href="css/plugins/summernote/summernote-bs3.css" rel="stylesheet">
   <link href="https://cdn.datatables.net/1.10.13/css/dataTables.bootstrap.min.css">
 </head>
-<!-- ControllerAs syntax -->
-<!-- Main controller with serveral data used in Inspinia theme on diferent view -->
-
-<!-- MetsiMenu -->
-<script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
-
-<!-- SlimScroll -->
-<script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
-
-<!-- Peace JS -->
-<script src="js/plugins/pace/pace.min.js"></script>
-
-<script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.13/js/dataTables.bootstrap.min.js"></script>
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-
-<!-- hide seek -->
-<script src="js/jquery.hideseek.min.js"></script>
-<script src="js/jquery.hideseek.js"></script>
-
-<!-- Custom and plugin javascript -->
-<script src="js/inspinia.js"></script>
-
-<!-- AngularJS -->
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
-<!-- AngularFire -->
-<script src="https://cdn.firebase.com/libs/angularfire/2.1.0/angularfire.min.js"></script>
-<script src="js/plugins/oclazyload/dist/ocLazyLoad.min.js"></script>
-<script src="js/ui-router/angular-ui-router.min.js"></script>
-<script src="js/bootstrap/ui-bootstrap-tpls-1.1.2.min.js"></script>
-<script src="js/angular/angular-route.js"></script>
-
-<!-- Anglar App Script -->
-<script src="js/app.js"></script>
-<script src="js/config.js"></script>
-<script src="js/directives.js"></script>
-<script src="js/controllers.js"></script>
-
-<script src="https://spi.maps.daum.net/imap/map_js_init/postcode.v2.js"></script>
-<script src="https://apis.google.com/js/platform.js" async defer></script>
- <!--배포용 -->
-
- <!--<script src="https://www.gstatic.com/firebasejs/3.6.4/firebase.js"></script> 
-<script> 
-  // Initialize Firebase
-  var config = {
-    apiKey: "AIzaSyDp2pj6WSvpKOtnnRp9NwdTVZAgUalNNa8",
-    authDomain: "yeta-cscenter.firebaseapp.com",
-    databaseURL: "https://yeta-cscenter.firebaseio.com",
-    storageBucket: "yeta-cscenter.appspot.com",
-    messagingSenderId: "304577172613"
-  };
-  firebase.initializeApp(config);
-</script> -->
-
-
-<!-- Sweet alert -->
-    <script src="js/plugins/sweetalert/sweetalert.min.js"></script>
-
-<!-- 개발용 -->
-<script src="https://www.gstatic.com/firebasejs/3.6.4/firebase.js"></script>
 <body ng-controller="MainCtrl as main">
   <div class="se-pre-con"></div>
   <!-- Main view  -->
@@ -173,6 +112,7 @@
   
   <!-- 개발용 -->
   <!--<script src="https://www.gstatic.com/firebasejs/3.6.4/firebase.js"></script>
+>>>>>>> f51406db2a14bce648b7fa8f9a18f1e46af74dab
 <script>
   // Initialize Firebase
   var config = {
@@ -183,6 +123,7 @@
     messagingSenderId: "805712434179"
   };
   firebase.initializeApp(config);
+<<<<<<< HEAD
 </script>
 
 
@@ -200,8 +141,6 @@ firebase.database().ref("company/").orderByKey().on("child_added", function(snap
 <script src="js/plugins/typeahead/bootstrap3-typeahead.min.js"></script>
 
 <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
-<script type="text/javascript">
-</script>
   <script>
     var comName = [];
     firebase.database().ref("company/").orderByKey().on("child_added", function (snapshot) {
