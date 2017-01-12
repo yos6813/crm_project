@@ -7,7 +7,7 @@ function getParameterByName(name) {
 
 var pageType = getParameterByName('type');
 var status = getParameterByName('status');
-var name = getParameterByName('name');
+var name = getParameterByName('%3F');
 var title = getParameterByName('title');
 
 firebase.database().ref("types/").orderByKey().endAt("type").on("child_added", function (snapshot) {
@@ -130,7 +130,7 @@ $(document).ready(function () {
 		});
 	} else {
 		/* 전체 리스트 */
-		firebase.database().ref("qnaWrite/").on("child_added", function (snapshot1) {
+		firebase.database().ref("qnaWrite/").orderByChild('date').on("child_added", function (snapshot1) {
 			postList(snapshot1);
 		});
 	}

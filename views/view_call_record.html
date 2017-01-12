@@ -1,133 +1,167 @@
 <meta charset="utf-8">
 <div class="row wrapper border-bottom white-bg page-heading">
-                <div class="col-sm-4">
-                    <h2>2016</h2>
-                    <ol class="breadcrumb">
-                        <li>
-                            <a href="index.html">Home</a>
-                        </li>
-                        <li>
-                            CRM
-                        </li>
-                        <li class="active">
-                            <strong>YETA 고객상담 </strong>
-                        </li>
-                        <li>
-							<h1 id="testView"></h1>
-						</li>
-                    </ol>
+    <div class="col-sm-4">
+        <h2>2016</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="index.html">Home</a>
+            </li>
+            <li>
+                CRM
+            </li>
+            <li class="active">
+                <strong>YETA 고객상담 </strong>
+            </li>
+            <li>
+                <h1 id="testView"></h1>
+            </li>
+        </ol>
+    </div>
+</div>
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-3">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content mailbox-content">
+                        <div class="file-manager">
+                       <h5 class="text-muted"><h5 class="text-muted">CS책임자</h5>
+                       <div class="pull-right">
+                           <button data-toggle="modal" data-target="#myModal5" class="btn btn-success btn-outline btn-xs" type="button"><i class="fa fa-user"></i>&nbsp;책임자 지정</button>
+                       </div>
+                       <h3 class="text-success" id="officer"></h3>
+                       <div class="space-25"></div>
+                       <h5 class="text-muted">Status</h5>
+                       <select id="acceptSel1" class="input-sm form-control input-s-sm"></select>
+                       <div class="space-25"></div>
+                       <h5 class="text-muted">Client Information</h5>
+                       <ul class="folder-list m-b-md" style="padding: 0">
+                           <li>
+                               <a> <i class="fa fa-building-o "></i> 고객사 <span class="pull-right" id="viewCompany"></span> </a>
+                           </li>
+                           <li><a href=""><i class="fa fa-flag-o "></i> 고객구분
+                                     <span class="pull-right">
+                                       <span class="badge badge-success" id="viewYeta"> Y </span>
+                                       <span class="badge badge-info" id="viewAcademy"> A </span>
+                                       <span class="badge badge-warning" id="viewConsulting"> C </span>
+                                     </span>
+                                   </a></li>
+                           <li>
+                               <a> <i class="fa fa-user"></i> 담당자 <span class="pull-right" id="viewCustomer"></span></a>
+                           </li>
+                           <li>
+                               <a> <i class="fa fa-phone"></i> 내선번호 <span class="pull-right" id="viewExtension"></span></a></li>
+                               <li>
+                               <a> <i class="fa fa-tablet"></i> 휴대전화 <span class="pull-right" id="viewCall"></span></a></li>
+                               <li>
+                               <a> <i class="fa fa-phone-square"></i> 업무전화 <span class="pull-right" id="viewWorkPhone"></span></a></li>
+                               <li><a> <i class="fa fa-fax"></i> 팩스 <span class="pull-right" id="viewFax"></span></a></li>
+                               <li><a> <i class="fa fa-envelope-o"></i> 이메일 <span class="pull-right" id="viewEmail"></span></a>
+                           </li>
+                       </ul>
+                       <h5 class="text-muted">Categories</h5>
+                        <ul class="category-list" style="padding: 0">
+                            <li id="viewType1">
+                                <a href="#"> <i class="fa fa-circle text-navy" id="viewTaxLaw"></i> 세법 </a>
+                            </li>
+                            <li id="viewType2">
+                                <a href="#"> <i class="fa fa-circle text-danger" id="viewSystem"></i> 시스템</a>
+                            </li>
+                            <li id="viewType3">
+                                <a href="#"> <i class="fa fa-circle text-primary" id="viewEmployment"></i> 운용</a>
+                            </li>
+                            <li id="viewType4">
+                                <a href="#"> <i class="fa fa-circle text-info" id="viewEtc"></i> 기타</a>
+                            </li>
+                        </ul>
+                        <h5 class="tag-title">Tags</h5>
+                        <ul class="tag-list" style="padding: 0">
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="row" style="padding-top: 20px">
+                       <a id="slack" data-toggle="modal" data-target="#myModal6" class="btn btn-success btn-rounded btn-block"><i class="fa fa-slack"></i> &nbsp;&nbsp;슬랙으로 공유하기</a>
+                       <a id="mail" class="btn btn-primary btn-rounded btn-block"><i class="fa fa-envelope"></i> &nbsp;&nbsp;질의자에게 답변 메일 발송</a>
+                   </div>
                 </div>
             </div>
-            <div class="wrapper wrapper-content">
-                <div class="row">
-                    <div class="col-lg-3">
-                        <div class="ibox float-e-margins">
-                            <div class="ibox-content mailbox-content">
-                                <div class="file-manager">
-
-                                    <h5>Status</h5>
-                                    <select id="acceptSel1" class="input-sm form-control input-s-sm">
-			                       		
-			               	  	   </select>
-                                    <div class="space-25"></div>
-                                    <h5>Client Information</h5>
-                                    <ul class="folder-list m-b-md" style="padding: 0">
-                                        <li>
-                                            <a> <i class="fa fa-building-o "></i> 고객사 <span class="pull-right" id="viewCompany"></span> </a>
-                                        </li>
-                                        <li><a href=""><i class="fa fa-flag-o "></i> 고객구분
-                                      <span class="pull-right">
-                                        <span class="badge badge-success" id="viewYeta"> Y </span>
-                                        <span class="badge badge-info" id="viewAcademy"> A </span>
-                                        <span class="badge badge-warning" id="viewConsulting"> C </span>
-                                      </span>
-                                    </a></li>
-                                        <li>
-                                            <a> <i class="fa fa-user"></i> 담당자 <span class="pull-right" id="viewCustomer"></span></a>
-                                        </li>
-                                        <li>
-                                            <a> <i class="fa fa-phone"></i> 내선번호 <span class="pull-right" id="viewExtension"></span></a>
-                                            <a> <i class="fa fa-tablet"></i> 휴대전화 <span class="pull-right" id="viewCall"></span></a>
-                                            <a> <i class="fa fa-phone-square"></i> 업무전화 <span class="pull-right" id="viewWorkPhone"></span></a>
-                                            <a> <i class="fa fa-files-o"></i> 팩스 <span class="pull-right" id="viewFax"></span></a>
-                                            <a> <i class="fa fa-envelope-o"></i> 이메일 <span class="pull-right" id="viewEmail"></span></a>
-                                        </li>
-                                    </ul>
-                                    <h5>Categories</h5>
-                                    <ul class="category-list" style="padding: 0">
-                                        <li id="viewType1">
-                                            <a href="#"> <i class="fa fa-circle text-navy" id="viewTaxLaw"></i> 세법 </a>
-                                        </li>
-                                        <li id="viewType2">
-                                            <a href="#"> <i class="fa fa-circle text-danger" id="viewSystem"></i> 시스템</a>
-                                        </li>
-                                        <li id="viewType3">
-                                            <a href="#"> <i class="fa fa-circle text-primary" id="viewEmployment"></i> 운용</a>
-                                        </li>
-                                        <li id="viewType4">
-                                            <a href="#"> <i class="fa fa-circle text-info" id="viewEtc"></i> 기타</a>
-                                        </li>
-                                    </ul>
-
-                                    <h5 class="tag-title">Tags</h5>
-                                    <ul class="tag-list" style="padding: 0">
-                                    </ul>
-                                    <div class="clearfix"></div>
-                                </div>
-                            </div>
-                        </div>
+        </div>
+        <div class="col-lg-9 animated fadeInRight">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="mail-box-header">
+                        <!--수정, 삭제 버튼-->
+                        <div class="pull-right tooltip-demo" id="viewButton"></div>
+                        <h3>문의</h3>
                     </div>
-                    <div class="col-lg-9 animated fadeInRight">
-                        <div class="mail-box-header">
-                            <div class="pull-right tooltip-demo" id="viewButton">
-                            
-                            </div>
-                            <h2 class="font-bold" id="viewTitle">
-                          </h2>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="small text-right">
-                                        <div id="viewAccept"> </div>
-                                        <div id="viewReply"></div>
-                                    </div>
-                                </div>
-                            </div>
+                    <div class="mail-box">
+                        <div class="mail-body">
+                            <!--접수시간-->
+                            <div id="viewAccept"></div>
+                            <!--제목-->
+                            <h1 id="viewTitle"></h1>
+                            <!--문의내용-->
+                            <div id="viewText"></div>
                         </div>
-						
-                        <div class="mail-box">
-                            <div class="mail-body">
-                                <p><h3>문의내용</h3></p>
-                                <div id="viewText"></div>
-                                <br>
-                                <p><h3>답변내용</h3></p>
-                                <div id="ReplyText"></div>
-                            </div>
-                            <div class="mail-attachment">
-                                <p>
-                                    <span><i class="fa fa-paperclip"></i> 첨부파일</span>
-                                </p>
-                                <div class="attachment" id="viewFile">
-                                
-                                </div>
-                            </div>
-                            <div class="mail-body tooltip-demo">
-                                <div class="row">
-                                    <div class="col-lg-12">
-                                        <h4>댓글:</h4>
-                                        <div class="social-footer">
-                                            <div class="social-comment" id="commentArea">
-                                            </div>
-                                            <div class="social-comment">
-                                                <a href="" class="pull-left">
-                                                </a>
-                                                <div class="media-body">
-                                                    <div class="input-group">
-                                                        <textarea class="form-control" placeholder="댓글 작성" id="comment"></textarea>
-                                                        <span class="input-group-btn">
+                        <div class="mail-attachment">
+                            <p>
+                                <span><i class="fa fa-paperclip"></i> 첨부파일</span>
+                            </p>
+                            <div class="attachment" id="viewFile"></div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    
+                </div>
+                
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="mail-box-header">
+                        <!--작성/수정 버튼-->
+                        <div class="pull-right tooltip-demo" id="replyButton"></div>
+                        <h3>답변</h3>
+                    </div>
+                    <div class="mail-box">
+                        <div class="mail-body">
+                            <!--접수시간-->
+                            <div id="viewReply"></div>
+                            <!--</br>-->
+                            <!--답변내용-->
+                            <div id="ReplyText" style="padding-top: 20px"></div>
+                        </div>
+                    
+                    <div class="mail-attachment">
+                        <p>
+                            <span><i class="fa fa-paperclip"></i> 첨부파일</span>
+                        </p>
+                        <div class="attachment" id="replyFile">
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+                
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="mail-box-header">
+                        <h3>댓글</h3>
+                    </div>
+                    <div class="mail-box">
+                        <div class="mail-body">
+                            <div class="col-lg-12">
+                                <div class="social-footer">
+                                    <div class="social-comment" id="commentArea">
+                                    </div>
+                                    <div class="social-comment">
+                                        <a href="" class="pull-left">
+                                        </a>
+                                        <div class="media-body">
+                                            <div class="input-group">
+                                                <textarea class="form-control" placeholder="댓글 작성" id="comment"></textarea>
+                                                <span class="input-group-btn">
                                                       <button type="button" class="btn btn-primary btn-lg" id="uploadComment">올리기</button>
                                                     </span>
-                                                    </div>
-                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -138,4 +172,64 @@
                     </div>
                 </div>
             </div>
-            <script src="../js/plugins/view_call_record/view_call_record.js"></script>
+        </div>
+    </div>
+</div>
+
+<div class="modal inmodal fade" id="myModal6" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">상담자 리스트</h4>
+            </div>
+            <div class="modal-body">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>프로필이미지</th>
+                            <th>성명</th>
+                        </tr>
+                    </thead>
+                    <tbody id="list1">
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-white" data-dismiss="modal">취소</button>
+                <button type="button" class="btn btn-primary" id="modalSave">확인</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal inmodal fade" id="myModal5" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">상담자 리스트</h4>
+            </div>
+            <div class="modal-body">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>프로필이미지</th>
+                            <th>성명</th>
+                            <th>접수건수</th>
+                        </tr>
+                    </thead>
+                    <tbody id="list">
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-white" data-dismiss="modal">취소</button>
+                <button type="button" class="btn btn-primary" id="modalSave1">확인</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../js/plugins/view_call_record/view_call_record.js"></script>

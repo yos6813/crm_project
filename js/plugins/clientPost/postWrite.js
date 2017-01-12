@@ -63,9 +63,10 @@ function handleFileSelect(evt) {
 }
 	  document.getElementById('fileButton').addEventListener('change', handleFileSelect, false);
 	 
-function postAdd(user, userEmail, bigGroup, smallGroup, title, text, file, tag, date, type, status, company, userId, userName, replyDate, replyName, replyText, replyImg){
+function postAdd(user, officer, userEmail, bigGroup, smallGroup, title, text, file, tag, date, type, status, company, userId, userName, replyDate, replyName, replyText, replyImg){
 	var postData = {
 			user: user,
+			officer: officer,
 			userEmail: userEmail,
 			bigGroup: bigGroup,
 			smallGroup: smallGroup,
@@ -169,10 +170,10 @@ $(document).ready(function(){
 					tag.push($(this).text());
 				})
 				
-				postAdd(user, userEmail, bigGroup, smallGroup, title, text, file, tag, date, type, status, company, userId, userName, replyDate, replyName, replyText, replyImg);
+				postAdd(user, officer, userEmail, bigGroup, smallGroup, title, text, file, tag, date, type, status, company, userId, userName, replyDate, replyName, replyText, replyImg);
 				location.hash = '#/cIndex/qnaList?no=' + user;
 				
-				var types = "<http://yeta.center/#/index/call_list?name=" + userName + "&title=" +  title + "|문의 글 리스트 가기>";
+				var types = "<http://yeta.center/#/index/call_list|문의 글 리스트 가기>";
 				var url;
 				var channel;
 				if(type == '시스템'){
@@ -192,6 +193,8 @@ $(document).ready(function(){
 //										"channel": "@" + snapshot5.val().slack,
 										"fallback":type + " 문의 등록",
 										"pretext":type + " 문의 등록",
+										"title": types,
+//										"title_link": "http://yeta.center/#/index/call_list?name=" + userName + "&title=" +  title,
 										"color":"#D00000",
 										"fields":[{
 											"value": "이름: " + userName + "\n" + "제목: " + title + "\n" + types,

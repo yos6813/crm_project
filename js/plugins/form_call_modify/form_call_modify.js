@@ -6,6 +6,7 @@ function getParameterByName(name) {
 }
 
 var modifyPageno = getParameterByName('no');
+var modifyRPageno = getParameterByName('Rno');
 
 /* user post alert */
 function writeAlert(uid, replyPhoto, replyUser, replyDay, replyTitle, replyPost, replyUserName, check){
@@ -59,6 +60,11 @@ $(document).ready(function(){
 		$('#viewText').append(snapshot.val().text);
 		$('#clientEmail').val(snapshot.val().userEmail);
 		$('#clientTitle').val(snapshot.val().title);
+	})
+	
+	firebase.database().ref('reply/' + modifyRPageno).on('value', function(snapshot){
+		$('#replyText').summernote('code', snapshot.val().replyText);
+		$('#fileInput').text(snapshot.val().replyFile);
 	})
 
 	
@@ -175,7 +181,7 @@ $('#replySave').click(function(){
 			emailjs.send("gmail", "template_jbvbOZH3", {
 				"reply_to" : snapshot.val().userEmail,
 				"to_name" : snapshot.val().userName,
-				"message_html" : '#/cIndex/view_qna?no=' + modifyPageno,
+				"message_html" : 'yeta.center/#/cIndex/view_qna?no=' + modifyPageno,
 				"from_name" : 'YETA2016'
 			});
 		})

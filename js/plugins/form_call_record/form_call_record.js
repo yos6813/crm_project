@@ -1,5 +1,13 @@
-/* 유형 드롭다운 옵션 추가 */
+function getParameterByName(name) {
+	name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+	var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+	results = regex.exec(location.hash);
+	return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
 
+var modifyPageno = getParameterByName('no');
+
+/* 유형 드롭다운 옵션 추가 */
 firebase.database().ref("types/").orderByKey().endAt("type").on("child_added", function(snapshot){
 	snapshot.forEach(function(data){
 		$('#writeTypeSelect').append('<option value="'+ data.val() +'">' + data.val()
@@ -28,6 +36,45 @@ $('#writeTypeSelect').change(function(){
 })
 
 $(document).ready(function(){
+	
+	if(modifyPageno != ''){
+		firebase.database().ref('/qnaWrite/' + modifyPageno).on('value', function(snapshot){
+			$('#customerIn').val(snapshot.val().userName);
+			$('#bigGroupli').remove();
+			$('#smallGroupli').remove();
+			$('#bigGroup').remove();
+			$('#smallGroup').remove();
+			$('#title').val(snapshot.val().title);
+			$('#postText').summernote('code', snapshot.val().text);
+			$('#writeTypeSelect').val(snapshot.val().type);
+			$('#fileInput').text(snapshot.val().file);
+			$('#cusKey').text(snapshot.val().user);
+			
+			
+			firebase.database().ref('clients/' + snapshot.val().user).orderByKey().on('child_added', function(snapshot1){
+				firebase.database().ref('company/' + snapshot1.val().company).on('value', function(snapshot2){
+					$('.companySel').val(snapshot2.val().name);
+				})
+				$('#phoneSec').append('<tr>' +
+						'<td>직장전화</td>' +
+						'<td id="workPhone">'+ snapshot1.val().clientWorkPhone + '</td>' +
+						'</tr>' +
+						'<tr>' +
+						'<td>휴대전화</td>' +
+						'<td id="phone">'+ snapshot1.val().clientPhone + '</td>' +
+						'</tr>' +
+						'<tr>' +
+						'<td>팩스</td>' +
+						'<td id="fax">'+ snapshot1.val().clientFax + '</td>' +
+						'</tr>' +
+						'<tr>' +
+						'<td>이메일</td>' +
+						'<td id="userEmail">'+ snapshot1.val().clientEmail + '</td>' +
+						'</tr>');
+			})
+		})
+	}
+	
 	$('#client_search').hideseek({hidden_mode: true});
 	firebase.database().ref('clients/').orderByKey().on('child_added', function(snapshot1){
 		firebase.database().ref('clients/' + snapshot1.key).orderByKey().on('child_added', function(snapshot){
@@ -248,9 +295,24 @@ $('#postSave').click(function(){
 	var userName = $('#customerIn').val();
 	
 //	if(title != '' && text != ''){
-		addPost(user, userEmail, bigGroup, smallGroup, title, text, file, date, type, status, company, userName, userId, replyName, replyText, replyImg);
 //	}
 	
+		if(modifyPageno != ''){
+			firebase.database().ref('qnaWrite/' + modifyPageno).update({
+				company: company,
+				file: uploadfile,
+				status: status,
+				text: text,
+				title: title,
+				type: type,
+				user: user,
+				userEmail: userEmail,
+				userName: userName,
+				user: user
+			})
+		} else {
+			addPost(user, userEmail, bigGroup, smallGroup, title, text, file, date, type, status, company, userName, userId, replyName, replyText, replyImg);
+		}
 	
 	window.location.hash = 'index/call_list';
 })
