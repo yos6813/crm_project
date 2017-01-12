@@ -245,7 +245,7 @@ $('#viewFile').children().remove();
 	
 	$('#mail').click(function(){
 		firebase.database().ref('qnaWrite/' + viewPageno).on('value', function (snapshot) {
-			firebase.database().ref('clients/' + snapshot.val().officer).on('value', function(snapshot2){
+			firebase.database().ref('users/' + snapshot.val().officer).on('value', function(snapshot2){
 				emailjs.send("gmail", "answer_01", 
 				{
 					"receiver":snapshot.val().userEmail,

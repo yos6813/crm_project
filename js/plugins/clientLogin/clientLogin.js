@@ -36,7 +36,8 @@ function toggleSignIn() {
     			firebase.database().ref('clients/' + user.uid).on('value', function(snapshot){
     				if(snapshot.val() != null){
 //				sendEmailVerification();
-    					location.hash = '#/ready';
+    					location.hash = '#/cIndex/notifyPage';
+//    					location.hash = '#/ready';
     				} else {
 //				sendEmailVerification();
     					location.hash = '#/clientInfo';
