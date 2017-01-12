@@ -63,7 +63,7 @@ function handleFileSelect(evt) {
 }
 	  document.getElementById('fileButton').addEventListener('change', handleFileSelect, false);
 	 
-function postAdd(user, officer, userEmail, bigGroup, smallGroup, title, text, file, tag, date, type, status, company, userId, userName, replyDate, replyName, replyText, replyImg){
+function postAdd(user, officer, userEmail, bigGroup, smallGroup, title, text, file, tag, date, type, status, company, userId, userName, officer, replyDate, replyName, replyText, replyImg){
 	var postData = {
 			user: user,
 			officer: officer,
@@ -78,7 +78,8 @@ function postAdd(user, officer, userEmail, bigGroup, smallGroup, title, text, fi
 			type: type,
 			status: status,
 			company: company,
-			userName: userName
+			userName: userName,
+			officer: officer
 	}
 	
 	var replyData = {
@@ -130,6 +131,10 @@ $(document).ready(function(){
 		var user = firebase.auth().currentUser.uid;
 		firebase.database().ref('clients/' + user).on('child_added', function(snapshot){
 			firebase.database().ref('company/' + snapshot.val().company).on('value', function(snapshot1){
+				var officer;
+				firebase.database().ref('users/' + snapshot1.val().officer).on('value', function(snapshot2){
+					officer = snapshot2.val().username;
+				})
 				var title = $('#qnaTitle').val();
 				var text = $('#qnaText').summernote('code');
 				var file = [];
@@ -170,7 +175,7 @@ $(document).ready(function(){
 					tag.push($(this).text());
 				})
 				
-				postAdd(user, officer, userEmail, bigGroup, smallGroup, title, text, file, tag, date, type, status, company, userId, userName, replyDate, replyName, replyText, replyImg);
+				postAdd(user, officer, userEmail, bigGroup, smallGroup, title, text, file, tag, date, type, status, company, userId, userName, officer, replyDate, replyName, replyText, replyImg);
 				location.hash = '#/cIndex/qnaList?no=' + user;
 				
 				var types = "<http://yeta.center/#/index/call_list|문의 글 리스트 가기>";

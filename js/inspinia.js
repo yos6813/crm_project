@@ -86,7 +86,7 @@ $(document).ready(function () {
 						$('#navprofileImg').attr('src', user.photoURL);
 						firebase.database().ref('user-infos/' + user.uid).once('child_added', function(snapshot1){
 							firebase.database().ref('user-infos/' + user.uid + '/' + snapshot1.key).on('value', function(snapshot2){
-								$('#navjob').text(snapshot2.val().nickname + ' / ' + snapshot2.val().slack);
+								$('#navjob').text(snapshot2.val().username + ' / ' + snapshot2.val().nickname);
 							})
 						})
 						userAlert(user);

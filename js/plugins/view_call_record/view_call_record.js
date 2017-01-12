@@ -21,6 +21,24 @@ function sendToSlack_(url,payload) {
 }
 
 $(document).ready(function () {
+	firebase.database().ref('qnaWrite/' + viewPageno).on('value', function(snapshot){
+		if(snapshot.val().warn == '긴급'){
+			$('#checkbox6').prop('checked', true);
+		}
+	})
+	
+	$('#checkbox6').change(function(){
+		if($(this).is(":checked")){
+			firebase.database().ref('qnaWrite/' + viewPageno).update({
+				warn: "긴급"
+			})
+		} else {
+			firebase.database().ref('qnaWrite/' + viewPageno).update({
+				warn: " "
+			})
+		}
+	})
+	
 	firebase.auth().onAuthStateChanged(function (user) {
 		if (user) {
 			firebase.database().ref('clients/' + user.uid).on('child_added', function (snapshot) {

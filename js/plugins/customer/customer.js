@@ -34,24 +34,29 @@ function submitCustomer(){
 	var cusDepartment = $('#customerDepartment').val();
 	var cusJob = $('#customerJob').val();
 	var cusPosition = $('#customerPosition').val();
-	var cusCompany = $('#cusCompany').val();
+	var cusCompany;
 	var workPhone = $('#workPhoneInput').val();
 	var mobilePhone = $('#mobilePhoneInput').val();
 	var fax = $('#faxInput').val();
 	var email = $('#emailFormInput').val();
 	
+	
+	firebase.database().ref('company/').orderByChild('name').equalTo($('#cusCompany').val()).on('child_added', function(snapshot){
+		cusCompany = snapshot.key;
+	})
 	if(key != ''){
-		firebase.database().ref('customer/' + key).update({
-			cusName: cusName,
-			cusCompany: cusCompany,
-			cusDepartment: cusDepartment,
-			cusJob: cusJob,
-			cusPosition: cusPosition,
-			email: email,
-			fax: fax,
-			mobilePhone: mobilePhone,
-			workPhone: workPhone
-		})
+			firebase.database().ref('clients/' + key).on('child_added', function(snapshot){
+				firebase.database().ref('clients/' + key + '/' + snapshot.key).update({
+					clientName: cusName,
+					company: cusCompany,
+					clientDepartment: cusDepartment,
+					clientPosition: cusPosition,
+					clientEmail: email,
+					clientFax: fax,
+					clientPhone: mobilePhone,
+					clientWorkPhone: workPhone
+				})
+			})
 	} else {
 		addCustomer(cusName, cusDepartment, cusJob, cusPosition, workPhone, mobilePhone, fax, email, cusCompany);
 	}
@@ -93,17 +98,18 @@ firebase.database().ref("company/").orderByKey().on("child_added", function(snap
 
 $(document).ready(function(){
 	if(key != ''){
-		firebase.database().ref('customer/' + key).on('value', function(snapshot){
-			$('#cusCompany').val(snapshot.val().cusCompany);
-			$('#customerName').val(snapshot.val().cusName);
-			$('#customerDepartment').val(snapshot.val().cusDepartment);
-			$('#customerJob').val(snapshot.val().cusJob);
-			$('#customerPosition').val(snapshot.val().cusPosition);
-			
-			$('#workPhoneInput').val(snapshot.val().workPhone);
-			$('#mobilePhoneInput').val(snapshot.val().mobilePhone);
-			$('#faxInput').val(snapshot.val().fax);
-			$('#emailFormInput').val(snapshot.val().email);
-		})
+			firebase.database().ref('clients/' + key).on('child_added', function(snapshot){
+				firebase.database().ref('company/' + snapshot.val().company).on('value', function(snapshot1){
+					$('#cusCompany').val(snapshot1.val().name);
+				})
+				$('#customerName').val(snapshot.val().clientName);
+				$('#customerDepartment').val(snapshot.val().clientDepartment);
+				$('#customerPosition').val(snapshot.val().clientPosition);
+				
+				$('#workPhoneInput').val(snapshot.val().clientWorkPhone);
+				$('#mobilePhoneInput').val(snapshot.val().clientPhone);
+				$('#faxInput').val(snapshot.val().clientFax);
+				$('#emailFormInput').val(snapshot.val().clientEmail);
+			})
 	}
 })

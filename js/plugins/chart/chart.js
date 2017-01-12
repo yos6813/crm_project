@@ -198,8 +198,8 @@ $(document).ready(function(){
 		})
 	}
 	
-	firebase.database().ref('qnaWrite/').on('child_added', function(snapshot){
-		firebase.database().ref('qnaWrite/' + snapshot.key).orderByChild('status').equalTo('해결').on('child_added', function(snapshot1){
+//	firebase.database().ref('qnaWrite/').on('child_added', function(snapshot){
+		firebase.database().ref('qnaWrite/').orderByChild('status').equalTo('해결').on('child_added', function(snapshot1){
 			if(snapshot1.val().type == '세법'){
 				taxLaw.push(snapshot1.key);
 				if(taxLaw != null){
@@ -217,10 +217,9 @@ $(document).ready(function(){
 				}
 			}
 		})
-	})
+//	})
 	
-	firebase.database().ref('qnaWrite/').on('child_added', function(snapshot){
-		firebase.database().ref('qnaWrite/' + snapshot.key).orderByChild('status').equalTo('접수').on('child_added', function(snapshot1){
+		firebase.database().ref('qnaWrite/').orderByChild('status').equalTo('접수').on('child_added', function(snapshot1){
 			if(snapshot1.val().type == '세법'){
 				taxLaw1.push(snapshot1.key);
 				if(taxLaw1 != null){
@@ -237,28 +236,25 @@ $(document).ready(function(){
 					$('#system1').text(system1.length);
 				}
 			}
-		})
 	})
 
-	firebase.database().ref('qnaWrite/').on('child_added', function(snapshot){
-		firebase.database().ref('qnaWrite/' + snapshot.key).orderByChild('status').equalTo('보류').on('child_added', function(snapshot1){
-			if(snapshot1.val().type == '세법'){
-				taxLaw2.push(snapshot1.key);
-				if(taxLaw2 != null){
-					$('#taxLaw2').text(taxLaw2.length);
-				}
-			} else if (snapshot1.val().type == '운용'){
-				management2.push(snapshot1.key);
-				if(management2 != null){
-					$('#management2').text(management2.length);
-				}
-			} else if (snapshot1.val().type == '시스템'){
-				system2.push(snapshot1.key);
-				if(system2 != null){
-					$('#system2').text(system2.length);
-				}
+	firebase.database().ref('qnaWrite/').orderByChild('status').equalTo('보류').on('child_added', function(snapshot1){
+		if(snapshot1.val().type == '세법'){
+			taxLaw2.push(snapshot1.key);
+			if(taxLaw2 != null){
+				$('#taxLaw2').text(taxLaw2.length);
 			}
-		})
+		} else if (snapshot1.val().type == '운용'){
+			management2.push(snapshot1.key);
+			if(management2 != null){
+				$('#management2').text(management2.length);
+			}
+		} else if (snapshot1.val().type == '시스템'){
+			system2.push(snapshot1.key);
+			if(system2 != null){
+				$('#system2').text(system2.length);
+			}
+		}
 	})
 	MonthPosts();
 	

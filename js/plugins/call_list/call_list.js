@@ -18,42 +18,50 @@ firebase.database().ref("types/").orderByKey().endAt("type").on("child_added", f
 })
 
 function postList(snapshot1) {
-	console.log(snapshot1.key);
-	$('#postList').each(function () {
-		var state;
-		if (snapshot1.val().status == '해결') {
-			state = 'label-default';
-		} else if (snapshot1.val().status == '보류') {
-			state = 'label-warning';
-		} else if(snapshot1.val().status == '등록'){
-			state = 'label-info';
-		} else{
-			state = 'label-primary';
-		}
-
-		$('#postList').append('<tr class="call_list" value="' + snapshot1.key + '">' +
-			'<td class="project-status">' +
-			'<span class="label ' + state + '">' + snapshot1.val().status + '</span>' +
-			'</td>' +
-			'<td class="project-category">' +
-			'<span>' + snapshot1.val().type + '</span>' +
-			'</td>' +
-			'<td class="title project-title">' + snapshot1.val().title +
-			'</td>' +
-			'<td class="project-title">' +
-			'<a id="titleCom">' + snapshot1.val().company + '</a>' +
-			'<br/>' +
-			'<small>' + snapshot1.val().userName + '</small>' +
-			'</td>' +
-			'<td class="project-clientcategory" id="' + snapshot1.key + '">' +
-			'</td>' +
-			'<td class="project-title">' +
-			'<small>접수: ' + snapshot1.val().date + '</small>' +
-			'</td>' +
-			'<td onload="setTimeout()" class="project-title ' + snapshot1.key + '">' +
-			'</td>' +
-			'</tr>');
-	})
+	firebase.database().ref('users/' + snapshot1.val().officer).on('value', function(snapshot2){
+		$('#postList').each(function () {
+			var state;
+			if (snapshot1.val().status == '해결') {
+				state = 'label-default';
+			} else if (snapshot1.val().status == '보류') {
+				state = 'label-warning';
+			} else if(snapshot1.val().status == '등록'){
+				state = 'label-info';
+			} else{
+				state = 'label-primary';
+			}
+			var warn = '';
+			if(snapshot1.val().warn != undefined){
+				warn = '긴급';
+			}
+			
+			$('#postList').append('<tr class="call_list" value="' + snapshot1.key + '">' +
+				'<td class="project-status">' +
+				'<span class="label ' + state + '">' + snapshot1.val().status + '</span>' +
+				'</td>' +
+				'<td class="project-category">' +
+				'<span>' + snapshot1.val().type + '</span>' +
+				'</td>' +
+				'<td class="title project-title">' + snapshot1.val().title +
+				'</td>' +
+				'<td class="project-title">' +
+				'<a id="titleCom">' + snapshot1.val().company + '</a>' +
+				'<br/>' +
+				'<small>' + snapshot1.val().userName + '</small>' +
+				'</td>' +
+				'<td class="project-clientcategory" id="' + snapshot1.key + '">' +
+				'</td>' +
+				'<td class="project-title">' + snapshot2.val().username +
+				'</td>' +
+				'<td class="project-title">' +
+				'<small>접수: ' + snapshot1.val().date + '</small>' +
+				'</td>' +
+				'<td class="project-title">' +
+				'<label class="warn label label-danger">' + warn + '</label>' +
+				'</td>' +
+				'</tr>');
+		})
+	
 	/* 회사 고객 타입 */
 	firebase.database().ref('company/').orderByChild('name').equalTo(snapshot1.val().company).on('child_added', function (snapshot4) {
 		if (snapshot4.val().sap == '1') {
@@ -66,7 +74,6 @@ function postList(snapshot1) {
 			$('#' + snapshot1.key).append('<span class="badge badge-danger onpremises"> On Premise </span>');
 		}
 	})
-	
 	
 	/* pagination */
 	$('#nav a').remove();
@@ -92,6 +99,7 @@ function postList(snapshot1) {
 			opacity: 1
 		}, 300);
 	});
+	})
 }
 
 $(document).on('click', '.call_list', function () {
@@ -117,7 +125,7 @@ $(document).ready(function () {
 	} else if (status != '' && pageType != '') {
 		$('#postList').children('.call_list').remove();
 		firebase.database().ref('qnaWrite/').orderByChild('status').equalTo(pageType).on('child_added', function (snapshot1) {
-			if (snapshot1.val().postType == status) {
+			if (snapshot1.val().type == status) {
 				postList(snapshot1);
 			}
 		});

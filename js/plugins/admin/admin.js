@@ -58,9 +58,13 @@ function job() {
 };
 
 $(document).ready(function () {
-	firebase.database().ref('clients/' + firebase.auth().currentUser.uid).on('child_added',function(snapshot){
-		if(snapshot.val().grade == '0'){
-			window.location.hash = '#/clientLogin';
+	firebase.auth().onAuthStateChanged(function(user) {
+		if(user){
+			firebase.database().ref('clients/' + firebase.auth().currentUser.uid).on('child_added', function(snapshot){
+				if(snapshot.val().grade == '0'){
+					window.location.hash = '#/clientLogin';
+				}
+			})
 		}
 	})
 	

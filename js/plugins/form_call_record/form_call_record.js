@@ -134,7 +134,7 @@ $(document).ready(function(){
 
 // 글 등록
 
-function addPost(user, userEmail, bigGroup, smallGroup, title, text, file, date, type, status, company, userName, userId, replyName, replyText, replyImg){
+function addPost(user, userEmail, bigGroup, smallGroup, title, text, file, date, type, status, company, userName, userId, replyName, officer, replyText, replyImg){
 	var postData = {
 			user: user,
 			userEmail: userEmail,
@@ -148,7 +148,8 @@ function addPost(user, userEmail, bigGroup, smallGroup, title, text, file, date,
 			type: type,
 			status: status,
 			company: company,
-			userName: userName
+			userName: userName,
+			officer: officer
 	};
 	
 	var acceptData = {
@@ -266,6 +267,7 @@ $('#postSave').click(function(){
 	var uploadfile = [];
 	var bigGroup = $('#bigGroupli').val();
 	var smallGroup = '';
+	var officer;
 	
 	smallGroup = $('#smallGroupli').val();
 	
@@ -284,6 +286,7 @@ $('#postSave').click(function(){
 		firebase.database().ref('clients/' + snapshot.key).on('child_added', function(snapshot1){
 			firebase.database().ref('company/' + snapshot1.val().company).on('value', function(snapshot2){
 				company = snapshot2.val().name;
+				officer = snapshot2.val().name;
 			})
 		})
 	})
@@ -308,10 +311,11 @@ $('#postSave').click(function(){
 				user: user,
 				userEmail: userEmail,
 				userName: userName,
-				user: user
+				user: user,
+				officer: officer
 			})
 		} else {
-			addPost(user, userEmail, bigGroup, smallGroup, title, text, file, date, type, status, company, userName, userId, replyName, replyText, replyImg);
+			addPost(user, userEmail, bigGroup, smallGroup, title, text, file, date, type, status, company, userName, userId, replyName, officer, replyText, replyImg);
 		}
 	
 	window.location.hash = 'index/call_list';

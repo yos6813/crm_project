@@ -8,11 +8,6 @@ function getParameterByName(name) {
 var modifyPageno = getParameterByName('no');
 
 $(document).ready(function(){
-	firebase.database().ref('user-infos/').on('child_added',function(snapshot){
-		if(snapshot.val().uid != firebase.auth().currentUser.uid){
-			window.location.hash = '#/clientLogin';
-		}
-	})
 	
 	firebase.database().ref('user-infos/' + modifyPageno).on('child_added', function(snapshot){
 		firebase.database().ref('user-infos/' + modifyPageno + '/' + snapshot.key).on('value', function(snapshot1){
@@ -29,14 +24,6 @@ $(document).ready(function(){
 			$('#nicknameMo').val(snapshot1.val().nickname);
 			$('#birthMo').val(snapshot1.val().birth);
 			
-			var join = snapshot1.val().join;
-			var joinsplit = join.split('/');
-			
-			var join1 = joinsplit[0];
-			var join2 = joinsplit[1];
-			var join3 = joinsplit[2];
-			
-			$('#joinDate').val(join3 + '-' + join1 + '-' + join2);
 		})
 	})
 })
@@ -82,26 +69,26 @@ function sample6_execDaumPostcode() {
     }).open();
 }
 
-			firebase.database().ref("departments/").orderByKey().on("child_added", function(snapshot){
-				snapshot.forEach(function(data){
-					$('#departmentMo').append('<li><a value="' + data.val() + '">' + data.val()
-							+ '</a></li>');
-				})
-				$('#departmentMo a').on('click', function(){
-					$('#departmentInputMo').val($(this).attr('value'));
-				})
-			})
+//			firebase.database().ref("departments/").orderByKey().on("child_added", function(snapshot){
+//				snapshot.forEach(function(data){
+//					$('#departmentMo').append('<li><a value="' + data.val() + '">' + data.val()
+//							+ '</a></li>');
+//				})
+//				$('#departmentMo a').on('click', function(){
+//					$('#departmentInputMo').val($(this).attr('value'));
+//				})
+//			})
 			
 			/* 직책 */
-			firebase.database().ref("jobs/").orderByKey().on("child_added", function(snapshot){
-				snapshot.forEach(function(data){
-					$('#jobMo').append('<li><a value="' + data.val() + '">' + data.val()
-							+ '</a></li>');
-				})
-				$('#jobMo a').on('click', function(){
-					$('#jobInputMo').val($(this).attr('value'));
-				})
-			})
+//			firebase.database().ref("jobs/").orderByKey().on("child_added", function(snapshot){
+//				snapshot.forEach(function(data){
+//					$('#job1').append('<li><a value="' + data.val() + '">' + data.val()
+//							+ '</a></li>');
+//				})
+//				$('#job1 a').on('click', function(){
+//					$('#job').val($(this).attr('value'));
+//				})
+//			})
 			
 /* add User */
 
@@ -117,13 +104,10 @@ $('#modifyBtn').click(function(){
 	firebase.database().ref('user-infos/' + modifyPageno).on('child_added', function(snapshot){
 		firebase.database().ref('user-infos/' + modifyPageno + '/' + snapshot.key).update({
 			nickname: $('#nicknameMo').val(),
-			department: $('#departmentInputMo').val(),
-			job: $('#jobInputMo').val(),
+			job: $('#job').val(),
 			extension: $('#extensionMo').val(),
 			phone: $('#phoneMo').val(),
 			call: $('#callMo').val(),
-			emergency: $('#emergencyMo').val(),
-			address: $('#sample6_address').val() + ' ' + $('#sample6_address2').val()
 		})
 	})
 	

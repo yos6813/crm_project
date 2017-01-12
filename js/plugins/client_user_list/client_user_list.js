@@ -95,6 +95,9 @@ $(document).ready(function(){
 	
 	$(document).on('click', '.clientList', function(){
 			clientPost($(this).attr('value'));
+			$('#infoModify').remove();
+			$('#userInfoBox').prepend('<button class="btn btn-default pull-right" style="color:gray" id="infoModify" value="' + $(this).attr('value') + 
+			'">수정</button>');
 			firebase.database().ref('clients/' + $(this).attr('value')).on('child_added', function(snapshot){
 				firebase.database().ref('company/' + snapshot.val().company).on('value', function(snapshot2){
 				$('#client_company').text(snapshot2.val().name);
@@ -112,10 +115,6 @@ $(document).ready(function(){
 				$('#fax').append('<i class="fa fa-fax"> </i><span style="margin-left: 1em" >' + snapshot.val().clientFax + '</span>');
 				$('#email').append('<i class="fa fa-envelope"> </i><span style="margin-left: 1em" >' + snapshot.val().clientEmail + '</span>');
 	
-				$('#infoModify').remove();
-				$('#userInfoBox').prepend('<button class="btn btn-default pull-right" style="color:gray" id="infoModify" value="' + snapshot.key + 
-				'">수정</button>');
-				
 				$('#client_address').children().remove();
 				$('#client_address').text('');
 				firebase.database().ref('company/').orderByChild('name').equalTo($('#client_company').text()).on('child_added', function(snapshot1){
