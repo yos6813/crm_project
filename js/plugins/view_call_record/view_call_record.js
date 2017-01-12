@@ -226,13 +226,6 @@ $('#viewFile').children().remove();
 						"title":snapshot.val().title,
 						"link": 'https://yeta.center/#/cIndex/view_qna?no=' + snapshot.key + '&email=' + snapshot.val().userEmail
 					})
-//			emailjs.send("gmail",
-//					"answer_01",
-//					{"receiver":"warrenwon@happypay.co.kr",
-//					"name":"원정연",
-//					"title":"문의답변",
-//					"link":"naver.com"})
-//				emailjs.send("gmail", "test_1234", {})	
 			swal({
                 title: "메일을 발송하였습니다.",
                 type: "success"
