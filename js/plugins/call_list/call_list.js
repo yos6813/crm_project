@@ -18,7 +18,7 @@ firebase.database().ref("types/").orderByKey().endAt("type").on("child_added", f
 })
 
 function postList(snapshot1) {
-	firebase.database().ref('users/' + snapshot1.val().officer).on('value', function(snapshot2){
+	firebase.database().ref('user-infos/' + snapshot1.val().officer).on('child_added', function(snapshot2){
 		$('#postList').each(function () {
 			var state;
 			if (snapshot1.val().status == '해결') {

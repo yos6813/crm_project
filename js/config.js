@@ -273,6 +273,13 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
                 pageTitle: '문의 글 보기'
             }
         })
+        .state('index.notifyMod', {
+            url: "/notifyMod",
+            templateUrl: "views/notifyMod.html",
+            data: {
+                pageTitle: '공지수정'
+            }
+        })
         .state('clientInfo', {
             url: "/clientInfo",
             templateUrl: "views/clientInfo.html",

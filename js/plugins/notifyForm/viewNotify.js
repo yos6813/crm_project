@@ -19,29 +19,29 @@ $(document).ready(function(){
 	$('#patch').hide();
 	$('#notice').hide();
 	if(type != ''){
-		$('#viewButton').append('<a href="#/index/notifyWrite?no=' + type + '" id="modify" class="btn btn-white btn-sm" title="Reply"><i class="fa fa-pencil"></i> 수정</a>' +
+		$('#viewButton').append('<a href="#/index/notifyMod?no1=' + type + '" class="btn btn-white btn-sm"><i class="fa fa-pencil"></i> 수정</a>' +
 		'<a id="delete" class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Move to trash"><i class="fa fa-trash-o"></i> 삭제</a>');
 	
 	/* 관리자 페이지 */
-	firebase.database().ref('notify/' + type).on('value', function(snapshot){
-		$("#viewText").append(snapshot.val().text);
-		$('#viewTitle').text(snapshot.val().title);
-		$('#notifyDate').append('<i class="fa fa-clock-o"></i>' +snapshot.val().date);
+	firebase.database().ref('notify/' + type).on('value', function(snapshot1){
+		$("#viewText").append(snapshot1.val().text);
+		$('#viewTitle').text(snapshot1.val().title);
+		$('#notifyDate').append('<i class="fa fa-clock-o"></i>' +snapshot1.val().date);
 		
-		if(snapshot.val().notifyType == '패치'){
+		if(snapshot1.val().notifyType == '패치'){
 			$('#patch').show();
 			$('#notice').hide();
-		} else if(snapshot.val().notifyType == '공지') {
+		} else if(snapshot1.val().notifyType == '공지') {
 			$('#patch').hide();
 			$('#notice').show();
 		}
 		
 		firebase.database().ref('notify/' + type + '/file').on('value', function(snapshot){
-			if(snapshot.val() == undefined || snapshot.val() == ''){
-				$('#viewFile').append('<div class="file-box"><small>no file</small></div>');
-			}else{
-				firebase.database().ref('notify/' + type).on('value', function(snapshot1){
-					snapshot.forEach(function(data){
+			firebase.database().ref('notify/' + type).on('value', function(snapshot2){
+				snapshot.forEach(function(data){
+				if(data.val() == ''&& snapshot.val().length <= 1){
+					$('#viewFile').append('<div class="file-box"><small>no file</small></div>');
+				} else {
 						firebase.storage().ref('files/' + data.val()).getDownloadURL().then(function(url){
 							$('#viewFile').append('<div class="file-box">' +
 									'<div class="file">' + 
@@ -52,16 +52,16 @@ $(document).ready(function(){
 									'</div>' + 
 									'<div class="file-name">' + data.val() +
 									'<br/>' +
-									'<small>Added: ' + snapshot1.val().postDate + '</small>' +
+									'<small>Added: ' + snapshot2.val().date + '</small>' +
 									'</div>' +
 									'</a>' +
 									'<div>' +
 									'</div>' +
 									'<div class="clearfix"></div>');
 						})
-					})
+					}
 				})
-			}
+			})
 		})
 	})
 	
@@ -89,8 +89,7 @@ $(document).ready(function(){
 		
 	});
 	} else {
-		
-	
+		/* 고객 페이지 */
 	firebase.database().ref('notify/' + no).on('value', function(snapshot){
 		$("#viewText").append(snapshot.val().text);
 		$('#viewTitle').text(snapshot.val().title);
@@ -105,11 +104,11 @@ $(document).ready(function(){
 		}
 		
 		firebase.database().ref('notify/' + no + '/file').on('value', function(snapshot){
-			if(snapshot.val() == undefined || snapshot.val() == ''){
-				$('#viewFile').append('<div class="file-box"><small>no file</small></div>');
-			}else{
-				firebase.database().ref('notify/' + no).on('value', function(snapshot1){
-					snapshot.forEach(function(data){
+			firebase.database().ref('notify/' + no).on('value', function(snapshot1){
+				snapshot.forEach(function(data){
+				if(data.val() == ''&& snapshot.val().length <= 1){
+					$('#viewFile').append('<div class="file-box"><small>no file</small></div>');
+				} else {
 						firebase.storage().ref('files/' + data.val()).getDownloadURL().then(function(url){
 							$('#viewFile').append('<div class="file-box">' +
 									'<div class="file">' + 
@@ -120,16 +119,16 @@ $(document).ready(function(){
 									'</div>' + 
 									'<div class="file-name">' + data.val() +
 									'<br/>' +
-									'<small>Added: ' + snapshot1.val().postDate + '</small>' +
+									'<small>Added: ' + snapshot1.val().date + '</small>' +
 									'</div>' +
 									'</a>' +
 									'<div>' +
 									'</div>' +
 									'<div class="clearfix"></div>');
 						})
-					})
+					}
 				})
-			}
+			})
 		})
 	})
 	

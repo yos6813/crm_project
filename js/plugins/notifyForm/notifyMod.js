@@ -1,3 +1,25 @@
+function getParameterByName(name) {
+	name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+	var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+	results = regex.exec(location.hash);
+	return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
+var modifyNo = getParameterByName('no1');
+
+$(document).ready(function(){
+	firebase.database().ref('notify/' + modifyNo).on('value', function(snapshot){
+		$("#writeTypeSelect").val(snapshot.val().notifyType);
+		$('#notifyText').summernote('code', snapshot.val().text);
+		$('#title').val(snapshot.val().title);
+		if(snapshot.val().file != ''){
+			for(var i=0; i<snapshot.val().file.length; i++){
+				$('#fileInput').append('<span class="fileName">' +  snapshot.val().file[i] + '</span>');
+			}
+		}
+	})
+})
+
 $('.summernote').summernote({
   height: 300,                 // set editor height
   minHeight: null,             // set minimum height of editor
@@ -55,24 +77,6 @@ function handleFileSelect(evt) {
 }
 	  document.getElementById('fileButton').addEventListener('change', handleFileSelect, false);
 
-function addnotify(notifyType, title, text, file, date){
-	
-		var notifyData = {
-			notifyType: notifyType,
-			title: title,
-			text: text,
-			file: file,
-			date: date
-		};
-
-	var newNotifyKey = firebase.database().ref().child('notify').push().key;
-	
-	var updates = {};
-	updates['/notify/' + newNotifyKey] = notifyData;
-	
-	return firebase.database().ref().update(updates);
-}
-
 $('#Save').click(function(){
 	var notifyType = $("#writeTypeSelect").val();
 	var text = $('#notifyText').summernote('code');
@@ -86,9 +90,14 @@ $('#Save').click(function(){
 			uploadfile.push($('#fileInput').children().eq(i).text());
 		}
 	}
-	
-	addnotify(notifyType, title, text, uploadfile, date);
-	
+
+	firebase.database().ref('notify/' + modifyNo).update({
+		title:$('#title').val(),
+		text: $('#notifyText').summernote('code'),
+		file: uploadfile,
+		notifyType: $('#writeTypeSelect').val(),
+		date: date
+	})
 	location.hash = "#/index/notifyPage?no=1";
 })
 
@@ -112,21 +121,3 @@ $('#Cancel').click(function(){
     });
 })
 
-$(document).ready(function(){
-	firebase.auth().onAuthStateChanged(function(user) {
-		if(!user){
-			window.location.hash = '#/login';
-		}
-	})
-	
-	var user = firebase.auth().currentUser;
-	firebase.database().ref('clients/' + user.uid).on('child_added',function(snapshot){
-		if(snapshot.val().grade == '0'){
-			window.location.hash = '#/clientLogin';
-		}
-	})
-	
-	$('#notifyText').summernote('code', '');
-	$('#title').val('');
-	$('#fileInput').val('');
-})

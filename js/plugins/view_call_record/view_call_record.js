@@ -26,6 +26,15 @@ $(document).ready(function () {
 			$('#checkbox6').prop('checked', true);
 		}
 	})
+	$('#mail').hide();
+	
+	firebase.database().ref('reply/' + viewPageno).on('value', function(snapshot){
+		if(snapshot.val().replyText == ''){
+			$('#mail').hide();
+		} else {
+			$('#mail').show();
+		}
+	})
 	
 	$('#checkbox6').change(function(){
 		if($(this).is(":checked")){
@@ -236,18 +245,21 @@ $('#viewFile').children().remove();
 	
 	$('#mail').click(function(){
 		firebase.database().ref('qnaWrite/' + viewPageno).on('value', function (snapshot) {
-			emailjs.send("gmail","answer_01",
-					{
-						"receiver":snapshot.val().userEmail,
-						"sender":"atnp9717@happypay.co.kr",
-						"name":snapshot.val().userName,
-						"title":snapshot.val().title,
-						"link": 'https://yeta.center/#/cIndex/view_qna?no=' + snapshot.key + '&email=' + snapshot.val().userEmail
-					})
-			swal({
-                title: "메일을 발송하였습니다.",
-                type: "success"
-            });
+			firebase.database().ref('clients/' + snapshot.val().officer).on('value', function(snapshot2){
+				emailjs.send("gmail", "answer_01", 
+				{
+					"receiver":snapshot.val().userEmail,
+					"sender": snapshot2.val().email,
+					"incharge":snapshot2.val().email,
+					"name":snapshot.val().userName,
+					"title":snapshot.val().title,
+					"link":'https://yeta.center/#/cIndex/view_qna?no=' + snapshot.key + '&email=' + snapshot.val().userEmail
+				})
+				swal({
+					title: "메일을 발송하였습니다.",
+					type: "success"
+				});
+			})
 		})
 	})
 	
