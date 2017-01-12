@@ -105,7 +105,7 @@ $(document).ready(function () {
 
 			firebase.database().ref('user-infos/' + user.uid).on('child_added', function(snapshot){
 				firebase.database().ref('user-infos/' + user.uid + '/' + snapshot.key).on('value', function(snapshot2){
-					$('#navjob').text(snapshot2.val().nickname + ' / ' + snapshot2.val().slack);
+					$('#navjob').text(snapshot2.val().username + ' / ' + snapshot2.val().nickname);
 				});
 			});
 			$('#navprofileImg').attr('src', user.photoURL);
