@@ -192,7 +192,7 @@ $(document).ready(function () {
 	})
 	$('#radio4').click(function () {
 		$('#postList').children('.call_list').remove();
-		firebase.database().ref('qnaWrite/').orderByChild('status').equalTo('보류').on('child_added', function (snapshot) {
+		firebase.database().ref('qnaWrite/').orderByChild('status').equalTo('보류').on('child_added', function (snapshot1) {
 			postList(snapshot1);
 		})
 	})

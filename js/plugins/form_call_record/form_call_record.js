@@ -18,7 +18,11 @@ firebase.database().ref("types/").orderByKey().endAt("type").on("child_added", f
 $('#writeTypeSelect').change(function(){
 	var type = $(this).val();
 	$('#bigGroupli').children().remove();
+	$('#bigGroupli').hide();
+	$('#bigGroup').hide();
 	firebase.database().ref('bigGroup/' + type).on('child_added', function(snapshot){
+		$('#bigGroupli').show();
+		$('#bigGroup').show();
 		$('#bigGroupli').append('<option value="' + snapshot.val().bGroup + '">' + snapshot.val().bGroup + '</option>');
 	})
 	
@@ -36,7 +40,11 @@ $('#writeTypeSelect').change(function(){
 })
 
 $(document).ready(function(){
+	$('#smallGroupli').hide();
+	$('#smallGroup').hide();
 	
+	$('#bigGroupli').hide();
+	$('#bigGroup').hide();
 	if(modifyPageno != ''){
 		firebase.database().ref('/qnaWrite/' + modifyPageno).on('value', function(snapshot){
 			$('#customerIn').val(snapshot.val().userName);

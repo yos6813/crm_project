@@ -23,7 +23,7 @@ $(document).ready(function(){
 			$('#sample6_address').val(snapshot1.val().address);
 			$('#nicknameMo').val(snapshot1.val().nickname);
 			$('#birthMo').val(snapshot1.val().birth);
-			
+			$('#slack').val(snapshot1.val().slack);
 		})
 	})
 })
@@ -108,6 +108,7 @@ $('#modifyBtn').click(function(){
 			extension: $('#extensionMo').val(),
 			phone: $('#phoneMo').val(),
 			call: $('#callMo').val(),
+			slack: $('#slack').val()
 		})
 	})
 	

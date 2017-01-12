@@ -95,11 +95,44 @@ $('#Save').click(function(){
 			file.push($('#fileInput').children().eq(i).text());
 		}
 	}
-	addnotify(notifyType, title, text, file, date);
+	
+	if(modifyNo != null){
+		firebase.database().ref('notify/' + modifyNo).update({
+			title:$('#title').val(),
+			text: $('#notifyText').summernote('code'),
+			file: $('#fileInput').text(),
+			notifyType: $('#writeTypeSelect').val(),
+			date: date
+		})
+	} else {
+		addnotify(notifyType, title, text, file, date);
+	}
+	
 	location.hash = "#/index/notifyPage?no=1";
 })
 
+$('#Cancel').click(function(){
+	swal({
+        title: "글 작성을 취소하시겠습니까?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Yes",
+        cancelButtonText: "No",
+        closeOnConfirm: false,
+        closeOnCancel: false },
+    function (isConfirm) {
+        if (isConfirm) {
+            swal("", "success");
+            location.hash = "#/index/notifyPage?no=1";
+        } else {
+            swal("", "error");
+        }
+    });
+})
+
 $(document).ready(function(){
+	
 	firebase.auth().onAuthStateChanged(function(user) {
 		if(!user){
 			window.location.hash = '#/login';

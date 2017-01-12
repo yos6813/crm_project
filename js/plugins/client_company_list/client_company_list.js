@@ -129,7 +129,7 @@ $(document).ready(function () {
 			$('#modalSave').val(snapshot.key);
 			$('#companyModify').val(snapshot.key);
 			
-			
+			$('#offiser').text('');
 			firebase.database().ref('users/' + snapshot.val().officer).on('value', function(snapshot1){
 				$('#offiser').text(snapshot1.val().username);
 			})
@@ -152,6 +152,7 @@ $(document).ready(function () {
 			officer: $('input[type=radio]:checked').val()
 		})
 		$('#myModal6').modal('hide');
+		location.reload();
 	})
 })
 

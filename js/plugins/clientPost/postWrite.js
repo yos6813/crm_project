@@ -110,6 +110,9 @@ function postAdd(user, officer, userEmail, bigGroup, smallGroup, title, text, fi
 $(document).ready(function(){
 	$('#smallGroup').hide();
 	$('#smallGroupli').hide();
+	
+	$('#bigGroup').hide();
+	$('#bigGroupli').hide();
 	firebase.auth().onAuthStateChanged(function(user) {
 		if(!user){
 			window.location.hash = '#/clientLogin';
@@ -245,6 +248,8 @@ $(document).ready(function(){
 	
 	var type = $('#writeType').text();
 	firebase.database().ref('bigGroup/' + type).on('child_added', function(snapshot){
+		$('#bigGroupli').show();
+		$('#bigGroup').show();
 			$('#bigGroupli').append('<option value="' + snapshot.val().bGroup + '">' + snapshot.val().bGroup + '</option>');
 	})
 	

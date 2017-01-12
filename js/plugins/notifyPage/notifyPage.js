@@ -9,7 +9,7 @@ var cType = getParameterByName('no');
 
 function cNotifyList(snapshot){
 	/* 리스트 생성 */
-	$('#notifyList').append('<tr class="notify_list" value="' + snapshot.key + '">' + 
+	$('#notifyList').append('<tr class="cnotify_list" value="' + snapshot.key + '">' + 
 //			'<a href="#/cIndex/view_notify?no='+ snapshot.key +'">' +
 			'<td class="project-category">' +
 			'<span>' + snapshot.val().notifyType + '</span>' +
@@ -83,7 +83,11 @@ function notifyList(snapshot){
 }
 
 $(document).on('click', '.notify_list', function(){
-	location.hash = '#/index/view_notify?no=' + $(this).attr('value');
+	location.hash = '#/index/view_notify?no1=' + $(this).attr('value');
+})
+
+$(document).on('click', '.cnotify_list', function(){
+	location.hash = '#/cIndex/view_notify?no=' + $(this).attr('value');
 })
 
 $(document).ready(function(){
