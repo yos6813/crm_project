@@ -63,7 +63,8 @@ function handleFileSelect(evt) {
 }
 	  document.getElementById('fileButton').addEventListener('change', handleFileSelect, false);
 	 
-function postAdd(user, officer, userEmail, bigGroup, smallGroup, title, text, file, tag, date, type, status, company, userId, userName, replyDate, replyName, replyText, replyImg){
+function postAdd(user, officer, userEmail, bigGroup, smallGroup, title, text, file, tag, date, type, status, company, userId, userName, replyDate, replyName, replyText, replyImg
+								){
 	var postData = {
 			user: user,
 			officer: officer,
@@ -80,6 +81,12 @@ function postAdd(user, officer, userEmail, bigGroup, smallGroup, title, text, fi
 			company: company,
 			userName: userName,
 	}
+	
+//	var acceptData = {
+//			AcceptDate: AcceptDate,
+//			AcceptUserId: AcceptUserId,
+//			AcceptName: AcceptName,
+//		};
 	
 	var replyData = {
 			userId: userId,
@@ -101,6 +108,7 @@ function postAdd(user, officer, userEmail, bigGroup, smallGroup, title, text, fi
 	updates['/qnaWrite/' + newPostKey] = postData;
 	updates['/timePosts/' + todayMonth + '/' + new Date().getDate() + '/' + new Date().getHours() + '/' + newPostKey] = postData;
 	updates['/monthPosts/' + new Date().getFullYear() + '/' + todayMonth + '/' +new Date().getDate() + '/' + newPostKey] = postData;
+//	updates['/accept/' + newPostKey] = acceptData;
 	updates['/reply/' + newPostKey] = replyData;
 	
 	return firebase.database().ref().update(updates);
@@ -147,6 +155,9 @@ $(document).ready(function(){
 				var bigGroup = '';
 				var smallGroup = '';
 				var userEmail = firebase.auth().currentUser.email;
+//				var AcceptName = firebase.auth().currentUser.displayName;
+//				var AcceptDate = today.getFullYear() + "." + (today.getMonth()+1) + "." + today.getDate() + " " + today.getHours() + ":" + today.getMinutes();
+//				var AcceptUserId = firebase.auth().currentUser.uid;
 				
 				if($('#bigGroupli').val() != '선택'){
 					bigGroup = $('#bigGroupli').val();
@@ -174,7 +185,8 @@ $(document).ready(function(){
 					tag.push($(this).text());
 				})
 				
-				postAdd(user, officer, userEmail, bigGroup, smallGroup, title, text, file, tag, date, type, status, company, userId, userName, replyDate, replyName, replyText, replyImg);
+				postAdd(user, officer, userEmail, bigGroup, smallGroup, title, text, file, tag, date, type, status, company, userId, userName, replyDate, replyName, replyText, replyImg,AcceptName,
+						AcceptDate,AcceptUserId);
 				location.hash = '#/cIndex/qnaList?no=' + user;
 				
 				var types = "<http://yeta.center/#/index/call_list|문의 글 리스트 가기>";
