@@ -137,7 +137,7 @@ $(document).ready(function(){
 	$('#userPostNum').children('.ibox-content').remove();
 	firebase.database().ref('users/').orderByKey().on('child_added', function(snapshot){
 		firebase.database().ref('accept/').orderByChild('AcceptUserId').equalTo(snapshot.key).on('value', function(snapshot1){
-			firebase.database().ref('reply/').orderByChild('user').equalTo(snapshot.key).on('value', function(snapshot2){
+			firebase.database().ref('reply/').orderByChild('userId').equalTo(snapshot.key).on('value', function(snapshot2){
 				$('#userPostNum').append('<div class="userList ibox-content">' +
 	            						 '<div class="row">' +
 										 '<div class="col-xs-4">' +

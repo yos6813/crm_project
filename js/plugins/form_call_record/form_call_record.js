@@ -295,14 +295,11 @@ $('#postSave').click(function(){
 	var status = '접수';
 	var company = $('#selCompany').val();
 	
-	firebase.database().ref('clients/').on('child_added', function(snapshot){
-		firebase.database().ref('clients/' + snapshot.key).on('child_added', function(snapshot1){
+		firebase.database().ref('clients/' + $('#cusKey').text()).on('child_added', function(snapshot1){
 			firebase.database().ref('company/' + snapshot1.val().company).on('value', function(snapshot2){
-//				company = snapshot2.val().name;
 				officer = snapshot2.val().officer;
 			})
 		})
-	})
 	
 	var userId = '';
 	var replyName = '';

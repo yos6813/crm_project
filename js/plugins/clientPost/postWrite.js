@@ -137,6 +137,8 @@ $(document).ready(function(){
 	else if(writeType == 'management')
 		$('#writeType').text('운용')
 		
+		
+		/* 저장 버튼 */
 	$('#qnaSave').click(function(){
 		var user = firebase.auth().currentUser.uid;
 		firebase.database().ref('clients/' + user).on('child_added', function(snapshot){
@@ -185,8 +187,7 @@ $(document).ready(function(){
 					tag.push($(this).text());
 				})
 				
-				postAdd(user, officer, userEmail, bigGroup, smallGroup, title, text, file, tag, date, type, status, company, userId, userName, replyDate, replyName, replyText, replyImg,AcceptName,
-						AcceptDate,AcceptUserId);
+				postAdd(user, officer, userEmail, bigGroup, smallGroup, title, text, file, tag, date, type, status, company, userId, userName, replyDate, replyName, replyText, replyImg);
 				location.hash = '#/cIndex/qnaList?no=' + user;
 				
 				var types = "<http://yeta.center/#/index/call_list|문의 글 리스트 가기>";

@@ -845,7 +845,7 @@ function paginationClickHandler(event)
     	            type: "success"
     	        });
 
-    			location.hash = '#/ready';
+    			location.hash = '#/cIndex/notifyPage';
         		
             break;
 
