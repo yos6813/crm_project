@@ -63,7 +63,7 @@ $(document).ready(function () {
 		firebase.database().ref('accept/').orderByChild('AcceptUserId').equalTo(snapshot1.key).on('value', function(snapshot3){
 		$('#list1').append('<tr><td><input type="radio" value="' + snapshot1.key + '" name="radioInline" ></td>' +
 			'<td><img alt="image" class="img-circle" src="' + snapshot1.val().picture + '"></td>' +
-			'<td>' + snapshot1.val().username + '</td></tr>');
+			'<td class="nameLi">' + snapshot1.val().username + '</td></tr>');
 		})
 	})
 	
@@ -79,19 +79,10 @@ $(document).ready(function () {
 				firebase.database().ref('company/').orderByChild('name').equalTo($('#viewCompany').text()).on('child_added', function(snapshot1){
 					firebase.database().ref('users/' + snapshot1.val().officer).on('value', function(snapshot2){
 						firebase.database().ref('user-infos/' + $('input[type=radio]:checked').val()).on('child_added', function(snapshot){
-							var name;
-							
-							if($('#officer').text == ''){
-								name =  snapshot2.val().username;
-							} else {
-								name = $('#officer').text();
-								sendUser = 
-							}
+							var name = firebase.auth().currentUser.displayName;
 							
 								var types = "<" + window.location.href + ">";
 								var url = "https://hooks.slack.com/services/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";
-								var channel;
-								var payload;
 								payload = {
 										"channel": "@" + snapshot.val().slack,
 										"username": "YETA2016",
@@ -101,23 +92,23 @@ $(document).ready(function () {
 										}]
 								}
 								sendToSlack_(url,payload);
-								
-								var types = "<" + window.location.href + ">";
-								var url2 = "https://hooks.slack.com/services/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";
-								var channel;
-								var payload;
-								payload2 = {
-										"channel": "@" + snapshot.val().slack,
-										"username": "YETA2016",
-										"fields":[{
-											"value": name + "님이 공유하였습니다." + "\n" + types,
-											"short":false
-										}]
-								}
-								sendToSlack_(url2,payload2);
 							})
 						$('#myModal6').modal('hide');
 				})
+			})
+			
+			firebase.database().ref('user-infos/' + firebase.auth().currentUser.uid).on('child_added', function(snapshot){
+				var types = "<" + window.location.href + ">";
+					var url2 = "https://hooks.slack.com/services/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";
+					payload2 = {
+							"channel": "@" + $('.nameLi').text(),
+							"username": "YETA2016",
+							"fields":[{
+								"value": snapshot.val().slack + "님에게 공유하였습니다." + "\n" + types,
+								"short":false
+							}]
+					}
+					sendToSlack_(url2,payload2);
 			})
 		})
 		
