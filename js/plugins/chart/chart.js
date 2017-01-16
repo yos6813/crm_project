@@ -133,7 +133,7 @@ $(document).ready(function(){
 	
 	
 	
-	
+	/* 접수, 해결 현황 인별집계 */
 	$('#userPostNum').children('.ibox-content').remove();
 	firebase.database().ref('users/').orderByKey().on('child_added', function(snapshot){
 		firebase.database().ref('accept/').orderByChild('AcceptUserId').equalTo(snapshot.key).on('value', function(snapshot1){
