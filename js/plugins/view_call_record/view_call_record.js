@@ -7,9 +7,9 @@ function getParameterByName(name) {
 
 var viewPageno = getParameterByName('no');
 
-$('#viewYeta').hide();
-$('#viewAcademy').hide();
-$('#viewConsulting').hide();
+$('#sap').hide();
+$('#cloud').hide();
+$('#onpremises').hide();
 
 function sendToSlack_(url,payload) {
 	$.ajax({
@@ -85,6 +85,7 @@ $(document).ready(function () {
 								name =  snapshot2.val().username;
 							} else {
 								name = $('#officer').text();
+								sendUser = 
 							}
 							
 								var types = "<" + window.location.href + ">";
@@ -100,6 +101,20 @@ $(document).ready(function () {
 										}]
 								}
 								sendToSlack_(url,payload);
+								
+								var types = "<" + window.location.href + ">";
+								var url2 = "https://hooks.slack.com/services/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";
+								var channel;
+								var payload;
+								payload2 = {
+										"channel": "@" + snapshot.val().slack,
+										"username": "YETA2016",
+										"fields":[{
+											"value": name + "님이 공유하였습니다." + "\n" + types,
+											"short":false
+										}]
+								}
+								sendToSlack_(url2,payload2);
 							})
 						$('#myModal6').modal('hide');
 				})
@@ -119,6 +134,9 @@ $(document).ready(function () {
 	firebase.database().ref('qnaWrite/' + viewPageno).on('value', function (snapshot) {
 		$('#viewTitle').text(snapshot.val().title);
 		$('#viewCustomer').text(snapshot.val().userName);
+		if(snapshot.val().division != '' || snapshot.val().division != undefined){
+			$('#division').text(snapshot.val().division);
+		}
 		firebase.database().ref('users/' + snapshot.val().officer).on('value', function(snapshot3){
 			$('#officer').text(snapshot3.val().username);
 		})
@@ -135,14 +153,14 @@ $(document).ready(function () {
 			var comClient = $('#viewCompany').text();
 			firebase.database().ref("company/").orderByChild('name').equalTo(comClient).on('child_added', function (snapshot) {
 				firebase.database().ref("company/" + snapshot.key).on('value', function (snapshot1) {
-					if (snapshot.val().yeta == '1') {
-						$('#viewYeta').show();
+					if (snapshot.val().sap == '1') {
+						$('#sap').show();
 					}
-					if (snapshot.val().academy == '1') {
-						$('#viewAcademy').show();
+					if (snapshot.val().cloud == '1') {
+						$('#cloud').show();
 					}
-					if (snapshot.val().consulting == '1') {
-						$('#viewConsulting').show();
+					if (snapshot.val().onpremises == '1') {
+						$('#onpremises').show();
 					}
 				})
 			})
@@ -321,11 +339,10 @@ $('#viewFile').children().remove();
 			firebase.database().ref('qnaWrite/' + viewPageno).update({
 				status: '접수'
 			})
-			firebase.database().ref('accept/' + viewPageno).update({
+			firebase.database().ref('accept/' + viewPageno).set({
 				AcceptName: user.displayName,
 				AcceptDate: date,
-				AcceptUserId: user.uid,
-				post: post
+				AcceptUserId: user.uid
 			})
 			location.reload();
 		} else if (state == 'defer') {
@@ -492,8 +509,11 @@ $('#viewFile').children().remove();
 					var day = today.getDate();
 					var hour = today.getHours();
 					var minutes = today.getMinutes();
+					
 					var postRef = firebase.database().ref('qnaWrite/' + viewPageno);
 					var replyRef = firebase.database().ref('reply/' + viewPageno);
+					firebase.database().ref('accept/' + viewPageno).remove();
+					
 					firebase.database().ref('timePosts/' + month + '/' + day + '/' + hour + '/' + viewPageno).remove();
 					firebase.database().ref('monthPosts/' + year + '/' + month + '/' + day + '/' + viewPageno).remove();
 
@@ -501,9 +521,9 @@ $('#viewFile').children().remove();
 					replyRef.remove();
 					window.location.hash = 'index/call_list';
 
-					swal("삭제되었습니다.", "Your imaginary file has been deleted.", "success");
+					swal("삭제되었습니다.", "deleted.", "success");
 				} else {
-					swal("취소되었습니다.", "Your imaginary file is safe :)", "error");
+					swal("취소되었습니다.", "safe :)", "error");
 				}
 			});
 	});

@@ -7,59 +7,73 @@ function getParameterByName(name) {
 
 var key = getParameterByName('no');
 
-function addCustomer(cusName, cusDepartment, cusJob, cusPosition, workPhone, mobilePhone, fax, email, cusCompany){
-	var customerData = {
-		cusName: cusName,
-		cusDepartment: cusDepartment,
-		cusJob: cusJob,
-		cusPosition: cusPosition,
-		workPhone: workPhone,
-		mobilePhone: mobilePhone,
-		fax: fax,
-		email: email,
-		cusCompany: cusCompany
+function addClient(clientLicense, company, clientEmail, clientName, clientAddress, clientPosition,
+		   clientDepartment, clientWorkPhone, clientPhone, clientExtension, clientFax, grade){
+	var clientData = {
+//		uid:uid,
+		clientLicense: clientLicense,
+		company: company,
+		clientEmail: clientEmail,
+		clientName: clientName,
+		clientAddress: clientAddress,
+		clientPosition: clientPosition,
+		clientDepartment: clientDepartment,
+		clientWorkPhone: clientWorkPhone,
+		clientPhone: clientPhone,
+		clientExtension: clientExtension,
+		clientFax: clientFax,
+		grade: grade
 	};
 	
-	var newCustomerKey = firebase.database().ref().child('customer').push().key;
+	var newClientKey = firebase.database().ref().child('clients').push().key;
+	var newClientKey1 = firebase.database().ref().child('clients').push().key;
 	
 	var updates = {};
-	updates['/customer/' + newCustomerKey] = customerData;
+	updates['/clients/' + newClientKey1 + '/' + newClientKey] = clientData;
 	
 	return firebase.database().ref().update(updates);
 }
 
 
-function submitCustomer(){
-	var cusName = $('#customerName').val();
-	var cusDepartment = $('#customerDepartment').val();
-	var cusJob = $('#customerJob').val();
-	var cusPosition = $('#customerPosition').val();
-	var cusCompany;
-	var workPhone = $('#workPhoneInput').val();
-	var mobilePhone = $('#mobilePhoneInput').val();
-	var fax = $('#faxInput').val();
-	var email = $('#emailFormInput').val();
+$('#customerAdd').click(function(){
+	var company = '';
 	
+	var clientName = $('#customerName').val();
+	var clientPosition = $('#customerPosition').val();
+	var clientDepartment = $('#customerDepartment').val();
+	var clientWorkPhone = $('#workPhoneInput').val();
+	var clientPhone = $('#mobilePhoneInput').val();
+	var clientExtension = $('#clientExtension').val();
+	var clientFax = $('#faxInput').val();
+//	var uid = firebase.auth().currentUser.uid;
+	var clientEmail = $('#emailFormInput').val();
+	var grade = '0';
+	var clientLicense = '';
 	
 	firebase.database().ref('company/').orderByChild('name').equalTo($('#cusCompany').val()).on('child_added', function(snapshot){
-		cusCompany = snapshot.key;
+		clientLicense = snapshot.val().corporate;
+		company = snapshot.key;
 	})
+	
 	if(key != ''){
-			firebase.database().ref('clients/' + key).on('child_added', function(snapshot){
-				firebase.database().ref('clients/' + key + '/' + snapshot.key).update({
-					clientName: cusName,
-					company: cusCompany,
-					clientDepartment: cusDepartment,
-					clientPosition: cusPosition,
-					clientEmail: email,
-					clientFax: fax,
-					clientPhone: mobilePhone,
-					clientWorkPhone: workPhone
-				})
+		firebase.database().ref('clients/' + key).on('child_added', function(snapshot){
+			firebase.database().ref('clients/' + key + '/' + snapshot.key).update({
+				clientName: clientName,
+				company: company,
+				clientDepartment: clientDepartment,
+				clientPosition: clientPosition,
+				clientEmail: clientEmail,
+				clientFax: clientFax,
+				clientPhone: clientPhone,
+				clientWorkPhone: clientWorkPhone
 			})
-	} else {
-		addCustomer(cusName, cusDepartment, cusJob, cusPosition, workPhone, mobilePhone, fax, email, cusCompany);
+		})
 	}
+	
+	console.log(clientPhone);
+	addClient(clientLicense, company, clientEmail, clientName, clientPosition,
+			clientDepartment, clientWorkPhone, clientPhone, clientExtension, clientFax, grade);
+	
 	
 	$('#cusCompany').val('');
 	$('#customerName').val('');
@@ -71,29 +85,12 @@ function submitCustomer(){
 	$('#mobilePhoneInput').val('');
 	$('#faxInput').val('');
 	$('#emailFormInput').val('');
-}
-
-function phoneSectionInput(){
-	$('#phoneSection').append('<select class="phoneDrop input-sm form-control input-s-sm inline">' +
-            				  '<option value="직장전화">직장전화</option>' +
-            				  '<option value="휴대전화">휴대전화</option>' +
-            				  '<option value="팩스">팩스</option>' +
-            				  '<option value="이메일">이메일</option>' +
-            				  '</select>' +
-							  '<input type="text" class="phoneInput form-control" placeholder="-제외" required>');
-}
-
-function phoneSectionRemove(){
-	$('.phoneInput').last().remove();
-	$('.phoneDrop').last().remove();
-}
+})
 
 var comName = [];
 firebase.database().ref("company/").orderByKey().on("child_added", function(snapshot){
-//	firebase.database().ref("company/" + snapshot.key + '/name').on('value', function(snapshot1){
-		comName.push(snapshot1.val().name);
-		$(".typeahead_2").typeahead({ source: comName});
-//	});
+	comName.push(snapshot.val().name);
+	$(".typeahead_2").typeahead({ source: comName});
 });
 
 $(document).ready(function(){

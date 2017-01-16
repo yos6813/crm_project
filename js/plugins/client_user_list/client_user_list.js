@@ -44,54 +44,63 @@ function clientPost(snapshot){
 	})
 }
 
+function clientLi(snapshot){
+	firebase.database().ref('clients/' + snapshot.key).on('child_added', function(snapshot1){
+		firebase.database().ref('company/' + snapshot1.val().company).on('value', function(snapshot2){
+			$('#client_user').append('<tr class="clientList"  value="' + snapshot.key + '">' +
+					'<td>' + snapshot1.val().clientName + '</td>' +
+					'<td>' + snapshot2.val().name + '</td>' +
+					'<td>' + snapshot1.val().clientDepartment + '</td>' +
+					'<td>' + snapshot1.val().clientPosition + '</td>' +
+			'</tr>');
+			
+			//pagination
+			$('#client_nav a').remove();
+			var rowsShown = 9;
+			var rowsTotal = $('#client_user').children('.clientList').size();
+			var numPages = Math.ceil(rowsTotal/rowsShown);
+			for(i = 0;i < numPages;i++) {
+				var pageNum = i + 1;
+				$('#client_nav').append('<li><a rel="'+i+'">'+pageNum+'</a></li>');
+			}
+			$('#client_user').children('.clientList').hide();
+			$('#client_user').children('.clientList').slice(0, rowsShown).show();
+			$('#client_nav a:first').addClass('active');
+			$('#client_nav a').bind('click', function(){
+				
+				$('#client_nav a').removeClass('active');
+				$(this).addClass('active');
+				var currPage = $(this).attr('rel');
+				var startItem = currPage * rowsShown;
+				var endItem = startItem + rowsShown;
+				$('#client_user').children('.clientList').css('opacity','0.0').hide().slice(startItem, endItem).
+				css('display','table-row').animate({opacity:1}, 300);
+			});
+		})
+	})
+}
+
 $(document).on('click', '.client_List', function(){
 	location.hash = '#/index/view_call_record?no=' + $(this).attr('value');
 })
 
 $(document).ready(function(){
-	firebase.database().ref('clients/' + firebase.auth().currentUser.uid).on('child_added',function(snapshot){
-		if(snapshot.val().grade == '0'){
-			window.location.hash = '#/clientLogin';
+	firebase.auth().onAuthStateChanged(function (user) {
+		if (user) {
+			firebase.database().ref('clients/' + firebase.auth().currentUser.uid).on('child_added',function(snapshot){
+				if(snapshot.val().grade == '0'){
+					window.location.hash = '#/clientLogin';
+				}
+			})
 		}
+	})
+	firebase.database().ref('clients/').on('child_added', function(snapshot){
+		clientLi(snapshot);
 	})
 	
 	$('#client_posts_user_box').hide();
 	$('#client_posts_load').hide();
-	firebase.database().ref('clients/').on('child_added', function(snapshot){
-		firebase.database().ref('clients/' + snapshot.key).on('child_added', function(snapshot1){
-			firebase.database().ref('company/' + snapshot1.val().company).on('value', function(snapshot2){
-				$('#client_user').append('<tr class="clientList"  value="' + snapshot.key + '">' +
-						'<td>' + snapshot1.val().clientName + '</td>' +
-						'<td>' + snapshot2.val().name + '</td>' +
-						'<td>' + snapshot1.val().clientDepartment + '</td>' +
-						'<td>' + snapshot1.val().clientPosition + '</td>' +
-						'</tr>');
-		
-				//pagination
-				$('#client_nav a').remove();
-				var rowsShown = 9;
-				var rowsTotal = $('#client_user').children('.clientList').size();
-				var numPages = Math.ceil(rowsTotal/rowsShown);
-				for(i = 0;i < numPages;i++) {
-					var pageNum = i + 1;
-					$('#client_nav').append('<li><a rel="'+i+'">'+pageNum+'</a></li>');
-				}
-				$('#client_user').children('.clientList').hide();
-				$('#client_user').children('.clientList').slice(0, rowsShown).show();
-				$('#client_nav a:first').addClass('active');
-				$('#client_nav a').bind('click', function(){
-					
-					$('#client_nav a').removeClass('active');
-					$(this).addClass('active');
-					var currPage = $(this).attr('rel');
-					var startItem = currPage * rowsShown;
-					var endItem = startItem + rowsShown;
-					$('#client_user').children('.clientList').css('opacity','0.0').hide().slice(startItem, endItem).
-					css('display','table-row').animate({opacity:1}, 300);
-				});
-			})
-		})
-	})
+	
 	
 	$(document).on('click', '.clientList', function(){
 			clientPost($(this).attr('value'));
@@ -134,37 +143,7 @@ $(document).ready(function(){
 	$('#search_client').click(function(){
 		$('#client_user').children('.clientList').remove();
 		firebase.database().ref("clients/").on("child_added", function(snapshot){
-			firebase.database().ref('clients/' + snapshot.key).on('child_added', function(snapshot1){
-				$('#client_user').append('<tr class="clientList"  value="' + snapshot.key + '">' +
-						'<td>' + snapshot1.val().clientName + '</td>' +
-						'<td>' + snapshot1.val().companyName + '</td>' +
-						'<td>' + snapshot1.val().clientDepartment + '</td>' +
-						'<td>' + snapshot1.val().clientPosition + '</td>' +
-						'</tr>');
-			})
-		});
-		
-		//pagination
-		$('#client_nav a').remove();
-		var rowsShown = 9;
-		var rowsTotal = $('#client_user').children('.clientList').size();
-		var numPages = Math.ceil(rowsTotal/rowsShown);
-		for(i = 0;i < numPages;i++) {
-			var pageNum = i + 1;
-			$('#client_nav').append('<li><a rel="'+i+'">'+pageNum+'</a></li>');
-		}
-		$('#client_user').children('.clientList').hide();
-		$('#client_user').children('.clientList').slice(0, rowsShown).show();
-		$('#client_nav a:first').addClass('active');
-		$('#client_nav a').bind('click', function(){
-			
-			$('#client_nav a').removeClass('active');
-			$(this).addClass('active');
-			var currPage = $(this).attr('rel');
-			var startItem = currPage * rowsShown;
-			var endItem = startItem + rowsShown;
-			$('#client_user').children('.clientList').css('opacity','0.0').hide().slice(startItem, endItem).
-			css('display','table-row').animate({opacity:1}, 300);
+			clientLi(snapshot);
 		});
 	});
 	typeSelect();
@@ -186,116 +165,99 @@ $(document).ready(function(){
 		typeSelect();
 	})
 	
-function typeSelect(){
+function typeSelect() {
 	if($('#search_select option:selected').val() == 'clientName'){
 		firebase.database().ref('clients/').on('child_added', function(snapshot){
 			firebase.database().ref('clients/' + snapshot.key).on('child_added', function(snapshot1){
 				$('.client_searchUl').append('<li>' + snapshot1.val().clientName + '</li>');
 			})
 		})
-	} else if($('#search_select option:selected').val() == 'companyName'){
-		firebase.database().ref('clients/').on('child_added', function(snapshot){
-			firebase.database().ref('clients/' + snapshot.key).on('child_added', function(snapshot1){
-				$('.client_searchUl').append('<li>' + snapshot1.val().companyName + '</li>');
-			})
+	} else if ($('#search_select option:selected').val() == 'company') {
+		firebase.database().ref('company/').on('child_added', function (snapshot) {
+			$('.client_searchUl').append('<li value="' + snapshot.key + '">' + snapshot.val().name + '</li>');
 		})
-	}
+	} 
 	
-	var searchInput = []; 
-	$('#search_client').click(function(){
+	var searchInput = '';
+	$('#search_client').click(function () {
 		$('#client_user').children('.clientList').remove();
-		searchInput =[];
+		searchInput1 = '';
+		searchInput = '';
 		var searchType = $('#search_select option:selected').val();
-		if($('#input_client').val() != ''){
-			if($('.client_searchUl').children().not($('.hideLi')).length > 1){
-				searchInput.push($('.client_searchUl').children().not($('.hideLi')).eq(0).text());
-				for(var i=0; i<=$('.client_searchUl').children().not($('.hideLi')).length; i ++){
-					for(var j=1; j<=i; j++){
-						if($('.client_searchUl').children().not($('.hideLi')).eq(i).remove() != $('.client_searchUl').children().not($('.hideLi')).eq(j).text()){
-							searchInput.push($('.client_searchUl').children().not($('.hideLi')).eq(i).text());
-						} else {
-							$('.client_searchUl').children().not($('.hideLi')).eq(i).remove();
-							searchInput.push($('.client_searchUl').children().not($('.hideLi')).eq(j).text());
-						}
-					}
-				}
-				console.log(searchInput);
-			} else {
-				for(var i=0; i<=$('.client_searchUl').children().not($('.hideLi')).length; i++){
-					searchInput.push($('.client_searchUl').children().not($('.hideLi')).eq(i).text());
-				}
-			}
+		if ($('#input_client').val() != '') {
+//			if ($('.client_searchUl').children().not($('.hideLi')).length > 0 && searchType == 'clientName') {
+//				for (var i = 0; i <= $('.client_searchUl').children().not($('.hideLi')).length; i++) {
+//					searchInput.push($('.client_searchUl').children().not($('.hideLi')).eq(i).text());
+//				}
+//			} else if($('.client_searchUl').children().not($('.hideLi')).length > 0 && searchType == 'company') {
+//				for (var i = 0; i <= $('.client_searchUl').children().not($('.hideLi')).length; i++) {
+//					searchInput1.push($('.client_searchUl').children().not($('.hideLi')).eq(i).attr('value'));
+//				}
+//			}
 			$('#client_user').children('.clientList').remove();
-			for(var i=0; i<=searchInput.length; i++){
-				if(searchInput[i] != undefined || searchInput[i] != null){
-					firebase.database().ref('clients/').on('child_added', function(snapshot){
-						firebase.database().ref('clients/' + snapshot.key).orderByChild(searchType).equalTo(searchInput[i]).on('child_added', function(snapshot1){
-							$('#client_user').append('<tr class="clientList"  value="' + snapshot.key + '">' +
-									'<td>' + snapshot1.val().clientName + '</td>' +
-									'<td>' + snapshot1.val().companyName + '</td>' +
-									'<td>' + snapshot1.val().clientDepartment + '</td>' +
-									'<td>' + snapshot1.val().clientPosition + '</td>' +
-									'</tr>');
-						})
-					})
-					//pagination
-					$('#client_nav a').remove();
-					var rowsShown = 9;
-					var rowsTotal = $('#client_user').children('.clientList').size();
-					var numPages = Math.ceil(rowsTotal/rowsShown);
-					for(i = 0;i < numPages;i++) {
-						var pageNum = i + 1;
-						$('#client_nav').append('<li><a rel="'+i+'">'+pageNum+'</a></li>');
-					}
-					$('#client_user').children('.clientList').hide();
-					$('#client_user').children('.clientList').slice(0, rowsShown).show();
-					$('#client_nav a:first').addClass('active');
-					$('#client_nav a').bind('click', function(){
-						
-						$('#client_nav a').removeClass('active');
-						$(this).addClass('active');
-						var currPage = $(this).attr('rel');
-						var startItem = currPage * rowsShown;
-						var endItem = startItem + rowsShown;
-						$('#client_user').children('.clientList').css('opacity','0.0').hide().slice(startItem, endItem).
-						css('display','table-row').animate({opacity:1}, 300);
-					});
+				switch (searchType) {
+					case 'clientName':
+							firebase.database().ref('clients/').on('child_added', function (snapshot) {
+								for (var i=0; i<=  $('.client_searchUl').children().not($('.hideLi')).length; i++) {
+									searchInput = $('.client_searchUl').children().not($('.hideLi')).eq(i).text();
+									console.log(searchInput);
+									if (searchInput != undefined || searchInput != null) {
+										firebase.database().ref('clients/' + snapshot.key).orderByChild('clientName').equalTo(searchInput).on('child_added', function(snapshot1){
+											firebase.database().ref('company/' + snapshot1.val().company).on('value', function(snapshot2){
+												$('#client_user').append('<tr class="clientList"  value="' + snapshot.key + '">' +
+														'<td>' + snapshot1.val().clientName + '</td>' +
+														'<td>' + snapshot2.val().name + '</td>' +
+														'<td>' + snapshot1.val().clientDepartment + '</td>' +
+														'<td>' + snapshot1.val().clientPosition + '</td>' +
+												'</tr>');
+												
+												//pagination
+												$('#client_nav a').remove();
+												var rowsShown = 9;
+												var rowsTotal = $('#client_user').children('.clientList').size();
+												var numPages = Math.ceil(rowsTotal/rowsShown);
+												for(i = 0;i < numPages;i++) {
+													var pageNum = i + 1;
+													$('#client_nav').append('<li><a rel="'+i+'">'+pageNum+'</a></li>');
+												}
+												$('#client_user').children('.clientList').hide();
+												$('#client_user').children('.clientList').slice(0, rowsShown).show();
+												$('#client_nav a:first').addClass('active');
+												$('#client_nav a').bind('click', function(){
+													
+													$('#client_nav a').removeClass('active');
+													$(this).addClass('active');
+													var currPage = $(this).attr('rel');
+													var startItem = currPage * rowsShown;
+													var endItem = startItem + rowsShown;
+													$('#client_user').children('.clientList').css('opacity','0.0').hide().slice(startItem, endItem).
+													css('display','table-row').animate({opacity:1}, 300);
+												});
+											})
+										})
+									}
+								}
+							})
+						break;
+					case 'company':
+						console.log(searchInput1);
+						$('#client_user').children('.clientList').remove();
+						for (var i = 0; i <= searchInput1.length; i++) {
+							if (searchInput1[i] != undefined || searchInput1[i] != null) {
+								console.log(searchInput1[i]);
+								firebase.database().ref('clients/').orderByChild('company').equalTo(searchInput1[i]).on('child_added', function(snapshot){
+									console.log(snapshot.key);
+									clientLi(snapshot);
+								})
+							}
+						}
+						break;
 				}
-			}	
 		} else {
 			$('#client_user').children('.clientList').remove();
 			firebase.database().ref("clients/").on("child_added", function(snapshot){
-				firebase.database().ref('clients/' + snapshot.key).on('child_added', function(snapshot1){
-					$('#client_user').append('<tr class="clientList"  value="' + snapshot.key + '">' +
-							'<td>' + snapshot1.val().clientName + '</td>' +
-							'<td>' + snapshot1.val().companyName + '</td>' +
-							'<td>' + snapshot1.val().clientDepartment + '</td>' +
-							'<td>' + snapshot1.val().clientPosition + '</td>' +
-							'</tr>');
-				})
-			});
-			//pagination
-			$('#client_nav a').remove();
-			var rowsShown = 9;
-			var rowsTotal = $('#client_user').children('.clientList').size();
-			var numPages = Math.ceil(rowsTotal/rowsShown);
-			for(i = 0;i < numPages;i++) {
-				var pageNum = i + 1;
-				$('#client_nav').append('<li><a rel="'+i+'">'+pageNum+'</a></li>');
-			}
-			$('#client_user').children('.clientList').hide();
-			$('#client_user').children('.clientList').slice(0, rowsShown).show();
-			$('#client_nav a:first').addClass('active');
-			$('#client_nav a').bind('click', function(){
-				
-				$('#client_nav a').removeClass('active');
-				$(this).addClass('active');
-				var currPage = $(this).attr('rel');
-				var startItem = currPage * rowsShown;
-				var endItem = startItem + rowsShown;
-				$('#client_user').children('.clientList').css('opacity','0.0').hide().slice(startItem, endItem).
-				css('display','table-row').animate({opacity:1}, 300);
-			});
+				clientLi(snapshot);
+			})
 		}
 	});
 }

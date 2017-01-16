@@ -163,20 +163,21 @@ $(document).ready(function(){
 	
 	var taxLaw = [];
 	var system = [];
-	var etc = [];
 	var management = [];
 	
 	var taxLaw1 = [];
 	var system1 = [];
-	var etc1 = [];
 	var management1 = [];
 	
 	var taxLaw2 = [];
 	var system2 = [];
-	var etc2 = [];
 	var management2 = [];
 	
-	for(var i=1; i<=3; i++){
+	var taxLaw4 = [];
+	var system4 = [];
+	var management4 = [];
+	
+	for(var i=1; i<=4; i++){
 		$('#taxLaw' + i).click(function(){
 			var url = '#/index/call_list?type=' + $(this).prev().text() + '&status=' + $(this).parent().prev().children().text();
 			window.open(url, "_blank");
@@ -188,11 +189,6 @@ $(document).ready(function(){
 		})
 		
 		$('#management' + i).click(function(){
-			var url = '#/index/call_list?type=' + $(this).prev().text() + '&status=' + $(this).parent().prev().children().text();
-			window.open(url, "_blank");
-		})
-		
-		$('#etc' + i).click(function(){
 			var url = '#/index/call_list?type=' + $(this).prev().text() + '&status=' + $(this).parent().prev().children().text();
 			window.open(url, "_blank");
 		})
@@ -235,7 +231,7 @@ $(document).ready(function(){
 				if(system1 != null){
 					$('#system1').text(system1.length);
 				}
-			}
+			} 
 	})
 
 	firebase.database().ref('qnaWrite/').orderByChild('status').equalTo('보류').on('child_added', function(snapshot1){
@@ -253,6 +249,25 @@ $(document).ready(function(){
 			system2.push(snapshot1.key);
 			if(system2 != null){
 				$('#system2').text(system2.length);
+			}
+		}
+	})
+	
+	firebase.database().ref('qnaWrite/').orderByChild('status').equalTo('등록').on('child_added', function(snapshot1){
+		if(snapshot1.val().type == '세법'){
+			taxLaw4.push(snapshot1.key);
+			if(taxLaw4 != null){
+				$('#taxLaw4').text(taxLaw4.length);
+			}
+		} else if (snapshot1.val().type == '운용'){
+			management4.push(snapshot1.key);
+			if(management4 != null){
+				$('#management4').text(management4.length);
+			}
+		} else if (snapshot1.val().type == '시스템'){
+			system4.push(snapshot1.key);
+			if(system4 != null){
+				$('#system4').text(system4.length);
 			}
 		}
 	})

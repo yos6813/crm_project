@@ -7,6 +7,12 @@ function getParameterByName(name) {
 
 var no = getParameterByName('no');
 
+$('#officer_search').hideseek({hidden_mode: true});
+firebase.database().ref('users/').orderByKey().on('child_added', function(snapshot1){
+	$('.officer_searchList').append('<li class="list-item" style="display: none;"><a value="' + snapshot1.key + '">' + 
+			snapshot1.val().username + '</a></li>');
+})
+
 /* 다음 주소 찾기 */
 function sample6_execDaumPostcode() {
     new daum.Postcode({

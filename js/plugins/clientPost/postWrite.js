@@ -64,7 +64,7 @@ function handleFileSelect(evt) {
 	  document.getElementById('fileButton').addEventListener('change', handleFileSelect, false);
 	 
 function postAdd(user, officer, userEmail, bigGroup, smallGroup, title, text, file, tag, date, type, status, company, userId, userName, replyDate, replyName, replyText, replyImg
-								){
+				 , division, writeUser){
 	var postData = {
 			user: user,
 			officer: officer,
@@ -80,6 +80,8 @@ function postAdd(user, officer, userEmail, bigGroup, smallGroup, title, text, fi
 			status: status,
 			company: company,
 			userName: userName,
+			division: division,
+			writeUser: writeUser
 	}
 	
 //	var acceptData = {
@@ -150,6 +152,7 @@ $(document).ready(function(){
 				var tag = [];
 				var today = new Date();
 				var date = today.getFullYear() + "." + (today.getMonth()+1) + "." + today.getDate() + " " + today.getHours() + ":" + today.getMinutes();
+//				var date = today.getFullYear() + (today.getMonth()+1) + today.getDate() + today.getHours() + today.getMinutes();
 				var status = '등록';
 				var company = snapshot1.val().name;
 				var userName = snapshot.val().clientName;
@@ -160,6 +163,8 @@ $(document).ready(function(){
 //				var AcceptName = firebase.auth().currentUser.displayName;
 //				var AcceptDate = today.getFullYear() + "." + (today.getMonth()+1) + "." + today.getDate() + " " + today.getHours() + ":" + today.getMinutes();
 //				var AcceptUserId = firebase.auth().currentUser.uid;
+				var division = 'client';
+				var writeUser = firebase.auth().currentUser.uid;
 				
 				if($('#bigGroupli').val() != '선택'){
 					bigGroup = $('#bigGroupli').val();
@@ -187,7 +192,7 @@ $(document).ready(function(){
 					tag.push($(this).text());
 				})
 				
-				postAdd(user, officer, userEmail, bigGroup, smallGroup, title, text, file, tag, date, type, status, company, userId, userName, replyDate, replyName, replyText, replyImg);
+				postAdd(user, officer, userEmail, bigGroup, smallGroup, title, text, file, tag, date, type, status, company, userId, userName, replyDate, replyName, replyText, replyImg, division, writeUser);
 				location.hash = '#/cIndex/qnaList?no=' + user;
 				
 				var types = "<http://yeta.center/#/index/call_list|문의 글 리스트 가기>";

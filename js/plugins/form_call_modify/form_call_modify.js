@@ -173,9 +173,9 @@ $('#replySave').click(function(){
 			writeAlert(uid, replyPhoto, replyUser, replyDay, replyTitle, replyPost, replyUserName, check);
 		})
 		
-		firebase.database().ref('qnaWrite/' + modifyPageno).update({
-			status: '해결'
-		})
+//		firebase.database().ref('qnaWrite/' + modifyPageno).update({
+//			status: '해결'
+//		})
 		
 		firebase.database().ref('qnaWrite/' + modifyPageno).on('value', function(snapshot){
 			emailjs.send("gmail", "template_jbvbOZH3", {

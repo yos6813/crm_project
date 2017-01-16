@@ -143,7 +143,7 @@ $(document).ready(function(){
 // 글 등록
 
 function addPost(user, userEmail, bigGroup, smallGroup, title, text, file, date, type, status, company, userName, userId, replyName, officer, replyText, replyImg,
-		AcceptName,AcceptDate,AcceptUserId){
+		AcceptName,AcceptDate,AcceptUserId, division, writeUser){
 	var postData = {
 			user: user,
 			userEmail: userEmail,
@@ -158,7 +158,9 @@ function addPost(user, userEmail, bigGroup, smallGroup, title, text, file, date,
 			status: status,
 			company: company,
 			userName: userName,
-			officer: officer
+			officer: officer,
+			division: division,
+			writeUser: writeUser
 	};
 	
 	var acceptData = {
@@ -273,6 +275,7 @@ $('#postSave').click(function(){
 	var type = $('#writeTypeSelect').val();
 	var today = new Date();
 	var date = today.getFullYear() + "." + (today.getMonth()+1) + "." + today.getDate() + " " + today.getHours() + ":" + today.getMinutes();
+//	var date = today.getFullYear() + (today.getMonth()+1) + today.getDate() + today.getHours() + today.getMinutes();
 	var user = $('#cusKey').text();
 	var uploadfile = [];
 	var bigGroup = $('#bigGroupli').val();
@@ -281,6 +284,8 @@ $('#postSave').click(function(){
 	var AcceptName = firebase.auth().currentUser.displayName;
 	var AcceptDate = today.getFullYear() + "." + (today.getMonth()+1) + "." + today.getDate() + " " + today.getHours() + ":" + today.getMinutes();
 	var AcceptUserId = $('#cusKey').text();
+	var division = 'call';
+	var writeUser = firebase.auth().currentUser.uid;
 	
 	smallGroup = $('#smallGroupli').val();
 	
@@ -325,7 +330,8 @@ $('#postSave').click(function(){
 				officer: officer
 			})
 		} else {
-			addPost(user, userEmail, bigGroup, smallGroup, title, text, file, date, type, status, company, userName, userId, replyName, officer, replyText, replyImg,AcceptName,AcceptDate,AcceptUserId);
+			addPost(user, userEmail, bigGroup, smallGroup, title, text, file, date, type, status, company, userName, userId, replyName, officer, replyText, replyImg,AcceptName,AcceptDate,AcceptUserId
+					,division, writeUser);
 		}
 	
 	window.location.hash = 'index/call_list';

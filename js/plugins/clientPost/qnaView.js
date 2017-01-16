@@ -56,11 +56,29 @@ $(document).ready(function(){
 		var hour = today.getHours();
 		var minutes = today.getMinutes();
 		
-		firebase.database().ref('qnaWrite/' + no).remove();
-		firebase.database().ref('timePosts/' + month + '/' + day + '/' + hour + '/' + no).remove();
-		firebase.database().ref('monthPosts/' + year + '/' + month + '/' + day + '/' + no).remove();
-		
-		location.hash = '#/cIndex/qnaList?no=' + firebase.auth().currentUser.uid;
+		swal({
+			title: "정말 삭제하시겠습니까?",
+			type: "warning",
+			showCancelButton: true,
+			confirmButtonColor: "#DD6B55",
+			confirmButtonText: "Yes",
+			cancelButtonText: "No",
+			closeOnConfirm: false,
+			closeOnCancel: false
+		},
+		function (isConfirm) {
+			if (isConfirm) {
+				firebase.database().ref('qnaWrite/' + no).remove();
+				firebase.database().ref('timePosts/' + month + '/' + day + '/' + hour + '/' + no).remove();
+				firebase.database().ref('monthPosts/' + year + '/' + month + '/' + day + '/' + no).remove();
+				firebase.database().ref('reply/' + no).remove();
+				
+				location.hash = '#/cIndex/qnaList?no=' + firebase.auth().currentUser.uid;
+				swal("삭제되었습니다.", "Your imaginary file has been deleted.", "success");
+			} else {
+				swal("취소되었습니다.", "Your imaginary file is safe :)", "error");
+			}
+		});
 	});
 	
 	firebase.database().ref('qnaWrite/' + no).on('value', function(snapshot){

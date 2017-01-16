@@ -19,6 +19,8 @@ firebase.database().ref("types/").orderByKey().endAt("type").on("child_added", f
 
 function postList(snapshot1) {
 	firebase.database().ref('user-infos/' + snapshot1.val().officer).on('child_added', function(snapshot2){
+//		console.log(snapshot1.exportVal());
+//		firebase.database().ref('qnaWrite/').orderByChild('date').on('child_added', function(snapshot10){
 		$('#postList').each(function () {
 			var state;
 			if (snapshot1.val().status == '해결') {
@@ -99,6 +101,7 @@ function postList(snapshot1) {
 			opacity: 1
 		}, 300);
 	});
+//	})
 	})
 }
 
@@ -151,7 +154,7 @@ $(document).ready(function () {
 		$('#postList').children('.call_list').remove();
 
 		/* 전체 리스트 */
-		firebase.database().ref("qnaWrite/").orderByKey().on("child_added", function (snapshot1) {
+		firebase.database().ref("qnaWrite/").orderByChild('date').on("child_added", function (snapshot1) {
 			postList(snapshot1);
 		});
 	})
@@ -160,7 +163,7 @@ $(document).ready(function () {
 		$('#postList').children('.call_list').remove();
 		var select =  $(this).children("option:selected").text();
 		if (select == '전체') {
-			firebase.database().ref("qnaWrite/").on("child_added", function (snapshot1) {
+			firebase.database().ref("qnaWrite/").orderByChild('date').on("child_added", function (snapshot1) {
 				postList(snapshot1);
 			});
 		} else {
@@ -172,7 +175,7 @@ $(document).ready(function () {
 
 	$("#radio1").click(function () {
 		$('#postList').children('.call_list').remove();
-		firebase.database().ref("qnaWrite/").on("child_added", function (snapshot1) {
+		firebase.database().ref("qnaWrite/").orderByChild('date').on("child_added", function (snapshot1) {
 			postList(snapshot1);
 		});
 	})
@@ -208,7 +211,7 @@ $(document).ready(function () {
 $(document).ready(function () {
 	$('#searchBtn').click(function () {
 		$('#postList').children('.call_list').remove();
-		firebase.database().ref("qnaWrite/").on("child_added", function (snapshot1) {
+		firebase.database().ref("qnaWrite/").orderByChild('date').on("child_added", function (snapshot1) {
 			postList(snapshot1);
 		});
 	});
@@ -228,15 +231,15 @@ $('.searchUl').hide();
 
 function typeSelect() {
 	if ($('#searchSelect option:selected').val() == 'title') {
-		firebase.database().ref('qnaWrite/').on('child_added', function (snapshot1) {
+		firebase.database().ref('qnaWrite/').orderByChild('date').on('child_added', function (snapshot1) {
 			$('.searchUl').append('<li>' + snapshot1.val().title + '</li>');
 		})
 	} else if ($('#searchSelect option:selected').val() == 'text') {
-		firebase.database().ref('qnaWrite/').on('child_added', function (snapshot1) {
+		firebase.database().ref('qnaWrite/').orderByChild('date').on('child_added', function (snapshot1) {
 			$('.searchUl').append('<li>' + snapshot1.val().text + '</li>');
 		})
 	} else if ($('#searchSelect option:selected').val() == 'username') {
-		firebase.database().ref('qnaWrite/').on('child_added', function (snapshot1) {
+		firebase.database().ref('qnaWrite/').orderByChild('date').on('child_added', function (snapshot1) {
 			$('.searchUl').append('<li>' + snapshot1.val().username + '</li>');
 		})
 	}
