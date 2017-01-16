@@ -31,7 +31,7 @@ function demo2(){
 };
 
 $('#clientRegister').click(function(){
-	if($('#pw').val() == $('#pwCheck').val() && $('#pw').val().length > 6){
+	if($('#pw').val() == $('#pwCheck').val() && $('#pw').val().length >= 6){
 		handleSignUp();
 		location.hash = '#/clientLogin';
 		demo2();

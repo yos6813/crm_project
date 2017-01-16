@@ -76,24 +76,33 @@ $(document).ready(function () {
 				})
 	})
 		$('#modalSave').click(function(){
-			firebase.database().ref('user-infos/' + $('input[type=radio]:checked').val()).on('child_added', function(snapshot){
-				firebase.database().ref('accept/' + viewPageno).on('value', function(snapshot2){
-				var name;
-				var types = "<" + window.location.href + ">";
-				var url = "https://hooks.slack.com/services/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";
-				var channel;
-				var payload;
-				payload = {
-						"channel": "@" + snapshot.val().slack,
-						"username": "YETA2016",
-						"fields":[{
-							"value": snapshot2.val().AcceptName + "님이 공유하였습니다." + "\n" + types,
-							"short":false
-						}]
-				}
-				sendToSlack_(url,payload);
-			})
-			$('#myModal6').modal('hide');
+				firebase.database().ref('company/').orderByChild('name').equalTo($('#viewCompany').text()).on('child_added', function(snapshot1){
+					firebase.database().ref('users/' + snapshot1.val().officer).on('value', function(snapshot2){
+						firebase.database().ref('user-infos/' + $('input[type=radio]:checked').val()).on('child_added', function(snapshot){
+							var name;
+							
+							if($('#officer').text == ''){
+								name =  snapshot2.val().username;
+							} else {
+								name = $('#officer').text();
+							}
+							
+								var types = "<" + window.location.href + ">";
+								var url = "https://hooks.slack.com/services/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";
+								var channel;
+								var payload;
+								payload = {
+										"channel": "@" + snapshot.val().slack,
+										"username": "YETA2016",
+										"fields":[{
+											"value": name + "님이 공유하였습니다." + "\n" + types,
+											"short":false
+										}]
+								}
+								sendToSlack_(url,payload);
+							})
+						$('#myModal6').modal('hide');
+				})
 			})
 		})
 		

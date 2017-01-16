@@ -63,7 +63,8 @@ function handleFileSelect(evt) {
 }
 	  document.getElementById('fileButton').addEventListener('change', handleFileSelect, false);
 	 
-function postAdd(user, officer, userEmail, bigGroup, smallGroup, title, text, file, tag, date, type, status, company, userId, userName, replyDate, replyName, replyText, replyImg){
+function postAdd(user, officer, userEmail, bigGroup, smallGroup, title, text, file, tag, date, type, status, company, userId, userName, replyDate, replyName, replyText, replyImg
+								){
 	var postData = {
 			user: user,
 			officer: officer,
@@ -80,6 +81,12 @@ function postAdd(user, officer, userEmail, bigGroup, smallGroup, title, text, fi
 			company: company,
 			userName: userName,
 	}
+	
+//	var acceptData = {
+//			AcceptDate: AcceptDate,
+//			AcceptUserId: AcceptUserId,
+//			AcceptName: AcceptName,
+//		};
 	
 	var replyData = {
 			userId: userId,
@@ -101,6 +108,7 @@ function postAdd(user, officer, userEmail, bigGroup, smallGroup, title, text, fi
 	updates['/qnaWrite/' + newPostKey] = postData;
 	updates['/timePosts/' + todayMonth + '/' + new Date().getDate() + '/' + new Date().getHours() + '/' + newPostKey] = postData;
 	updates['/monthPosts/' + new Date().getFullYear() + '/' + todayMonth + '/' +new Date().getDate() + '/' + newPostKey] = postData;
+//	updates['/accept/' + newPostKey] = acceptData;
 	updates['/reply/' + newPostKey] = replyData;
 	
 	return firebase.database().ref().update(updates);
@@ -129,6 +137,8 @@ $(document).ready(function(){
 	else if(writeType == 'management')
 		$('#writeType').text('운용')
 		
+		
+		/* 저장 버튼 */
 	$('#qnaSave').click(function(){
 		var user = firebase.auth().currentUser.uid;
 		firebase.database().ref('clients/' + user).on('child_added', function(snapshot){
@@ -147,6 +157,9 @@ $(document).ready(function(){
 				var bigGroup = '';
 				var smallGroup = '';
 				var userEmail = firebase.auth().currentUser.email;
+//				var AcceptName = firebase.auth().currentUser.displayName;
+//				var AcceptDate = today.getFullYear() + "." + (today.getMonth()+1) + "." + today.getDate() + " " + today.getHours() + ":" + today.getMinutes();
+//				var AcceptUserId = firebase.auth().currentUser.uid;
 				
 				if($('#bigGroupli').val() != '선택'){
 					bigGroup = $('#bigGroupli').val();

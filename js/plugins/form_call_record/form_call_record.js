@@ -142,7 +142,8 @@ $(document).ready(function(){
 
 // 글 등록
 
-function addPost(user, userEmail, bigGroup, smallGroup, title, text, file, date, type, status, company, userName, userId, replyName, officer, replyText, replyImg){
+function addPost(user, userEmail, bigGroup, smallGroup, title, text, file, date, type, status, company, userName, userId, replyName, officer, replyText, replyImg,
+		AcceptName,AcceptDate,AcceptUserId){
 	var postData = {
 			user: user,
 			userEmail: userEmail,
@@ -161,8 +162,9 @@ function addPost(user, userEmail, bigGroup, smallGroup, title, text, file, date,
 	};
 	
 	var acceptData = {
-		AcceptDate: date,
-		AcceptUserId: user
+			AcceptDate: AcceptDate,
+			AcceptUserId: AcceptUserId,
+			AcceptName: AcceptName,
 	};
 	
 	var replyData = {
@@ -194,7 +196,7 @@ function addPost(user, userEmail, bigGroup, smallGroup, title, text, file, date,
 	updates['/qnaWrite/' + newPostKey] = postData;
 	updates['/timePosts/' + todayMonth + '/' + new Date().getDate() + '/' + new Date().getHours() + '/' + newPostKey] = postData;
 	updates['/monthPosts/' + new Date().getFullYear() + '/' + todayMonth + '/' +new Date().getDate() + '/' + newPostKey] = postData;
-	updates['/accepts/' + newPostKey] = acceptData;
+	updates['/accept/' + newPostKey] = acceptData;
 	updates['/reply/' + newPostKey] = replyData;
 	
 	return firebase.database().ref().update(updates);
@@ -276,6 +278,9 @@ $('#postSave').click(function(){
 	var bigGroup = $('#bigGroupli').val();
 	var smallGroup = '';
 	var officer;
+	var AcceptName = firebase.auth().currentUser.displayName;
+	var AcceptDate = today.getFullYear() + "." + (today.getMonth()+1) + "." + today.getDate() + " " + today.getHours() + ":" + today.getMinutes();
+	var AcceptUserId = $('#cusKey').text();
 	
 	smallGroup = $('#smallGroupli').val();
 	
@@ -288,16 +293,13 @@ $('#postSave').click(function(){
 	
 	var userEmail = $('#userEmail').text();
 	var status = '접수';
-	var company = '';
+	var company = $('#selCompany').val();
 	
-	firebase.database().ref('clients/').on('child_added', function(snapshot){
-		firebase.database().ref('clients/' + snapshot.key).on('child_added', function(snapshot1){
+		firebase.database().ref('clients/' + $('#cusKey').text()).on('child_added', function(snapshot1){
 			firebase.database().ref('company/' + snapshot1.val().company).on('value', function(snapshot2){
-				company = snapshot2.val().name;
 				officer = snapshot2.val().officer;
 			})
 		})
-	})
 	
 	var userId = '';
 	var replyName = '';
@@ -323,7 +325,7 @@ $('#postSave').click(function(){
 				officer: officer
 			})
 		} else {
-			addPost(user, userEmail, bigGroup, smallGroup, title, text, file, date, type, status, company, userName, userId, replyName, officer, replyText, replyImg);
+			addPost(user, userEmail, bigGroup, smallGroup, title, text, file, date, type, status, company, userName, userId, replyName, officer, replyText, replyImg,AcceptName,AcceptDate,AcceptUserId);
 		}
 	
 	window.location.hash = 'index/call_list';
