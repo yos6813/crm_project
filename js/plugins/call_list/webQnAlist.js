@@ -21,7 +21,8 @@ firebase.database().ref("types/").orderByKey().endAt("type").on("child_added", f
 
 
 function postList(snapshot1) {
-		firebase.database().ref('user-infos/' + snapshot1.val().officer).on('child_added', function(snapshot2){
+	firebase.database().ref('user-infos/' + snapshot1.val().officer).on('child_added', function(snapshot2){
+		if(snapshot1.val().division == 'client'){
 			$('#postList').each(function () {
 				var state;
 				if (snapshot1.val().status == '해결') {
@@ -34,24 +35,11 @@ function postList(snapshot1) {
 					state = 'label-primary';
 				}
 				
-				var writeType;
-				var division;
-				if (snapshot1.val().division == 'call') {
-					writeType = 'text-success';
-					division = '전화'
-				} else {
-					writeType = 'text-warning';
-					division = '웹'
-				}
-				
 				var warn = '';
 				if(snapshot1.val().warn != undefined){
 					warn = '긴급';
 				}
 				$('#postList').append('<tr class="call_list" value="' + snapshot1.key + '">' +
-					'<td class="project-status">' +
-					'<span class="' + writeType + '" style="font:bold;">' + division + '</span>' +
-					'</td>' +
 					'<td class="project-status">' +
 					'<span class="label ' + state + '">' + snapshot1.val().status + '</span>' +
 					'</td>' +
@@ -115,7 +103,8 @@ function postList(snapshot1) {
 					opacity: 1
 				}, 300);
 			});
-		})
+		}
+	})
 }
 
 $(document).on('click', '.call_list', function () {
@@ -207,7 +196,7 @@ $(document).ready(function () {
 		if (select == '전체') {
 			firebase.database().ref("qnaWrite/").orderByChild('date').on("child_added", function (snapshot1) {
 				if(status == ''){
-					location.hash = '#/index/call_list'
+					location.hash = '#/index/webQnAlist'
 					if(snapshot1.val().status != '해결'){
 						postList(snapshot1);
 					}
@@ -220,12 +209,12 @@ $(document).ready(function () {
 		} else {
 			firebase.database().ref("qnaWrite/").orderByChild('type').equalTo(select).on('child_added', function (snapshot1) {
 				if(status == ''){
-					location.hash = '#/index/call_list?type=' + select;
+					location.hash = '#/index/webQnAlist?type=' + select;
 					if(snapshot1.val().status != '해결'){
 						postList(snapshot1);
 					}
 				} else {
-					location.hash = '#/index/call_list?status' + status + '&type=' + select;
+					location.hash = '#/index/webQnAlist?status' + status + '&type=' + select;
 					if(snapshot1.val().status == status){
 						postList(snapshot1);
 					}
@@ -235,7 +224,7 @@ $(document).ready(function () {
 	})
 
 	$("#radio1").click(function () {
-		location.hash = '#/index/call_list';
+		location.hash = '#/index/webQnAlist';
 		$('#postList').children('.call_list').remove();
 		firebase.database().ref("qnaWrite/").orderByChild('date').on("child_added", function (snapshot1) {
 			if(snapshot1.val().status != '해결'){
@@ -245,7 +234,7 @@ $(document).ready(function () {
 	})
 
 	$('#radio2').click(function () {
-		location.hash = '#/index/call_list?status=접수';
+		location.hash = '#/index/webQnAlist?status=접수';
 		$('#postList').children('.call_list').remove();
 		firebase.database().ref('qnaWrite/').orderByChild('status').equalTo('접수').on('child_added', function (snapshot1) {
 			postList(snapshot1);
@@ -253,21 +242,21 @@ $(document).ready(function () {
 	})
 	
 	$('#radio3').click(function () {
-		location.hash = '#/index/call_list?status=해결';
+		location.hash = '#/index/webQnAlist?status=해결';
 		$('#postList').children('.call_list').remove();
 		firebase.database().ref('qnaWrite/').orderByChild('status').equalTo('해결').on('child_added', function (snapshot1) {
 			postList(snapshot1);
 		})
 	})
 	$('#radio4').click(function () {
-		location.hash = '#/index/call_list?status=보류';
+		location.hash = '#/index/webQnAlist?status=보류';
 		$('#postList').children('.call_list').remove();
 		firebase.database().ref('qnaWrite/').orderByChild('status').equalTo('보류').on('child_added', function (snapshot1) {
 			postList(snapshot1);
 		})
 	})
 	$('#radio5').click(function () {
-		location.hash = '#/index/call_list?status=등록';
+		location.hash = '#/index/webQnAlist?status=등록';
 		$('#postList').children('.call_list').remove();
 		firebase.database().ref('qnaWrite/').orderByChild('status').equalTo('등록').on('child_added', function (snapshot1) {
 			postList(snapshot1);

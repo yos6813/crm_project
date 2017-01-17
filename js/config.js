@@ -183,6 +183,20 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
                 pageTitle: 'Call List'
             },
         })
+        .state('index.webQnAlist', {
+            url: "/webQnAlist",
+            templateUrl: "views/webQnAlist.html",
+            data: {
+                pageTitle: 'Web'
+            },
+        })
+        .state('index.callQnAlist', {
+            url: "/callQnAlist",
+            templateUrl: "views/callQnAlist.html",
+            data: {
+                pageTitle: 'Call'
+            },
+        })
         .state('index.client_user_list', {
             url: "/client_user_list",
             templateUrl: "views/client_user_list.html",

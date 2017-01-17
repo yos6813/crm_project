@@ -90,9 +90,7 @@ $(document).ready(function(){
 				firebase.database().ref('timePosts/' + todayMonth - 1).remove();
 			}
 			var chartValue;
-			if(snapshot.val() == undefined){
-//				chartValue="0";
-			} else {
+			if(snapshot.val() != ''){
 				chartValue=snapshot.numChildren();
 			}
 			var	time = new Date().getHours();
@@ -293,13 +291,11 @@ function MonthPosts(){
 	
 	var month = $('#monthSelect option:selected').val();
 	var dataSource1 = [];
-	for(var k=0; k<=31; k++){
+	for(var k=1; k<=new Date().getDate(); k++){
 		firebase.database().ref('monthPosts/' + new Date().getFullYear() + '/' + month + '/' + k).orderByKey().on('value', function(snapshot){
 			firebase.database().ref('monthPosts/' + (new Date().getFullYear() - 1)).remove();
 			var chartValue1;
-			if(snapshot.val() == undefined){
-//				chartValue1="";
-			} else {
+			if(snapshot.val() != ''){
 				chartValue1=snapshot.numChildren();
 			}
 			var value = [];

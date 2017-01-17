@@ -42,7 +42,7 @@ $('#clientRegister').click(function(){
 		  $('#require1').text('');
 		  $('#require1').text('비밀번호가 일치하지 않습니다.');
 		  $('#require1').show();
-    } else if($('#pw').val().length < 6){
+    } else if($('#pw').val().length <= 6){
     	  $('#pwCheck').val('');
     	  $('#pw').val('');
 		  $('#pw').focus();

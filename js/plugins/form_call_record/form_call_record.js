@@ -206,18 +206,18 @@ function addPost(user, userEmail, bigGroup, smallGroup, title, text, file, date,
 
 // 태그 등록
 
-function addtags(tag){
-	var tagData = {
-			tag: tag
-	}
-	
-	var newTagKey = firebase.database().ref().child('tags').push().key;
-	
-	var updates = {};
-	updates['/tags/' + newTagKey] = tagData;
-	
-	return firebase.database().ref().update(updates);
-}
+//function addtags(tag){
+//	var tagData = {
+//			tag: tag
+//	}
+//	
+//	var newTagKey = firebase.database().ref().child('tags').push().key;
+//	
+//	var updates = {};
+//	updates['/tags/' + newTagKey] = tagData;
+//	
+//	return firebase.database().ref().update(updates);
+//}
 
 $('#postCancel').click(function () {
         window.location.hash = '#/index/call_list'

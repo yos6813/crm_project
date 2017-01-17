@@ -21,7 +21,8 @@ firebase.database().ref("types/").orderByKey().endAt("type").on("child_added", f
 
 
 function postList(snapshot1) {
-		firebase.database().ref('user-infos/' + snapshot1.val().officer).on('child_added', function(snapshot2){
+	firebase.database().ref('user-infos/' + snapshot1.val().officer).on('child_added', function(snapshot2){
+		if(snapshot1.val().division == 'call'){
 			$('#postList').each(function () {
 				var state;
 				if (snapshot1.val().status == '해결') {
@@ -33,25 +34,12 @@ function postList(snapshot1) {
 				} else{
 					state = 'label-primary';
 				}
-				
-				var writeType;
-				var division;
-				if (snapshot1.val().division == 'call') {
-					writeType = 'text-success';
-					division = '전화'
-				} else {
-					writeType = 'text-warning';
-					division = '웹'
-				}
-				
+			
 				var warn = '';
 				if(snapshot1.val().warn != undefined){
 					warn = '긴급';
 				}
 				$('#postList').append('<tr class="call_list" value="' + snapshot1.key + '">' +
-					'<td class="project-status">' +
-					'<span class="' + writeType + '" style="font:bold;">' + division + '</span>' +
-					'</td>' +
 					'<td class="project-status">' +
 					'<span class="label ' + state + '">' + snapshot1.val().status + '</span>' +
 					'</td>' +
@@ -77,44 +65,45 @@ function postList(snapshot1) {
 					'</td>' +
 					'</tr>');
 				})
-			
-			/* 회사 고객 타입 */
-			firebase.database().ref('company/').orderByChild('name').equalTo(snapshot1.val().company).on('child_added', function (snapshot4) {
-				if (snapshot4.val().sap == '1') {
-					$('#' + snapshot1.key).append('<span class="badge badge-info sap"> SAP </span>');
+		
+				/* 회사 고객 타입 */
+				firebase.database().ref('company/').orderByChild('name').equalTo(snapshot1.val().company).on('child_added', function (snapshot4) {
+					if (snapshot4.val().sap == '1') {
+						$('#' + snapshot1.key).append('<span class="badge badge-info sap"> SAP </span>');
+					}
+					if (snapshot4.val().cloud == '1') {
+						$('#' + snapshot1.key).append('<span class="badge badge-primary cloud"> Cloud </span>');
+					}
+					if (snapshot4.val().onpremises == '1') {
+						$('#' + snapshot1.key).append('<span class="badge badge-danger onpremises"> On Premise </span>');
+					}
+				})
+		
+				/* pagination */
+				$('#nav a').remove();
+				var rowsShown = parseInt($('#sizeSel option:selected').val());
+				var rowsTotal = $('#postList').children('.call_list').size();
+				var numPages = Math.ceil(rowsTotal / rowsShown);
+				
+				for (i = 0; i < numPages; i++) {
+					var pageNum = i + 1;
+					$('#nav').append('<li><a rel="' + i + '">' + pageNum + '</a></li>');
 				}
-				if (snapshot4.val().cloud == '1') {
-					$('#' + snapshot1.key).append('<span class="badge badge-primary cloud"> Cloud </span>');
-				}
-				if (snapshot4.val().onpremises == '1') {
-					$('#' + snapshot1.key).append('<span class="badge badge-danger onpremises"> On Premise </span>');
-				}
-			})
-			
-			/* pagination */
-			$('#nav a').remove();
-			var rowsShown = parseInt($('#sizeSel option:selected').val());
-			var rowsTotal = $('#postList').children('.call_list').size();
-			var numPages = Math.ceil(rowsTotal / rowsShown);
-			
-			for (i = 0; i < numPages; i++) {
-				var pageNum = i + 1;
-				$('#nav').append('<li><a rel="' + i + '">' + pageNum + '</a></li>');
+				$('#postList').children('.call_list').hide();
+				$('#postList').children('.call_list').slice(0, rowsShown).show();
+				$('#nav a:first').addClass('active');
+				$('#nav a').bind('click', function () {
+					$('#nav a').removeClass('active');
+					$(this).addClass('active');
+					var currPage = $(this).attr('rel');
+					var startItem = currPage * rowsShown;
+					var endItem = startItem + rowsShown;
+					$('#postList').children('.call_list').css('opacity', '0.0').hide().slice(startItem, endItem).
+					css('display', 'table-row').animate({
+						opacity: 1
+					}, 300);
+				});
 			}
-			$('#postList').children('.call_list').hide();
-			$('#postList').children('.call_list').slice(0, rowsShown).show();
-			$('#nav a:first').addClass('active');
-			$('#nav a').bind('click', function () {
-				$('#nav a').removeClass('active');
-				$(this).addClass('active');
-				var currPage = $(this).attr('rel');
-				var startItem = currPage * rowsShown;
-				var endItem = startItem + rowsShown;
-				$('#postList').children('.call_list').css('opacity', '0.0').hide().slice(startItem, endItem).
-				css('display', 'table-row').animate({
-					opacity: 1
-				}, 300);
-			});
 		})
 }
 
@@ -207,7 +196,7 @@ $(document).ready(function () {
 		if (select == '전체') {
 			firebase.database().ref("qnaWrite/").orderByChild('date').on("child_added", function (snapshot1) {
 				if(status == ''){
-					location.hash = '#/index/call_list'
+					location.hash = '#/index/callQnAlist'
 					if(snapshot1.val().status != '해결'){
 						postList(snapshot1);
 					}
@@ -220,12 +209,12 @@ $(document).ready(function () {
 		} else {
 			firebase.database().ref("qnaWrite/").orderByChild('type').equalTo(select).on('child_added', function (snapshot1) {
 				if(status == ''){
-					location.hash = '#/index/call_list?type=' + select;
+					location.hash = '#/index/callQnAlist?type=' + select;
 					if(snapshot1.val().status != '해결'){
 						postList(snapshot1);
 					}
 				} else {
-					location.hash = '#/index/call_list?status' + status + '&type=' + select;
+					location.hash = '#/index/callQnAlist?status' + status + '&type=' + select;
 					if(snapshot1.val().status == status){
 						postList(snapshot1);
 					}
@@ -235,7 +224,7 @@ $(document).ready(function () {
 	})
 
 	$("#radio1").click(function () {
-		location.hash = '#/index/call_list';
+		location.hash = '#/index/callQnAlist';
 		$('#postList').children('.call_list').remove();
 		firebase.database().ref("qnaWrite/").orderByChild('date').on("child_added", function (snapshot1) {
 			if(snapshot1.val().status != '해결'){
@@ -245,7 +234,7 @@ $(document).ready(function () {
 	})
 
 	$('#radio2').click(function () {
-		location.hash = '#/index/call_list?status=접수';
+		location.hash = '#/index/callQnAlist?status=접수';
 		$('#postList').children('.call_list').remove();
 		firebase.database().ref('qnaWrite/').orderByChild('status').equalTo('접수').on('child_added', function (snapshot1) {
 			postList(snapshot1);
@@ -253,21 +242,21 @@ $(document).ready(function () {
 	})
 	
 	$('#radio3').click(function () {
-		location.hash = '#/index/call_list?status=해결';
+		location.hash = '#/index/callQnAlist?status=해결';
 		$('#postList').children('.call_list').remove();
 		firebase.database().ref('qnaWrite/').orderByChild('status').equalTo('해결').on('child_added', function (snapshot1) {
 			postList(snapshot1);
 		})
 	})
 	$('#radio4').click(function () {
-		location.hash = '#/index/call_list?status=보류';
+		location.hash = '#/index/callQnAlist?status=보류';
 		$('#postList').children('.call_list').remove();
 		firebase.database().ref('qnaWrite/').orderByChild('status').equalTo('보류').on('child_added', function (snapshot1) {
 			postList(snapshot1);
 		})
 	})
 	$('#radio5').click(function () {
-		location.hash = '#/index/call_list?status=등록';
+		location.hash = '#/index/callQnAlist?status=등록';
 		$('#postList').children('.call_list').remove();
 		firebase.database().ref('qnaWrite/').orderByChild('status').equalTo('등록').on('child_added', function (snapshot1) {
 			postList(snapshot1);
