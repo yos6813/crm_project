@@ -1,6 +1,18 @@
 {
   "rules": {
     ".read": "auth != null",
-    ".write": "auth != null"
+    ".write": "auth != null",
+    "userAlert": {
+      ".indexOn": ["check"]
+    },
+    "accept": {
+      ".indexOn": ["AcceptUserId"]
+    },
+    "reply": {
+      ".indexOn": ["userId"]
+    },
+    "qnaWrite": {
+      ".indexOn": ["bigGroup", "smallGroup", "company", "status", "text", "title", "type", "user", "userEmail", "userName"]
+    }
   }
 }

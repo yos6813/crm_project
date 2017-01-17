@@ -12,17 +12,29 @@ var title = getParameterByName('title');
 var uid = getParameterByName('uid');
 
 firebase.database().ref("types/").orderByKey().endAt("type").on("child_added", function (snapshot) {
-	snapshot.forEach(function (data) {
-		$('#typeSelect').append('<option value="' + snapshot.val() + '">' + data.val() +
+//	$('#typeSelect').children().remove();
+	if(pageType == ''){
+		$('#typeSelect option[value="0"]').text('전체');
+		snapshot.forEach(function (data) {
+			$('#typeSelect').append('<option value="' + data.val() + '">' + data.val() +
 			'</option>');
-	})
+		})
+	} else {
+		$('#typeSelect option[value="0"]').text(pageType);
+		snapshot.forEach(function (data) {
+			if(data.val() != pageType){
+			$('#typeSelect').append('<option value="' + data.val() + '">' + data.val() +
+			'</option>');
+			}
+		})
+	}
 })
 
 
 
 function postList(snapshot1) {
 	firebase.database().ref('user-infos/' + snapshot1.val().officer).on('child_added', function(snapshot2){
-		if(snapshot1.val().division == 'client'){
+		if(snapshot1.val().division == 'call'){
 			$('#postList').each(function () {
 				var state;
 				if (snapshot1.val().status == '해결') {
@@ -119,18 +131,26 @@ $(document).ready(function () {
 					window.location.hash = '#/clientLogin';
 				}
 			})
-
 		}
 	})
 	if (pageType != '' && status == '') {
 		$('#postList').children('.call_list').remove();
-		firebase.database().ref('qnaWrite/').orderByChild('status').equalTo(pageType).on('child_added', function (snapshot1) {
-			postList(snapshot1);
+		firebase.database().ref('qnaWrite/').orderByChild('type').equalTo(pageType).on('child_added', function (snapshot1) {
+			if(snapshot1.val().status != '해결'){
+				postList(snapshot1);
+			}
+		});
+	} else if (status != '' && pageType == '') {
+		$('#postList').children('.call_list').remove();
+		firebase.database().ref('qnaWrite/').orderByChild('status').equalTo(status).on('child_added', function (snapshot1) {
+			if (snapshot1.val().status == status) {
+				postList(snapshot1);
+			}
 		});
 	} else if (status != '' && pageType != '') {
 		$('#postList').children('.call_list').remove();
-		firebase.database().ref('qnaWrite/').orderByChild('status').equalTo(pageType).on('child_added', function (snapshot1) {
-			if (snapshot1.val().type == status) {
+		firebase.database().ref('qnaWrite/').orderByChild('status').equalTo(status).on('child_added', function (snapshot1) {
+			if (snapshot1.val().type == pageType) {
 				postList(snapshot1);
 			}
 		});
@@ -138,20 +158,16 @@ $(document).ready(function () {
 		$('#postList').children('.call_list').remove();
 		firebase.database().ref('qnaWrite/').on('child_added', function (snapshot1) {
 			if (snapshot1.val().title == title && snapshot1.val().userName == name) {
-				postList(snapshot1);
+				if(snapshot1.val().status != '해결'){
+					postList(snapshot1);
+				}
 			}
 		});
 	} else {
 		/* 전체 리스트 */
 		firebase.database().ref("qnaWrite/").on("child_added", function (snapshot1) {
-			if(status == ''){
-				if(snapshot1.val().status != '해결'){
-					postList(snapshot1);
-				}
-			} else {
-				if(snapshot1.val().status == status){
-					postList(snapshot1);
-				}
+			if(snapshot1.val().status != '해결'){
+				postList(snapshot1);
 			}
 		});
 	}
@@ -160,32 +176,26 @@ $(document).ready(function () {
 })
 
 $(document).ready(function () {
-	if(status != ''){
-		if(status == '접수'){
-			$('#radio2').removeClass('btn-white');
-			$('#radio2').addClass('btn-primary');
-		} else if (status == '해결'){
-			$('#radio3').removeClass('btn-white');
-			$('#radio3').addClass('btn-primary');
-		} else if (status == '보류'){
-			$('#radio4').removeClass('btn-white');
-			$('#radio4').addClass('btn-primary');
-		} else if (status == '등록'){
-			$('#radio5').removeClass('btn-white');
-			$('#radio5').addClass('btn-primary');
-		}
-	} else {
-		$('#radio1').removeClass('btn-white');
-		$('#radio1').addClass('btn-primary');
-	}
-	
 	$('#sizeSel').change(function () {
 		$('#postList').children('.call_list').remove();
-
 		/* 전체 리스트 */
 		firebase.database().ref("qnaWrite/").orderByChild('date').on("child_added", function (snapshot1) {
-			if(snapshot1.val().status != '해결'){
-				postList(snapshot1);
+			if(status == '' && pageType == ''){
+				if(snapshot1.val().status != '해결'){
+					postList(snapshot1);
+				}
+			} else if(pageType == '' && status != ''){
+				if(snapshot1.val().status == status){
+					postList(snapshot1);
+				}
+			} else if(pageType != '' && status == ''){
+				if(snapshot1.val().type == pageType){
+					postList(snapshot1);
+				}
+			} else {
+				if(snapshot1.val().status == status && snapshot1.val().type == pageType){
+					postList(snapshot1);
+				}
 			}
 		});
 	})
@@ -210,12 +220,14 @@ $(document).ready(function () {
 			firebase.database().ref("qnaWrite/").orderByChild('type').equalTo(select).on('child_added', function (snapshot1) {
 				if(status == ''){
 					location.hash = '#/index/webQnAlist?type=' + select;
+					pageType = select;
 					if(snapshot1.val().status != '해결'){
 						postList(snapshot1);
 					}
 				} else {
-					location.hash = '#/index/webQnAlist?status' + status + '&type=' + select;
-					if(snapshot1.val().status == status){
+					location.hash = '#/index/webQnAlist?status=' + status + '&type=' + select;
+					pageType = select;
+					if(snapshot1.val().status == status && snapshot1.val().type == select){
 						postList(snapshot1);
 					}
 				}
@@ -224,63 +236,113 @@ $(document).ready(function () {
 	})
 
 	$("#radio1").click(function () {
-		location.hash = '#/index/webQnAlist';
 		$('#postList').children('.call_list').remove();
 		firebase.database().ref("qnaWrite/").orderByChild('date').on("child_added", function (snapshot1) {
-			if(snapshot1.val().status != '해결'){
-				postList(snapshot1);
+			if(pageType == ''){
+				if(snapshot1.val().status != '해결'){
+					location.hash = '#/index/webQnAlist';
+					postList(snapshot1);
+				}
+			} else {
+				location.hash = '#/index/webQnAlist?type=' + pageType;
+				if(snapshot1.val().status != '해결' && snapshot1.val().type == pageType){
+					postList(snapshot1);
+				}
 			}
 		});
 	})
 
 	$('#radio2').click(function () {
-		location.hash = '#/index/webQnAlist?status=접수';
 		$('#postList').children('.call_list').remove();
 		firebase.database().ref('qnaWrite/').orderByChild('status').equalTo('접수').on('child_added', function (snapshot1) {
-			postList(snapshot1);
+			if(pageType == ''){
+				location.hash = '#/index/webQnAlist?status=접수';
+				postList(snapshot1);
+			} else {
+				location.hash = '#/index/webQnAlist?status=접수&type=' + pageType;
+				status = '접수'
+				if(snapshot1.val().type == pageType && snapshot1.val().status == '접수'){
+					postList(snapshot1);
+				}
+			}
 		});
 	})
 	
 	$('#radio3').click(function () {
-		location.hash = '#/index/webQnAlist?status=해결';
 		$('#postList').children('.call_list').remove();
 		firebase.database().ref('qnaWrite/').orderByChild('status').equalTo('해결').on('child_added', function (snapshot1) {
-			postList(snapshot1);
+			if(pageType == ''){
+				location.hash = '#/index/webQnAlist?status=해결';
+				if(snapshot1.val().status == '해결')
+				postList(snapshot1);
+			} else {
+				location.hash = '#/index/webQnAlist?status=해결&type=' + pageType;
+				status = '해결'
+				if(snapshot1.val().type == pageType && snapshot1.val().status == '해결'){
+					postList(snapshot1);
+				}
+			}
 		})
 	})
 	$('#radio4').click(function () {
-		location.hash = '#/index/webQnAlist?status=보류';
 		$('#postList').children('.call_list').remove();
 		firebase.database().ref('qnaWrite/').orderByChild('status').equalTo('보류').on('child_added', function (snapshot1) {
-			postList(snapshot1);
+			if(pageType == ''){
+				location.hash = '#/index/webQnAlist?status=보류';
+				if(snapshot1.val().status == '보류')
+				postList(snapshot1);
+			} else {
+				location.hash = '#/index/webQnAlist?status=보류&type=' + pageType;
+				status = '보류'
+				if(snapshot1.val().type == pageType && snapshot1.val().status == '보류'){
+					postList(snapshot1);
+				}
+			}
 		})
 	})
 	$('#radio5').click(function () {
-		location.hash = '#/index/webQnAlist?status=등록';
 		$('#postList').children('.call_list').remove();
 		firebase.database().ref('qnaWrite/').orderByChild('status').equalTo('등록').on('child_added', function (snapshot1) {
-			postList(snapshot1);
+			if(pageType == ''){
+				location.hash = '#/index/webQnAlist?status=등록';
+				if(snapshot1.val().status == '등록')
+				postList(snapshot1);
+			} else {
+				location.hash = '#/index/webQnAlist?status=등록&type=' + pageType;
+				status = '등록'
+				if(snapshot1.val().type == pageType && snapshot1.val().status == '등록'){
+					postList(snapshot1);
+				}
+			}
 		})
 	})
 
 })
 
 /* hash change */
-$(window).on('hashchange', function() {
-	location.reload();
-});
+//$(window).on('hashchange', function() {
+//	location.reload();
+//});
 
 // 검색
 $(document).ready(function () {
 	$('#searchBtn').click(function () {
 		$('#postList').children('.call_list').remove();
 		firebase.database().ref("qnaWrite/").orderByChild('date').on("child_added", function (snapshot1) {
-			if(status == ''){
+			if(status == '' && pageType == ''){
 				if(snapshot1.val().status != '해결'){
 					postList(snapshot1);
 				}
-			} else {
+			} else if(pageType == '' && status != ''){
 				if(snapshot1.val().status == status){
+					postList(snapshot1);
+				}
+			} else if(pageType != '' && status == ''){
+				if(snapshot1.val().type == pageType){
+					postList(snapshot1);
+				}
+			} else {
+				if(snapshot1.val().status == status && snapshot1.val().type == pageType){
 					postList(snapshot1);
 				}
 			}
@@ -303,24 +365,40 @@ $('.searchUl').hide();
 function typeSelect() {
 	if ($('#searchSelect option:selected').val() == 'title') {
 		firebase.database().ref('qnaWrite/').orderByChild('date').on('child_added', function (snapshot1) {
-			if(status == ''){
+			if(status == '' && pageType == ''){
 				if(snapshot1.val().status != '해결'){
 					$('.searchUl').append('<li>' + snapshot1.val().title + '</li>');
 				}
-			} else {
+			} else if(pageType == '' && status != ''){
 				if(snapshot1.val().status == status){
+					$('.searchUl').append('<li>' + snapshot1.val().title + '</li>');
+				}
+			} else if(pageType != '' && status == ''){
+				if(snapshot1.val().type == pageType){
+					$('.searchUl').append('<li>' + snapshot1.val().title + '</li>');
+				}
+			} else {
+				if(snapshot1.val().status == status && snapshot1.val().type == pageType){
 					$('.searchUl').append('<li>' + snapshot1.val().title + '</li>');
 				}
 			}
 		})
 	} else if ($('#searchSelect option:selected').val() == 'text') {
 		firebase.database().ref('qnaWrite/').orderByChild('date').on('child_added', function (snapshot1) {
-			if(status == ''){
+			if(status == '' && pageType == ''){
 				if(snapshot1.val().status != '해결'){
 					$('.searchUl').append('<li>' + snapshot1.val().text + '</li>');
 				}
-			} else {
+			} else if(pageType == '' && status != ''){
 				if(snapshot1.val().status == status){
+					$('.searchUl').append('<li>' + snapshot1.val().text + '</li>');
+				}
+			} else if(pageType != '' && status == ''){
+				if(snapshot1.val().type == pageType){
+					$('.searchUl').append('<li>' + snapshot1.val().text + '</li>');
+				}
+			} else {
+				if(snapshot1.val().status == status && snapshot1.val().type == pageType){
 					$('.searchUl').append('<li>' + snapshot1.val().text + '</li>');
 				}
 			}
@@ -328,12 +406,20 @@ function typeSelect() {
 	} else if ($('#searchSelect option:selected').val() == 'username') {
 		firebase.database().ref('qnaWrite/').orderByChild('officer').on('child_added', function (snapshot) {
 			firebase.database().ref('users/' + snapshot.val().officer).on('value', function(snapshot1){
-				if(status == ''){
+				if(status == '' && pageType == ''){
 					if(snapshot.val().status != '해결'){
 						$('.searchUl').append('<li>' + snapshot1.val().username + '</li>');
 					}
-				} else {
+				} else if(pageType == '' && status != ''){
 					if(snapshot.val().status == status){
+						$('.searchUl').append('<li>' + snapshot1.val().username + '</li>');
+					}
+				} else if(pageType != '' && status == ''){
+					if(snapshot.val().type == pageType){
+						$('.searchUl').append('<li>' + snapshot1.val().username + '</li>');
+					}
+				} else {
+					if(snapshot.val().status == status && snapshot.val().type == pageType){
 						$('.searchUl').append('<li>' + snapshot1.val().username + '</li>');
 					}
 				}
@@ -341,12 +427,20 @@ function typeSelect() {
 		})
 	} else if ($('#searchSelect option:selected').val() == 'company') {
 		firebase.database().ref('qnaWrite/').orderByChild('date').on('child_added', function (snapshot1) {
-			if(status == ''){
+			if(status == '' && pageType == ''){
 				if(snapshot1.val().status != '해결'){
 					$('.searchUl').append('<li>' + snapshot1.val().company + '</li>');
 				}
-			} else {
+			} else if(pageType == '' && status != ''){
 				if(snapshot1.val().status == status){
+					$('.searchUl').append('<li>' + snapshot1.val().company + '</li>');
+				}
+			} else if(pageType != '' && status == ''){
+				if(snapshot1.val().type == pageType){
+					$('.searchUl').append('<li>' + snapshot1.val().company + '</li>');
+				}
+			} else {
+				if(snapshot1.val().status == status && snapshot1.val().type == pageType){
 					$('.searchUl').append('<li>' + snapshot1.val().company + '</li>');
 				}
 			}
@@ -365,6 +459,9 @@ function typeSelect() {
 				for (var i = 0; i <= $('.searchUl').children().length; i++) {
 					searchInput.push($('.searchUl').children().not($('.hideLi')).eq(i).text());
 					searchInput1.push($('.searchUl').children().not($('.hideLi')).eq(i).html());
+					
+//					return searchInput.reduce(function(a,b){if(a.indexOf(b)<0)a.push(b);return a;},[]);
+//					return searchInput1.reduce(function(a,b){if(a.indexOf(b)<0)a.push(b);return a;},[]);
 				}
 			}
 			switch (searchType) {
@@ -374,12 +471,20 @@ function typeSelect() {
 						var j = i-1;
 						if (searchInput1[i] != undefined || searchInput1[i] != null) {
 							firebase.database().ref('qnaWrite/').orderByChild(searchType).equalTo(searchInput1[i]).on('child_added', function (snapshot1) {
-								if(status == ''){
-									if(snapshot1.val().status != '해결' && searchInput[i] != searchInput[j]){
+								if(status == '' && pageType == ''){
+									if(snapshot1.val().status != '해결' && searchInput[i] != searchInput1[j]){
+										postList(snapshot1);
+									}
+								} else if(pageType == '' && status != ''){
+									if(snapshot1.val().status == status && searchInput[i] != searchInput1[j]){
+										postList(snapshot1);
+									}
+								} else if(pageType != '' && status == ''){
+									if(snapshot1.val().type == pageType && searchInput[i] != searchInput1[j]){
 										postList(snapshot1);
 									}
 								} else {
-									if(snapshot1.val().status == status && searchInput[i] != searchInput[j]){
+									if(snapshot1.val().status == status && snapshot1.val().type == pageType && searchInput[i] != searchInput1[j]){
 										postList(snapshot1);
 									}
 								}
@@ -393,12 +498,20 @@ function typeSelect() {
 						var j = i-1;
 						if (searchInput[i] != '') {
 							firebase.database().ref('qnaWrite/').orderByChild(searchType).equalTo(searchInput[i]).on('child_added', function (snapshot1) {
-								if(status == ''){
+								if(status == '' && pageType == ''){
 									if(snapshot1.val().status != '해결' && searchInput[i] != searchInput[j]){
 										postList(snapshot1);
 									}
-								} else {
+								} else if(pageType == '' && status != ''){
 									if(snapshot1.val().status == status && searchInput[i] != searchInput[j]){
+										postList(snapshot1);
+									}
+								} else if(pageType != '' && status == ''){
+									if(snapshot1.val().type == pageType && searchInput[i] != searchInput[j]){
+										postList(snapshot1);
+									}
+								} else {
+									if(snapshot1.val().status == status && snapshot1.val().type == pageType && searchInput[i] != searchInput[j]){
 										postList(snapshot1);
 									}
 								}
@@ -413,12 +526,20 @@ function typeSelect() {
 						if (searchInput[i] != undefined || searchInput[i] != '') {
 							firebase.database().ref('users/').orderByChild(searchType).equalTo(searchInput[i]).on('child_added', function (snapshot) {
 								firebase.database().ref('qnaWrite/').orderByChild('officer').equalTo(snapshot.key).on('child_added', function (snapshot1) {
-									if(status == ''){
+									if(status == '' && pageType == ''){
 										if(snapshot1.val().status != '해결' && searchInput[i] != searchInput[j]){
 											postList(snapshot1);
 										}
-									} else {
+									} else if(pageType == '' && status != ''){
 										if(snapshot1.val().status == status && searchInput[i] != searchInput[j]){
+											postList(snapshot1);
+										}
+									} else if(pageType != '' && status == ''){
+										if(snapshot1.val().type == pageType && searchInput[i] != searchInput[j]){
+											postList(snapshot1);
+										}
+									} else {
+										if(snapshot1.val().status == status && snapshot1.val().type == pageType && searchInput[i] != searchInput[j]){
 											postList(snapshot1);
 										}
 									}
@@ -433,12 +554,20 @@ function typeSelect() {
 						var j = i-1;
 						if (searchInput[i] != undefined || searchInput[i] != null) {
 							firebase.database().ref('qnaWrite/').orderByChild(searchType).equalTo(searchInput[i]).on('child_added', function (snapshot1) {
-								if(status == ''){
+								if(status == '' && pageType == ''){
 									if(snapshot1.val().status != '해결' && searchInput[i] != searchInput[j]){
 										postList(snapshot1);
 									}
-								} else {
+								} else if(pageType == '' && status != ''){
 									if(snapshot1.val().status == status && searchInput[i] != searchInput[j]){
+										postList(snapshot1);
+									}
+								} else if(pageType != '' && status == ''){
+									if(snapshot1.val().type == pageType && searchInput[i] != searchInput[j]){
+										postList(snapshot1);
+									}
+								} else {
+									if(snapshot1.val().status == status && snapshot1.val().type == pageType && searchInput[i] != searchInput[j]){
 										postList(snapshot1);
 									}
 								}
@@ -450,12 +579,20 @@ function typeSelect() {
 		} else {
 			$('#postList').children('.call_list').remove();
 			firebase.database().ref("qnaWrite/").on("child_added", function (snapshot1) {
-				if(status == ''){
+				if(status == '' && pageType == ''){
 					if(snapshot1.val().status != '해결'){
 						postList(snapshot1);
 					}
-				} else {
+				} else if(pageType == '' && status != ''){
 					if(snapshot1.val().status == status){
+						postList(snapshot1);
+					}
+				} else if(pageType != '' && status == ''){
+					if(snapshot1.val().type == pageType){
+						postList(snapshot1);
+					}
+				} else {
+					if(snapshot1.val().status == status && snapshot1.val().type == pageType){
 						postList(snapshot1);
 					}
 				}

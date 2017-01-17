@@ -193,6 +193,10 @@ $(document).ready(function(){
 				})
 				
 				postAdd(user, officer, userEmail, bigGroup, smallGroup, title, text, file, tag, date, type, status, company, userId, userName, replyDate, replyName, replyText, replyImg, division, writeUser);
+				swal({
+					title: "글을 등록하였습니다.",
+					type: "success"
+				});
 				location.hash = '#/cIndex/qnaList?no=' + user;
 				
 				var types = "<http://yeta.center/#/index/call_list|문의 글 리스트 가기>";
