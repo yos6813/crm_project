@@ -80,35 +80,33 @@ $(document).ready(function () {
 					firebase.database().ref('users/' + snapshot1.val().officer).on('value', function(snapshot2){
 						firebase.database().ref('user-infos/' + $('input[type=radio]:checked').val()).on('child_added', function(snapshot){
 							var name = firebase.auth().currentUser.displayName;
-							
-								var types = "<" + window.location.href + ">";
-								var url = "https://hooks.slack.com/services/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";
-								payload = {
-										"channel": "@" + snapshot.val().slack,
+							var types = "<" + window.location.href + ">";
+							var url = "https://hooks.slack.com/services/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";
+							payload = {
+									"channel": "@" + snapshot.val().slack,
+									"username": "YETA2016",
+									"fields":[{
+										"value": name + "님이 공유하였습니다." + "\n" + types,
+										"short":false
+									}]
+							}
+							sendToSlack_(url,payload);
+								
+							firebase.database().ref('user-infos/' + firebase.auth().currentUser.uid).on('child_added', function(snapshot1){
+								console.log(snapshot1.val().slack);
+								payload2 = {
+										"channel": "@" + snapshot1.val().slack,
 										"username": "YETA2016",
 										"fields":[{
-											"value": name + "님이 공유하였습니다." + "\n" + types,
+											"value": snapshot.val().username + "님에게 공유하였습니다." + "\n" + types,
 											"short":false
 										}]
 								}
-								sendToSlack_(url,payload);
+								sendToSlack_(url,payload2);
 							})
-						$('#myModal6').modal('hide');
+						})
+					$('#myModal6').modal('hide');
 				})
-			})
-			
-			firebase.database().ref('user-infos/' + firebase.auth().currentUser.uid).on('child_added', function(snapshot){
-				var types = "<" + window.location.href + ">";
-					var url2 = "https://hooks.slack.com/services/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";
-					payload2 = {
-							"channel": "@" + $('.nameLi').text(),
-							"username": "YETA2016",
-							"fields":[{
-								"value": snapshot.val().slack + "님에게 공유하였습니다." + "\n" + types,
-								"short":false
-							}]
-					}
-					sendToSlack_(url2,payload2);
 			})
 		})
 		
@@ -363,13 +361,25 @@ $('#viewFile').children().remove();
 
 	$(document).ready(function () {
 		firebase.database().ref("qnaWrite/" + viewPageno).on('value', function (snapshot) {
+			$('#writeTime').text(snapshot.val().date);
+			if(snapshot.val().division == "call"){
+				firebase.database().ref('users/' + snapshot.val().writeUser).on('value', function(snapshot1){
+					$('#writeUser').text(snapshot1.val().username);
+				})
+			} else {
+				firebase.database().ref('clients/' + snapshot.val().writeUser).on('child_added', function(snapshot2){
+					$('#writeUser').text(snapshot2.val().clientName);
+				})
+			}
+		})
+		firebase.database().ref("qnaWrite/" + viewPageno).on('value', function (snapshot) {
 			firebase.database().ref('accept/' + viewPageno).on('value', function(snapshot1){
 				// $('#viewAccept').text('문의시간: ' + snapshot.val().date);
-				$('#viewAccept').append('<div class="text-muted"><i class="fa fa-user"></i>&ensp;' + snapshot1.val().AcceptName + '</div>' +
-						'<div class="text-muted"><i class="fa fa-clock-o"></i>&ensp;' + snapshot.val().date + '</div>');
+				$('#viewAccept').append('<div class="text-muted">접수자: <i class="fa fa-user"></i>&ensp;' + snapshot1.val().AcceptName + '</div>' +
+						'<div class="text-muted"><i class="fa fa-clock-o"></i>&ensp;' + snapshot1.val().AcceptDate + '</div>');
 			})
 		})
-		$('#replyButton').append('<a href="#/index/form_call_record_modify?no=' + viewPageno + '"class="btn btn-white btn-sm" title="Reply"><i class="fa fa-pencil"></i> 작성</a>' +
+		$('#replyButton').append('<a href="#/index/form_call_record_modify?no=' + viewPageno + '" target="_blank" class="btn btn-white btn-sm" title="Reply"><i class="fa fa-pencil"></i> 작성</a>' +
 								 '<a id="replyDelete" class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Move to trash"><i class="fa fa-trash-o"></i> 삭제</a>');
 		firebase.database().ref("reply/" + viewPageno).on('value', function (snapshot1) {
 			
@@ -381,7 +391,7 @@ $('#viewFile').children().remove();
 					'<div class="text-muted"><i class="fa fa-clock-o"></i>&ensp;' + snapshot1.val().replyDate + '</div>'
 				);
 				
-				$('#replyButton').append('<a href="#/index/form_call_record_modify?no=' + viewPageno + '&Rno=' + snapshot1.key + '"class="btn btn-white btn-sm" title="Reply"><i class="fa fa-pencil"></i> 수정</a>' +
+				$('#replyButton').append('<a href="#/index/form_call_record_modify?no=' + viewPageno + '&Rno=' + snapshot1.key + '" target="_blank" class="btn btn-white btn-sm" title="Reply"><i class="fa fa-pencil"></i> 수정</a>' +
 				'<a id="replyDelete" class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Move to trash"><i class="fa fa-trash-o"></i> 삭제</a>');
 
 				// $('#viewReply').append('<div class="text-muted"><i class="fa fa-clock-o">' + snapshot.val().replyDate + '</i></div>');

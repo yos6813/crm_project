@@ -13,6 +13,9 @@
     },
     "qnaWrite": {
       ".indexOn": ["bigGroup", "smallGroup", "company", "status", "text", "title", "type", "user", "userEmail", "userName"]
+    },
+     "comment": {
+      ".indexOn": ["post"]
     }
   }
 }

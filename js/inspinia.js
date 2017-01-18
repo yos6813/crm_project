@@ -234,7 +234,17 @@ function notifyPage(){
 	})
 }
 
-//$(document).ready(function(){
-//	$('#verifyEmail').text();
-//})
+function reload1(){
+	window.location.hash = '#/index/call_list';
+	location.reload();
+}
 
+function reload2(){
+	window.location.hash = '#/index/webQnAlist';
+	location.reload();
+}
+
+function reload3(){
+	window.location.hash = '#/index/callQnAlist';
+	location.reload();
+}

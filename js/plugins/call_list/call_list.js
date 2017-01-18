@@ -12,110 +12,119 @@ var title = getParameterByName('title');
 var uid = getParameterByName('uid');
 
 firebase.database().ref("types/").orderByKey().endAt("type").on("child_added", function (snapshot) {
-//	$('#typeSelect').children().remove();
-	if(pageType == ''){
-		$('#typeSelect option[value="0"]').text('전체');
-		snapshot.forEach(function (data) {
-			$('#typeSelect').append('<option value="' + data.val() + '">' + data.val() +
-			'</option>');
-		})
-	} else {
-		$('#typeSelect option[value="0"]').text(pageType);
-		snapshot.forEach(function (data) {
-			if(data.val() != pageType){
-			$('#typeSelect').append('<option value="' + data.val() + '">' + data.val() +
-			'</option>');
-			}
-		})
-	}
+	snapshot.forEach(function (data) {
+		$('#typeSelect').append('<option value="' + data.val() + '">' + data.val() +
+		'</option>');
+	})
 })
-
-
 
 function postList(snapshot1) {
 	firebase.database().ref('user-infos/' + snapshot1.val().officer).on('child_added', function(snapshot2){
-		if(snapshot1.val().division == 'call'){
-			$('#postList').each(function () {
-				var state;
-				if (snapshot1.val().status == '해결') {
-					state = 'label-default';
-				} else if (snapshot1.val().status == '보류') {
-					state = 'label-warning';
-				} else if(snapshot1.val().status == '등록'){
-					state = 'label-info';
-				} else{
-					state = 'label-primary';
-				}
-				
-				var warn = '';
-				if(snapshot1.val().warn != undefined){
-					warn = '긴급';
-				}
-				$('#postList').append('<tr class="call_list" value="' + snapshot1.key + '">' +
-					'<td class="project-status">' +
-					'<span class="label ' + state + '">' + snapshot1.val().status + '</span>' +
-					'</td>' +
-					'<td class="project-category">' +
-					'<span>' + snapshot1.val().type + '</span>' +
-					'</td>' +
-					'<td class="title project-title">' + snapshot1.val().title +
-					'</td>' +
-					'<td class="project-title">' +
-					'<a id="titleCom">' + snapshot1.val().company + '</a>' +
-					'<br/>' +
-					'<small>' + snapshot1.val().userName + '</small>' +
-					'</td>' +
-					'<td class="project-clientcategory" id="' + snapshot1.key + '">' +
-					'</td>' +
-					'<td class="project-title">' + snapshot2.val().username +
-					'</td>' +
-					'<td class="project-title">' +
-					'<small>접수: ' + snapshot1.val().date + '</small>' +
-					'</td>' +
-					'<td class="project-title">' +
-					'<label class="warn label label-danger">' + warn + '</label>' +
-					'</td>' +
-					'</tr>');
+		firebase.database().ref('reply/' + snapshot1.key).on('value', function(snapshot3){
+			firebase.database().ref('users/' + snapshot1.val().writeUser).on('value', function(snapshot4){
+				firebase.database().ref('comment/').orderByChild('post').equalTo(snapshot1.key).on('value', function(snapshot5){
+					$('#postList').each(function () {
+						var state;
+						if (snapshot1.val().status == '해결') {
+							state = 'label-default';
+						} else if (snapshot1.val().status == '보류') {
+							state = 'label-warning';
+						} else if(snapshot1.val().status == '등록'){
+							state = 'label-info';
+						} else{
+							state = 'label-primary';
+						}
+						
+						var type;
+						var writeType;
+						if (snapshot1.val().division == 'call') {
+							type = 'text-warning';
+							writeType = '전화';
+						} else {
+							type = 'text-success';
+							writeType = '웹';
+						}
+						
+						var warn = '';
+						if(snapshot1.val().warn != undefined){
+							warn = '긴급';
+						}
+						
+						var check = '';
+						if(snapshot3.val().replyText != ''){
+							check = '<i class="text-success fa fa-check"></i>';
+						}
+						
+						var writeUser = '';
+						if(snapshot1.val().division == 'call'){
+							writeUser = snapshot4.val().username;
+						} else {
+							writeUser = snapshot1.val().userName;
+						}
+						
+						var comment = snapshot5.numChildren();
+						
+						$('#postList').append('<tr class="call_list" value="' + snapshot1.key + '">' +
+											  '<td class="project-status">' +
+											  '<span class="' + type + '">' + writeType + '</span>' +
+											  '</td>' +
+											  '<td class="project-status">' +
+											  '<span class="label ' + state + '">' + snapshot1.val().status + '</span>' +
+											  '<br/><br/>' +
+											  '<label class="warn label label-danger">' + warn + '</label>' +
+											  '</td>' +
+											  '<td class="project-category">' +
+											  '<span>' + snapshot1.val().type + '</span>' +
+											  '</td>' +
+											  '<td class="title project-title">' + 
+											  '<h5>' + snapshot1.val().company + 
+											  ' / <small>' + snapshot1.val().userName + '</small></h5><h4>' + check + snapshot1.val().title +
+											  '</h4>' +
+											  '<small>접수: ' + snapshot1.val().date + '</small>' +
+											  '</td>' +
+											  '<td class="project-clientcategory" id="' + snapshot1.key + '">' +
+											  '</td>' +
+											  '<td class="project-title">' + snapshot2.val().username +
+											  '</td>' +
+											  '<td class="project-title">' + writeUser +
+											  '</td>' +
+											  '<td class="project-title"><span class="badge badge-info">' + comment +
+											  '</span></td>' +
+											  '</tr>');
+						})
+						/* 회사 고객 타입 */
+						firebase.database().ref('company/').orderByChild('name').equalTo(snapshot1.val().company).on('child_added', function (snapshot4) {
+							if (snapshot4.val().sap == '1') {
+								$('#' + snapshot1.key).append('<span class="badge badge-info sap"> SAP </span>');
+							}
+							if (snapshot4.val().cloud == '1') {
+								$('#' + snapshot1.key).append('<span class="badge badge-primary cloud"> CLD </span>');
+							}
+							if (snapshot4.val().onpremises == '1') {
+								$('#' + snapshot1.key).append('<span class="badge badge-danger onpremises"> ONP </span>');
+							}
+						})
+						/* pagination */
+						var rowsShown = parseInt($('#sizeSel option:selected').val());
+						var rowsTotal = $('#postList').children('.call_list').size();
+						var numPages = Math.ceil(rowsTotal / rowsShown);
+						
+						$('#postList').children('.call_list').hide();
+						$('#postList').children('.call_list').slice(0, rowsShown).show();
+						$('#pagination').bootpag({
+							   total: numPages,
+							   maxVisible: 10
+							}).on('page', function(event, num){
+								var startItem = (num-1) * rowsShown;
+								var endItem = startItem + rowsShown;
+								$('#postList').children('.call_list').css('opacity', '0.0').hide().slice(startItem, endItem).
+								css('display', 'table-row').animate({
+									opacity: 1
+								}, 300);
+							});
 				})
-			
-			/* 회사 고객 타입 */
-			firebase.database().ref('company/').orderByChild('name').equalTo(snapshot1.val().company).on('child_added', function (snapshot4) {
-				if (snapshot4.val().sap == '1') {
-					$('#' + snapshot1.key).append('<span class="badge badge-info sap"> SAP </span>');
-				}
-				if (snapshot4.val().cloud == '1') {
-					$('#' + snapshot1.key).append('<span class="badge badge-primary cloud"> Cloud </span>');
-				}
-				if (snapshot4.val().onpremises == '1') {
-					$('#' + snapshot1.key).append('<span class="badge badge-danger onpremises"> On Premise </span>');
-				}
 			})
-			
-			/* pagination */
-			$('#nav a').remove();
-			var rowsShown = parseInt($('#sizeSel option:selected').val());
-			var rowsTotal = $('#postList').children('.call_list').size();
-			var numPages = Math.ceil(rowsTotal / rowsShown);
-			
-			for (i = 0; i < numPages; i++) {
-				var pageNum = i + 1;
-				$('#nav').append('<li><a rel="' + i + '">' + pageNum + '</a></li>');
-			}
-			$('#postList').children('.call_list').hide();
-			$('#postList').children('.call_list').slice(0, rowsShown).show();
-			$('#nav a:first').addClass('active');
-			$('#nav a').bind('click', function () {
-				$('#nav a').removeClass('active');
-				$(this).addClass('active');
-				var currPage = $(this).attr('rel');
-				var startItem = currPage * rowsShown;
-				var endItem = startItem + rowsShown;
-				$('#postList').children('.call_list').css('opacity', '0.0').hide().slice(startItem, endItem).
-				css('display', 'table-row').animate({
-					opacity: 1
-				}, 300);
-			});
-		}
+		})
 	})
 }
 
@@ -165,7 +174,7 @@ $(document).ready(function () {
 		});
 	} else {
 		/* 전체 리스트 */
-		firebase.database().ref("qnaWrite/").on("child_added", function (snapshot1) {
+		firebase.database().ref("qnaWrite/").limitToLast(100).on("child_added", function (snapshot1) {
 			if(snapshot1.val().status != '해결'){
 				postList(snapshot1);
 			}
@@ -204,6 +213,7 @@ $(document).ready(function () {
 		$('#postList').children('.call_list').remove();
 		var select =  $(this).children("option:selected").text();
 		if (select == '전체') {
+			pageType = '';
 			firebase.database().ref("qnaWrite/").orderByChild('date').on("child_added", function (snapshot1) {
 				if(status == ''){
 					location.hash = '#/index/call_list'
@@ -217,17 +227,16 @@ $(document).ready(function () {
 				}
 			});
 		} else {
+			pageType = select;
 			firebase.database().ref("qnaWrite/").orderByChild('type').equalTo(select).on('child_added', function (snapshot1) {
 				if(status == ''){
 					location.hash = '#/index/call_list?type=' + select;
-					pageType = select;
 					if(snapshot1.val().status != '해결'){
 						postList(snapshot1);
 					}
 				} else {
 					location.hash = '#/index/call_list?status=' + status + '&type=' + select;
-					pageType = select;
-					if(snapshot1.val().status == status && snapshot1.val().type == select){
+					if(snapshot1.val().status == status){
 						postList(snapshot1);
 					}
 				}
@@ -236,6 +245,7 @@ $(document).ready(function () {
 	})
 
 	$("#radio1").click(function () {
+		status = '';
 		$('#postList').children('.call_list').remove();
 		firebase.database().ref("qnaWrite/").orderByChild('date').on("child_added", function (snapshot1) {
 			if(pageType == ''){
@@ -253,6 +263,7 @@ $(document).ready(function () {
 	})
 
 	$('#radio2').click(function () {
+		status = '접수'
 		$('#postList').children('.call_list').remove();
 		firebase.database().ref('qnaWrite/').orderByChild('status').equalTo('접수').on('child_added', function (snapshot1) {
 			if(pageType == ''){
@@ -260,7 +271,6 @@ $(document).ready(function () {
 				postList(snapshot1);
 			} else {
 				location.hash = '#/index/call_list?status=접수&type=' + pageType;
-				status = '접수'
 				if(snapshot1.val().type == pageType && snapshot1.val().status == '접수'){
 					postList(snapshot1);
 				}
@@ -269,6 +279,7 @@ $(document).ready(function () {
 	})
 	
 	$('#radio3').click(function () {
+		status = '해결'
 		$('#postList').children('.call_list').remove();
 		firebase.database().ref('qnaWrite/').orderByChild('status').equalTo('해결').on('child_added', function (snapshot1) {
 			if(pageType == ''){
@@ -277,7 +288,6 @@ $(document).ready(function () {
 				postList(snapshot1);
 			} else {
 				location.hash = '#/index/call_list?status=해결&type=' + pageType;
-				status = '해결'
 				if(snapshot1.val().type == pageType && snapshot1.val().status == '해결'){
 					postList(snapshot1);
 				}
@@ -285,6 +295,7 @@ $(document).ready(function () {
 		})
 	})
 	$('#radio4').click(function () {
+		status = '보류'
 		$('#postList').children('.call_list').remove();
 		firebase.database().ref('qnaWrite/').orderByChild('status').equalTo('보류').on('child_added', function (snapshot1) {
 			if(pageType == ''){
@@ -293,7 +304,6 @@ $(document).ready(function () {
 				postList(snapshot1);
 			} else {
 				location.hash = '#/index/call_list?status=보류&type=' + pageType;
-				status = '보류'
 				if(snapshot1.val().type == pageType && snapshot1.val().status == '보류'){
 					postList(snapshot1);
 				}
@@ -301,6 +311,7 @@ $(document).ready(function () {
 		})
 	})
 	$('#radio5').click(function () {
+		status = '등록'
 		$('#postList').children('.call_list').remove();
 		firebase.database().ref('qnaWrite/').orderByChild('status').equalTo('등록').on('child_added', function (snapshot1) {
 			if(pageType == ''){
@@ -309,7 +320,6 @@ $(document).ready(function () {
 				postList(snapshot1);
 			} else {
 				location.hash = '#/index/call_list?status=등록&type=' + pageType;
-				status = '등록'
 				if(snapshot1.val().type == pageType && snapshot1.val().status == '등록'){
 					postList(snapshot1);
 				}

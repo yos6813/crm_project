@@ -1,6 +1,6 @@
 function companyList(snapshot) {
+	var username = '';
 	firebase.database().ref('users/' + snapshot.val().officer).on('value', function (snapshot1) {
-		var username = '';
 		if(snapshot1.val().username != ''){
 			username = snapshot1.val().username;
 		} else {
@@ -24,30 +24,23 @@ function companyList(snapshot) {
 		}
 	
 		//pagination
-		$('#company_nav a').remove();
-		var rowsShown = 9;
+		var rowsShown = 10;
 		var rowsTotal = $('#company_list').children('.company_list1').size();
 		var numPages = Math.ceil(rowsTotal / rowsShown);
-	
-		for (i = 0; i < numPages; i++) {
-			var pageNum = i + 1;
-			$('#company_nav').append('<li><a rel="' + i + '">' + pageNum + '</a></li>');
-		}
-	
+		
 		$('#company_list').children('.company_list1').hide();
 		$('#company_list').children('.company_list1').slice(0, rowsShown).show();
-		$('#company_nav a:first').addClass('active');
-		$('#company_nav a').bind('click', function () {
-			$('#company_nav a').removeClass('active');
-			$(this).addClass('active');
-			var currPage = $(this).attr('rel');
-			var startItem = currPage * rowsShown;
-			var endItem = startItem + rowsShown;
-			$('#company_list').children('.company_list1').css('opacity', '0.0').hide().slice(startItem, endItem).
-			css('display', 'table-row').animate({
-				opacity: 1
-			}, 300);
-		});
+		$('#company_pagination').bootpag({
+			   total: numPages,
+			   maxVisible: 10
+			}).on('page', function(event, num){
+				var startItem = (num-1) * rowsShown;
+				var endItem = startItem + rowsShown;
+				$('#company_list').children('.company_list1').css('opacity', '0.0').hide().slice(startItem, endItem).
+				css('display', 'table-row').animate({
+					opacity: 1
+				}, 300);
+			});
 	});
 }
 

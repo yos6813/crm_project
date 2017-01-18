@@ -17,7 +17,6 @@ $(document).ready(function(){
 			})
 		}
 	})
-	
 	pagestart();
 	var todayMonth = new Date().getMonth() + 1;
 	if(todayMonth == '1'){
