@@ -44,8 +44,12 @@ function handleFileSelect(evt) {
 		  storageRef.child('files/' + file.name).put(file, metadata).then(function(snapshot) {
 			  var url = snapshot.metadata.downloadURLs[i];
 			  $('#fileInput').append('<span class="fileName">' +  snapshot.metadata.name + '</span>&nbsp;&nbsp;&nbsp;&nbsp;');
-		  }).catch(function(error) {
-		  });
+		  })
+		  
+		  storageRef.child('files/' + file.name).put(file).on('state_changed', function progress(snapshot) {
+			   var per = (snapshot.bytesTransferred/snapshot.totalBytes) * 100;
+			   $('#file_loader').css('width', per + '%');
+		   })
 	  } else if(evt.target.files[i] != undefined && evt.target.files.length == 0){
 		  file = evt.target.files[0];
 		  
@@ -53,11 +57,15 @@ function handleFileSelect(evt) {
 				  'contentType': file.type
 		  };
 		  
-			  storageRef.child('files/' + file.name).put(file, metadata).then(function(snapshot) {
-				  var url = snapshot.metadata.downloadURLs[0];
-				  $('#fileInput').append('<span class="fileName">' +  file.name + '</span>&nbsp;&nbsp;&nbsp;&nbsp;');
-			  }).catch(function(error) {
-		  });
+		  storageRef.child('files/' + file.name).put(file, metadata).then(function(snapshot) {
+			  var url = snapshot.metadata.downloadURLs[0];
+			  $('#fileInput').append('<span class="fileName">' +  file.name + '</span>&nbsp;&nbsp;&nbsp;&nbsp;');
+		  })
+		  
+		  storageRef.child('files/' + file.name).put(file).on('state_changed', function progress(snapshot) {
+		   var per = (snapshot.bytesTransferred/snapshot.totalBytes) * 100;
+		   $('#file_loader').css('width', per + '%');
+		   })
 	  }
   }
 }

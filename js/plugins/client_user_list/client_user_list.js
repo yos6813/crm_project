@@ -101,8 +101,10 @@ $(document).ready(function(){
 	$(document).on('click', '.clientList', function(){
 			clientPost($(this).attr('value'));
 			$('#infoModify').remove();
+			$('#infoDelete').remove();
 			$('#userInfoBox').prepend('<button class="btn btn-default pull-right" style="color:gray" id="infoModify" value="' + $(this).attr('value') + 
-			'">수정</button>');
+			'">수정</button><button class="btn btn-default pull-right" style="color:gray" id="infoDelete" value="' + $(this).attr('value') + 
+			'">삭제</button>');
 			firebase.database().ref('clients/' + $(this).attr('value')).on('child_added', function(snapshot){
 				firebase.database().ref('company/' + snapshot.val().company).on('value', function(snapshot2){
 				$('#client_company').text(snapshot2.val().name);
@@ -133,6 +135,27 @@ $(document).ready(function(){
 
 $(document).on('click', '#infoModify', function(){
 	location.hash = '#/customer?no=' + $(this).attr('value');
+})
+
+$(document).on('click', '#infoDelete', function(){
+	swal({
+        title: "정말 삭제하시겠습니까?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Yes",
+        cancelButtonText: "No",
+        closeOnConfirm: false,
+        closeOnCancel: false },
+    function (isConfirm) {
+        if (isConfirm) {
+            swal("삭제되었습니다.", "Your imaginary file has been deleted.", "success");
+            firebase.database().ref('clients/' + $('#infoDelete').val()).remove();
+        } else {
+            swal("취소되었습니다.", "Your imaginary file is safe :)", "error");
+        }
+        location.reload();
+    });
 })
 
 $(document).ready(function(){

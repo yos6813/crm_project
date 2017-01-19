@@ -72,6 +72,10 @@ $(window).load(function() {
 	$(".se-pre-con").fadeOut("slow");
 })
 
+$('img').error(function(){
+	$(this).attr('src', '../../img/photo.png');
+})
+
 $(document).ready(function () {
 	$('#login').click(function(){
 		var provider = new firebase.auth.GoogleAuthProvider();
@@ -236,15 +240,18 @@ function notifyPage(){
 
 function reload1(){
 	window.location.hash = '#/index/call_list';
-	location.reload();
+//	location.reload();
+	$('href').fadeIn('slow');
 }
 
 function reload2(){
 	window.location.hash = '#/index/webQnAlist';
-	location.reload();
+//	location.reload();
+	$('href').fadeIn('slow');
 }
 
 function reload3(){
 	window.location.hash = '#/index/callQnAlist';
-	location.reload();
+//	location.reload();
+	$('href').fadeIn('slow');
 }

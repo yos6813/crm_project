@@ -58,57 +58,78 @@ $(document).ready(function () {
 		}
 	})
 	
-	$('#list1').children().remove();
+	$('#list1').children('.userlist').remove();
 	firebase.database().ref('users/').on('child_added', function (snapshot1) {
-		firebase.database().ref('accept/').orderByChild('AcceptUserId').equalTo(snapshot1.key).on('value', function(snapshot3){
-		$('#list1').append('<tr><td><input type="radio" value="' + snapshot1.key + '" name="radioInline" ></td>' +
-			'<td><img alt="image" class="img-circle" src="' + snapshot1.val().picture + '"></td>' +
-			'<td class="nameLi">' + snapshot1.val().username + '</td></tr>');
-		})
+		if(snapshot1.val().username != undefined){
+			var picture;
+			
+			$('#list1').append('<tr class="userlist"><td><input type="radio" value="' + snapshot1.key + '" name="radioInline" ></td>' +
+					'<td><img alt="image" class="img-circle" src="' + snapshot1.val().profile_picture + '"></td>' +
+					'<td class="nameLi">' + snapshot1.val().username + '</td></tr>');
+			
+			$('img').error(function(){
+				$(this).attr('src', '../../img/photo.png');
+			})
+		}
 	})
 	
 	$('#list').children().remove();
 	firebase.database().ref('users/').on('child_added', function (snapshot1) {
 		firebase.database().ref('accept/').orderByChild('AcceptUserId').equalTo(snapshot1.key).on('value', function(snapshot3){
-			$('#list').append('<tr><td><input type="radio" value="' + snapshot1.key + '" name="radioInline" ></td>' +
-					'<td><img alt="image" class="img-circle" src="' + snapshot1.val().picture + '"></td>' +
-					'<td>' + snapshot1.val().username + '</td><td>' + snapshot3.numChildren() + '</td></tr>');
+			if(snapshot1.val().username != undefined){
+				$('#list').append('<tr><td><input type="radio" value="' + snapshot1.key + '" name="radioInline" ></td>' +
+								'<td><img alt="image" class="img-circle" src="' + snapshot1.val().profile_picture + '"></td>' +
+								'<td>' + snapshot1.val().username + '</td><td>' + snapshot3.numChildren() + '</td></tr>');
+				
+				$('img').error(function(){
+					$(this).attr('src', '../../img/photo.png');
 				})
+			}
+		})
 	})
-		$('#modalSave').click(function(){
-				firebase.database().ref('company/').orderByChild('name').equalTo($('#viewCompany').text()).on('child_added', function(snapshot1){
-					firebase.database().ref('users/' + snapshot1.val().officer).on('value', function(snapshot2){
-						firebase.database().ref('user-infos/' + $('input[type=radio]:checked').val()).on('child_added', function(snapshot){
-							var name = firebase.auth().currentUser.displayName;
-							var types = "<" + window.location.href + ">";
-							var url = "https://hooks.slack.com/services/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";
-							payload = {
-									"channel": "@" + snapshot.val().slack,
+	$('#modalSave').click(function(){
+			if($('input[type=radio]:checked').val() == 'tech'){
+				var name = firebase.auth().currentUser.displayName;
+				var types = "<" + window.location.href + ">";
+				var url = "https://hooks.slack.com/services/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";
+				payload= {
+							"text": name + "님이 공유하였습니다." + "\n" + types
+						 }
+				
+				sendToSlack_(url,payload);
+			}
+			firebase.database().ref('company/').orderByChild('name').equalTo($('#viewCompany').text()).on('child_added', function(snapshot1){
+				firebase.database().ref('users/' + snapshot1.val().officer).on('value', function(snapshot2){
+					firebase.database().ref('user-infos/' + $('input[type=radio]:checked').val()).on('child_added', function(snapshot){
+						var name = firebase.auth().currentUser.displayName;
+						var types = "<" + window.location.href + ">";
+						var url = "https://hooks.slack.com/services/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";
+						payload = {
+								"channel": "@" + snapshot.val().slack,
+								"username": "YETA2016",
+								"fields":[{
+									"value": name + "님이 공유하였습니다." + "\n" + types,
+									"short":false
+								}]
+						}
+						sendToSlack_(url,payload);
+							
+						firebase.database().ref('user-infos/' + firebase.auth().currentUser.uid).on('child_added', function(snapshot1){
+							payload2 = {
+									"channel": "@" + snapshot1.val().slack,
 									"username": "YETA2016",
 									"fields":[{
-										"value": name + "님이 공유하였습니다." + "\n" + types,
+										"value": snapshot.val().username + "님에게 공유하였습니다." + "\n" + types,
 										"short":false
 									}]
 							}
-							sendToSlack_(url,payload);
-								
-							firebase.database().ref('user-infos/' + firebase.auth().currentUser.uid).on('child_added', function(snapshot1){
-								console.log(snapshot1.val().slack);
-								payload2 = {
-										"channel": "@" + snapshot1.val().slack,
-										"username": "YETA2016",
-										"fields":[{
-											"value": snapshot.val().username + "님에게 공유하였습니다." + "\n" + types,
-											"short":false
-										}]
-								}
-								sendToSlack_(url,payload2);
-							})
+							sendToSlack_(url,payload2);
 						})
-					$('#myModal6').modal('hide');
-				})
+					})
+				$('#myModal6').modal('hide');
 			})
 		})
+	})
 		
 		$('#modalSave1').click(function(){
 			firebase.database().ref('qnaWrite/' + viewPageno).update({

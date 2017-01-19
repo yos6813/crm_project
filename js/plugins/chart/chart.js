@@ -66,7 +66,7 @@ $(document).ready(function(){
 				        onPointClick: function (info) {
 				            var clickedPoint = info.target;
 				            var name = clickedPoint.argument;
-				            var url = '#/index/call_list?type=' + name
+				            var url = '#/index/call_list?status=' + name
 				            clickedPoint.isSelected() ? '': window.open(url, "_blank");
 				        },
 				        "export": {
@@ -135,6 +135,7 @@ $(document).ready(function(){
 	firebase.database().ref('users/').orderByKey().on('child_added', function(snapshot){
 		firebase.database().ref('accept/').orderByChild('AcceptUserId').equalTo(snapshot.key).on('value', function(snapshot1){
 			firebase.database().ref('reply/').orderByChild('userId').equalTo(snapshot.key).on('value', function(snapshot2){
+				
 				$('#userPostNum').append('<div class="userList ibox-content">' +
 	            						 '<div class="row">' +
 										 '<div class="col-xs-4">' +
@@ -153,6 +154,9 @@ $(document).ready(function(){
 										 '</div>' +
 										 '</div>'+
 										 '</div>');
+				$('img').error(function(){
+					$(this).attr('src', '../../img/photo.png');
+				})
 
 			})
 		})
@@ -176,17 +180,17 @@ $(document).ready(function(){
 	
 	for(var i=1; i<=4; i++){
 		$('#taxLaw' + i).click(function(){
-			var url = '#/index/call_list?type=' + $(this).prev().text() + '&status=' + $(this).parent().prev().children().text();
+			var url = '#/index/call_list?status=' + $(this).prev().text() + '&type=' + $(this).parent().prev().children().text();
 			window.open(url, "_blank");
 		})
 		
 		$('#system' + i).click(function(){
-			var url = '#/index/call_list?type=' + $(this).prev().text() + '&status=' + $(this).parent().prev().children().text();
+			var url = '#/index/call_list?status=' + $(this).prev().text() + '&type=' + $(this).parent().prev().children().text();
 			window.open(url, "_blank");
 		})
 		
 		$('#management' + i).click(function(){
-			var url = '#/index/call_list?type=' + $(this).prev().text() + '&status=' + $(this).parent().prev().children().text();
+			var url = '#/index/call_list?status=' + $(this).prev().text() + '&type=' + $(this).parent().prev().children().text();
 			window.open(url, "_blank");
 		})
 	}
