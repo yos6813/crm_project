@@ -35,11 +35,8 @@ function toggleSignIn() {
     		if(user){
     			firebase.database().ref('clients/' + user.uid).on('value', function(snapshot){
     				if(snapshot.val() != null){
-//				sendEmailVerification();
     					location.hash = '#/cIndex/notifyPage';
-//    					location.hash = '#/ready';
     				} else {
-//				sendEmailVerification();
     					location.hash = '#/clientInfo';
     				}
     			})
@@ -47,12 +44,6 @@ function toggleSignIn() {
     	})
     })
 }
-
-//function sendEmailVerification() {
-//	firebase.auth().currentUser.sendEmailVerification().then(function() {
-//		alert('이메일 확인을 위한 인증 메일을 전송하였습니다.');
-//    });
-//}
 
 $('#clientLogin').click(function(){
 	toggleSignIn();

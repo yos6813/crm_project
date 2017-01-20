@@ -192,35 +192,53 @@ $('#viewType4').hide();
 $(document).ready(function () {
 
 	firebase.database().ref('qnaWrite/' + viewPageno + '/status').on('value', function (snapshot) {
-		if (snapshot.val() == '해결') {
+		switch(snapshot.val()){
+		case '해결':
 			$('#acceptSel1').show();
 			$('#postAccept').hide();
 			$('#acceptSel1').children().remove();
 			$('#acceptSel1').append('<option value="resolve">해결</option>' +
-				'<option value="accept">접수</option>' +
-				'<option value="defer">보류</option>');
-		} else if (snapshot.val() == '접수') {
+									'<option value="accept">접수</option>' +
+									'<option value="check">검토중</option>' +
+									'<option value="defer">보류</option>');
+			break;
+		case '접수':
 			$('#acceptSel1').show();
 			$('#postAccept').hide();
 			$('#acceptSel1').children().remove();
 			$('#acceptSel1').append('<option value="accept">접수</option>' +
-				'<option value="resolve">해결</option>' +
-				'<option value="defer">보류</option>');
-		} else if (snapshot.val() == '보류') {
+									'<option value="resolve">해결</option>' +
+									'<option value="check">검토중</option>' +
+									'<option value="defer">보류</option>');
+			break;
+		case '보류':
 			$('#acceptSel1').show();
 			$('#postAccept').hide();
 			$('#acceptSel1').children().remove();
 			$('#acceptSel1').append('<option value="defer">보류</option>' +
-				'<option value="resolve">해결</option>' +
-				'<option value="accept">접수</option>');
-		} else if (snapshot.val() == '등록') {
+									'<option value="check">검토중</option>' +
+									'<option value="resolve">해결</option>' +
+									'<option value="accept">접수</option>');
+			break;
+		case '등록':
 			$('#acceptSel1').show();
 			$('#postAccept').hide();
 			$('#acceptSel1').children().remove();
 			$('#acceptSel1').append('<option value="update">등록</option>' +
-				'<option value="accept">접수</option>' +
-				'<option value="resolve">해결</option>' +
-				'<option value="defer">보류</option>');
+									'<option value="accept">접수</option>' +
+									'<option value="resolve">해결</option>' +
+									'<option value="check">검토중</option>' +
+									'<option value="defer">보류</option>');
+			break;
+		case '검토중':
+			$('#acceptSel1').show();
+			$('#postAccept').hide();
+			$('#acceptSel1').children().remove();
+			$('#acceptSel1').append('<option value="check">검토중</option>' +
+									'<option value="defer">보류</option>' +
+									'<option value="resolve">해결</option>' +
+									'<option value="accept">접수</option>');
+			break;
 		}
 	})
 
@@ -345,7 +363,8 @@ $('#viewFile').children().remove();
 		var post = viewPageno;
 		var state = $(this).val();
 
-		if (state == 'accept') {
+		switch(state){
+		case 'accept':
 			firebase.database().ref('qnaWrite/' + viewPageno).update({
 				status: '접수'
 			})
@@ -355,27 +374,25 @@ $('#viewFile').children().remove();
 				AcceptUserId: user.uid
 			})
 			location.reload();
-		} else if (state == 'defer') {
+			break;
+		case 'defer':
 			firebase.database().ref('qnaWrite/' + viewPageno).update({
 				status: '보류'
 			})
-			//			firebase.database().ref("accept/" + viewPageno).update({
-			//				AcceptName: '',
-			//				AcceptDate: '',
-			//				AcceptUserId:''
-			//			})
 			location.reload();
-		} else {
+			break;
+		case 'check':
+			firebase.database().ref('qnaWrite/' + viewPageno).update({
+				status: '검토중'
+			})
+			location.reload();
+			break;
+		default:
 			firebase.database().ref('qnaWrite/' + viewPageno).update({
 				status: '해결'
 			})
-			//			firebase.database().ref('reply/' + viewPageno).update({
-			//				replyDate: date,
-			//				replyImg: user.photoURL,
-			//				replyName: name,
-			//				userId: user.uid
-			//			})
 			location.reload();
+			break;
 		}
 	})
 

@@ -38,8 +38,11 @@ function postList(snapshot1) {
 								state = 'label-warning';
 							break;
 						case '등록':
-								state = 'label-info';
+								state = 'label-success';
 							break;
+						case '검토중':
+							state = 'label-info';
+						break;
 							default:
 								state = 'label-primary';
 							break;
@@ -325,6 +328,21 @@ $(document).ready(function () {
 				postList(snapshot1);
 			} else {
 				location.hash = '#/index/call_list?status=등록&type=' + pageType;
+				if(snapshot1.val().type == pageType){
+					postList(snapshot1);
+				}
+			}
+		})
+	})
+	$('#radio6').click(function () {
+		status = '검토중'
+			$parent.children('.call_list').remove();
+		firebase.database().ref('qnaWrite/').orderByChild('status').equalTo('검토중').on('child_added', function (snapshot1) {
+			if(pageType == ''){
+				location.hash = '#/index/call_list?status=검토중';
+				postList(snapshot1);
+			} else {
+				location.hash = '#/index/call_list?status=검토중&type=' + pageType;
 				if(snapshot1.val().type == pageType){
 					postList(snapshot1);
 				}

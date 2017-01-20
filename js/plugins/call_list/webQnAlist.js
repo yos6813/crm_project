@@ -30,14 +30,22 @@ function postList(snapshot1) {
 					firebase.database().ref('comment/').orderByChild('post').equalTo(snapshot1.key).on('value', function(snapshot5){
 						$parent.each(function () {
 							var state;
-							if (snapshot1.val().status == '해결') {
-								state = 'label-default';
-							} else if (snapshot1.val().status == '보류') {
-								state = 'label-warning';
-							} else if(snapshot1.val().status == '등록'){
+							switch(snapshot1.val().status){
+							case '해결':
+									state = 'label-default';
+								break;
+							case '보류':
+									state = 'label-warning';
+								break;
+							case '등록':
+									state = 'label-success';
+								break;
+							case '검토중':
 								state = 'label-info';
-							} else{
-								state = 'label-primary';
+							break;
+								default:
+									state = 'label-primary';
+								break;
 							}
 							
 							var warn = '';
@@ -303,6 +311,22 @@ $(document).ready(function () {
 				postList(snapshot1);
 			} else {
 				location.hash = '#/index/webQnAlist?status=등록&type=' + pageType;
+				if(snapshot1.val().type == pageType){
+					postList(snapshot1);
+				}
+			}
+		})
+	})
+	
+	$('#radio6').click(function () {
+		status = '검토중'
+			$parent.children('.call_list').remove();
+		firebase.database().ref('qnaWrite/').orderByChild('status').equalTo('검토중').on('child_added', function (snapshot1) {
+			if(pageType == ''){
+				location.hash = '#/index/webQnAlist?status=검토중';
+				postList(snapshot1);
+			} else {
+				location.hash = '#/index/webQnAlist?status=검토중&type=' + pageType;
 				if(snapshot1.val().type == pageType){
 					postList(snapshot1);
 				}

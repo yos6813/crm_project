@@ -29,51 +29,55 @@ $(document).ready(function(){
 		firebase.database().ref('qnaWrite/').orderByChild('status').equalTo('접수').on('value', function(snapshot2){
 			firebase.database().ref('qnaWrite/').orderByChild('status').equalTo('보류').on('value', function(snapshot3){
 				firebase.database().ref('qnaWrite/').orderByChild('status').equalTo('등록').on('value', function(snapshot4){
-					var chartResolve = snapshot1.numChildren();
-					var chartDefer = snapshot3.numChildren();
-					var chartAccept = snapshot2.numChildren();
-					var chartcheck = snapshot4.numChildren();
-					
-				    var dataSource = [
-				        { status: '해결', value: chartResolve },
-				        { status: '보류', value: chartDefer },
-				        { status: '접수', value: chartAccept },
-				        { status: '등록', value: chartcheck },
-				    ];
-				     
-				    $("#doughnutChart").dxPieChart({
-				        dataSource: dataSource,
-				        palette: 'Soft Pastel',
-				        series: {
-				            type: 'doughnut',
-				            argumentField: 'status',
-				            valueField: 'value',
-				            label: {
-				                visible: true,
-				                connector: {
-				                    visible: true
-				                }
-				            }
-				        },
-				        tooltip: {
-				        	enabled: true,
-				        	customizeTooltip: function (arg) {
-				                return {
-				                    text: arg.argumentText + " - " + arg.valueText
-				                };
-				            }
-				        },
-				        onPointClick: function (info) {
-				            var clickedPoint = info.target;
-				            var name = clickedPoint.argument;
-				            var url = '#/index/call_list?status=' + name
-				            clickedPoint.isSelected() ? '': window.open(url, "_blank");
-				        },
-				        "export": {
-				            enabled: true
-				        }
-				        
-				    });
+					firebase.database().ref('qnaWrite/').orderByChild('status').equalTo('검토중').on('value', function(snapshot5){
+						var chartResolve = snapshot1.numChildren();
+						var chartDefer = snapshot3.numChildren();
+						var chartAccept = snapshot2.numChildren();
+						var chartcheck = snapshot4.numChildren();
+						var chart = snapshot5.numChildren();
+						
+					    var dataSource = [
+					        { status: '해결', value: chartResolve },
+					        { status: '보류', value: chartDefer },
+					        { status: '접수', value: chartAccept },
+					        { status: '등록', value: chartcheck },
+					        { status: '검토중', value: chart },
+					    ];
+					     
+					    $("#doughnutChart").dxPieChart({
+					        dataSource: dataSource,
+					        palette: 'Soft Pastel',
+					        series: {
+					            type: 'doughnut',
+					            argumentField: 'status',
+					            valueField: 'value',
+					            label: {
+					                visible: true,
+					                connector: {
+					                    visible: true
+					                }
+					            }
+					        },
+					        tooltip: {
+					        	enabled: true,
+					        	customizeTooltip: function (arg) {
+					                return {
+					                    text: arg.argumentText + " - " + arg.valueText
+					                };
+					            }
+					        },
+					        onPointClick: function (info) {
+					            var clickedPoint = info.target;
+					            var name = clickedPoint.argument;
+					            var url = '#/index/call_list?status=' + name
+					            clickedPoint.isSelected() ? '': window.open(url, "_blank");
+					        },
+					        "export": {
+					            enabled: true
+					        }
+					        
+					    });
+					})
 				})
 			})
 		})
@@ -178,7 +182,11 @@ $(document).ready(function(){
 	var system4 = [];
 	var management4 = [];
 	
-	for(var i=1; i<=4; i++){
+	var taxLaw5 = [];
+	var system5 = [];
+	var management5 = [];
+	
+	for(var i=1; i<=5; i++){
 		$('#taxLaw' + i).click(function(){
 			var url = '#/index/call_list?status=' + $(this).prev().text() + '&type=' + $(this).parent().prev().children().text();
 			window.open(url, "_blank");
@@ -269,6 +277,25 @@ $(document).ready(function(){
 			system4.push(snapshot1.key);
 			if(system4 != null){
 				$('#system4').text(system4.length);
+			}
+		}
+	})
+	
+	firebase.database().ref('qnaWrite/').orderByChild('status').equalTo('검토중').on('child_added', function(snapshot1){
+		if(snapshot1.val().type == '세법'){
+			taxLaw5.push(snapshot1.key);
+			if(taxLaw5 != null){
+				$('#taxLaw5').text(taxLaw5.length);
+			}
+		} else if (snapshot1.val().type == '운용'){
+			management5.push(snapshot1.key);
+			if(management5 != null){
+				$('#management5').text(management5.length);
+			}
+		} else if (snapshot1.val().type == '시스템'){
+			system5.push(snapshot1.key);
+			if(system5 != null){
+				$('#system5').text(system5.length);
 			}
 		}
 	})

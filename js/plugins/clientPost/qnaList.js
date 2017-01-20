@@ -22,6 +22,8 @@ $(document).ready(function(){
 		} else if(snapshot.val().status == '보류'){
 			state = 'label-warning';
 		} else if(snapshot.val().status == '등록'){
+			state = 'label-success';
+		} else if(snapshot.val().status == '검토중'){
 			state = 'label-info';
 		} else{
 			state = 'label-primary';
