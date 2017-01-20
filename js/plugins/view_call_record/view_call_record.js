@@ -7,6 +7,22 @@ function getParameterByName(name) {
 
 var viewPageno = getParameterByName('no');
 
+function history(historyType, user, date, historytext){
+	var historyData = {
+			historyType: historyType,
+			user: user,
+			date: date,
+			historytext: historytext
+	}
+	
+	var hitoryKey = firebase.database().ref().child('history').push().key;
+
+	var updates = {};
+	updates['/history/' + viewPageno] = historyData;
+
+	return firebase.database().ref().update(updates);
+}
+
 $('#sap').hide();
 $('#cloud').hide();
 $('#onpremises').hide();
@@ -88,10 +104,12 @@ $(document).ready(function () {
 		})
 	})
 	$('#modalSave').click(function(){
+		var historytext;
 			if($('input[type=radio]:checked').val() == 'tech'){
 				var name = firebase.auth().currentUser.displayName;
 				var types = "<" + window.location.href + ">";
 				var url = "https://hooks.slack.com/services/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";
+				historytext = 'tech방에 slack 공유';
 				payload= {
 							"text": name + "님이 공유하였습니다." + "\n" + types
 						 }
@@ -104,6 +122,7 @@ $(document).ready(function () {
 						var name = firebase.auth().currentUser.displayName;
 						var types = "<" + window.location.href + ">";
 						var url = "https://hooks.slack.com/services/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";
+						historytext = snapshot.val().username + '에게 slack 공유';
 						payload = {
 								"channel": "@" + snapshot.val().slack,
 								"username": "YETA2016",
@@ -129,6 +148,16 @@ $(document).ready(function () {
 				$('#myModal6').modal('hide');
 			})
 		})
+		var historyType = 'slack공유';
+		var user = firebase.auth().currentUser.uid;
+		var today = new Date();
+		var date = today.getFullYear() + "." + (today.getMonth()+1) + "." + today.getDate() + " " + today.getHours() + ":" + today.getMinutes();
+		firebase.database().ref('history/' + viewPageno).push({
+			historyType: historyType,
+			user: user,
+			date: date,
+			historytext: historytext
+		})		
 	})
 		
 		$('#modalSave1').click(function(){
@@ -137,6 +166,20 @@ $(document).ready(function () {
 			})
 			$('#myModal5').modal('hide');
 			location.reload();
+			
+			firebase.database().ref('users/' + $('input[type=radio]:checked').val()).on('value', function(snapshot){
+				var historyType = '책임자변경';
+				var user = firebase.auth().currentUser.uid;
+				var today = new Date();
+				var date = today.getFullYear() + "." + (today.getMonth()+1) + "." + today.getDate() + " " + today.getHours() + ":" + today.getMinutes();
+				var historytext = snapshot.val().username + '로 책임자변경';
+				firebase.database().ref('history/' + viewPageno).push({
+					historyType: historyType,
+					user: user,
+					date: date,
+					historytext: historytext
+				})	
+			})
 		})
 	
 
@@ -189,8 +232,28 @@ $('#viewType3').hide();
 $('#viewEtc').hide();
 $('#viewType4').hide();
 
-$(document).ready(function () {
+function history(){
+	var html;
+	firebase.database().ref('history/' + viewPageno).on('child_added', function(snapshot){
+		firebase.database().ref('users/' + snapshot.val().user).on('value', function(snapshot1){
+			var date = snapshot.val().date.split('.');
+			var date1 = date[1] + '/' + date[2];
+			$('#history').append('<div class="timeline-item">' +
+								 '<div class="row">' +
+								 '<div class="col-xs-3 date historyDate"><i class="fa fa-check"></i>' + date1 +
+								 '</div>' +
+								 '<div class="col-xs-7 content no-top-border">' +
+								 '<p><strong class="historyTitle">' + snapshot.val().historytext + '</strong></p>' +
+								 '<p class="user">' + snapshot1.val().username + '</p>' +
+								 '</div>' +
+								 '</div>' +
+								 '</div>');
+		})
+	})
+}
 
+$(document).ready(function () {
+	history();
 	firebase.database().ref('qnaWrite/' + viewPageno + '/status').on('value', function (snapshot) {
 		switch(snapshot.val()){
 		case '해결':
@@ -316,6 +379,17 @@ $('#viewFile').children().remove();
 				});
 			})
 		})
+		var historyType = '메일전송';
+		var user = firebase.auth().currentUser.uid;
+		var today = new Date();
+		var date = today.getFullYear() + "." + (today.getMonth()+1) + "." + today.getDate() + " " + today.getHours() + ":" + today.getMinutes();
+		var historytext = '메일전송';
+		firebase.database().ref('history/' + viewPageno).push({
+			historyType: historyType,
+			user: user,
+			date: date,
+			historytext: historytext
+		})
 	})
 	
 	$('#replyFile').children('file-box').remove();
@@ -362,9 +436,13 @@ $('#viewFile').children().remove();
 		var date = year + '.' + month + '.' + day + ' ' + hour + ':' + minutes;
 		var post = viewPageno;
 		var state = $(this).val();
-
+		var historyType;
+		var historytext;
+		
 		switch(state){
 		case 'accept':
+			historyType = '접수로 상태변경';
+			historytext = '접수로 상태변경';
 			firebase.database().ref('qnaWrite/' + viewPageno).update({
 				status: '접수'
 			})
@@ -373,25 +451,55 @@ $('#viewFile').children().remove();
 				AcceptDate: date,
 				AcceptUserId: user.uid
 			})
+			firebase.database().ref('history/' + viewPageno).push({
+				historyType: historyType,
+				user: user.uid,
+				date: date,
+				historytext: historytext
+			})	
 			location.reload();
 			break;
 		case 'defer':
+			historyType = '보류로 상태변경';
+			historytext = '보류로 상태변경';
 			firebase.database().ref('qnaWrite/' + viewPageno).update({
 				status: '보류'
 			})
+			firebase.database().ref('history/' + viewPageno).push({
+				historyType: historyType,
+				user: user.uid,
+				date: date,
+				historytext: historytext
+			})	
 			location.reload();
 			break;
 		case 'check':
+			historyType = '검토중으로 상태변경';
+			historytext = '검토중으로 상태변경';
 			firebase.database().ref('qnaWrite/' + viewPageno).update({
 				status: '검토중'
 			})
+			firebase.database().ref('history/' + viewPageno).push({
+				historyType: historyType,
+				user: user.uid,
+				date: date,
+				historytext: historytext
+			})	
 			location.reload();
 			break;
 		default:
+			historyType = '해결로 상태변경';
+			historytext = '해결로 상태변경';
 			firebase.database().ref('qnaWrite/' + viewPageno).update({
 				status: '해결'
 			})
 			location.reload();
+			firebase.database().ref('history/' + viewPageno).push({
+				historyType: historyType,
+				user: user.uid,
+				date: date,
+				historytext: historytext
+			})
 			break;
 		}
 	})
@@ -412,7 +520,6 @@ $('#viewFile').children().remove();
 		})
 		firebase.database().ref("qnaWrite/" + viewPageno).on('value', function (snapshot) {
 			firebase.database().ref('accept/' + viewPageno).on('value', function(snapshot1){
-				// $('#viewAccept').text('문의시간: ' + snapshot.val().date);
 				$('#viewAccept').append('<div class="text-muted">접수자: <i class="fa fa-user"></i>&ensp;' + snapshot1.val().AcceptName + '</div>' +
 						'<div class="text-muted"><i class="fa fa-clock-o"></i>&ensp;' + snapshot1.val().AcceptDate + '</div>');
 			})
@@ -422,8 +529,6 @@ $('#viewFile').children().remove();
 		firebase.database().ref("reply/" + viewPageno).on('value', function (snapshot1) {
 			
 			if (snapshot1.val().replyName != '') {
-				// $('#viewReply').text('해결: ' + snapshot1.val().replyName +
-				// 					 ' (' + snapshot1.val().replyDate + ')');
 				$('#replyButton').children().remove();
 				$('#viewReply').append('<div class="text-muted"><i class="fa fa-user"></i>&ensp;' + snapshot1.val().replyName + '</div>' +
 					'<div class="text-muted"><i class="fa fa-clock-o"></i>&ensp;' + snapshot1.val().replyDate + '</div>'
@@ -432,7 +537,6 @@ $('#viewFile').children().remove();
 				$('#replyButton').append('<a href="#/index/form_call_record_modify?no=' + viewPageno + '&Rno=' + snapshot1.key + '" target="_blank" class="btn btn-white btn-sm" title="Reply"><i class="fa fa-pencil"></i> 수정</a>' +
 				'<a id="replyDelete" class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Move to trash"><i class="fa fa-trash-o"></i> 삭제</a>');
 
-				// $('#viewReply').append('<div class="text-muted"><i class="fa fa-clock-o">' + snapshot.val().replyDate + '</i></div>');
 			} else {
 				$('#viewReply').text('');
 				
@@ -494,17 +598,8 @@ $('#viewFile').children().remove();
 		});
 	})
 
-	//	firebase.auth().onAuthStateChanged(function(user) {
-	//		var userId = firebase.auth().currentUser;
-	//		firebase.database().ref('user-posts/' + userId.uid + '/' + viewPageno).on('value', function(snapshot){
-	//			if(snapshot.val() != null){
 	$('#viewButton').append('<a href="#/index/form_call_record?no=' + viewPageno + '" id="viewModify" class="btn btn-white btn-sm" title="Reply"><i class="fa fa-pencil"></i> 수정</a>' +
 		'<a id="viewDelete" class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Move to trash"><i class="fa fa-trash-o"></i> 삭제</a>');
-	
-	
-	//			}
-	//		})
-	//	});
 
 	$(document).on('click', '#replyDelete', function () {
 		swal({
@@ -555,6 +650,7 @@ $('#viewFile').children().remove();
 					
 					firebase.database().ref('timePosts/' + month + '/' + day + '/' + hour + '/' + viewPageno).remove();
 					firebase.database().ref('monthPosts/' + year + '/' + month + '/' + day + '/' + viewPageno).remove();
+					firebase.database().ref('history/' + viewPageno).remove();
 
 					postRef.remove();
 					replyRef.remove();

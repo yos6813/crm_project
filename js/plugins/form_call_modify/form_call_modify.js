@@ -181,10 +181,6 @@ $('#replySave').click(function(){
 			writeAlert(uid, replyPhoto, replyUser, replyDay, replyTitle, replyPost, replyUserName, check);
 		})
 		
-//		firebase.database().ref('qnaWrite/' + modifyPageno).update({
-//			status: '해결'
-//		})
-		
 		firebase.database().ref('qnaWrite/' + modifyPageno).on('value', function(snapshot){
 			emailjs.send("gmail", "template_jbvbOZH3", {
 				"reply_to" : snapshot.val().userEmail,
@@ -192,6 +188,19 @@ $('#replySave').click(function(){
 				"message_html" : 'yeta.center/#/cIndex/view_qna?no=' + modifyPageno,
 				"from_name" : 'YETA2016'
 			});
+		})
+		
+		var historyType = '답변 작성';
+		var user = firebase.auth().currentUser;
+		var today = new Date();
+		var date = today.getFullYear() + "." + (today.getMonth()+1) + "." + today.getDate() + " " + today.getHours() + ":" + today.getMinutes();
+		var historytext = '답변 작성';
+		
+		firebase.database().ref('history/' + modifyPageno).push({
+			historyType: historyType,
+			user: user.uid,
+			date: date,
+			historytext: historytext
 		})
 		
 		swal({

@@ -286,7 +286,7 @@ $('#postSave').click(function(){
 	var date = today.getFullYear() + "." + (today.getMonth()+1) + "." + today.getDate() + " " + today.getHours() + ":" + today.getMinutes();
 //	var date = today.getFullYear() + (today.getMonth()+1) + today.getDate() + today.getHours() + today.getMinutes();
 	var user = $('#cusKey').text();
-	var uploadfile = [];
+	var file = [];
 	var bigGroup = $('#bigGroupli').val();
 	var smallGroup = '';
 	var officer;
@@ -301,7 +301,7 @@ $('#postSave').click(function(){
 	
 	for(var i=0; i<=$('#fileInput').children().length; i++){
 		if($('#fileInput').children().eq(i).text() != undefined && $('#fileInput').children().eq(i).text() != null){
-			uploadfile.push($('#fileInput').children().eq(i).text());
+			file.push($('#fileInput').children().eq(i).text());
 		}
 	}
 	
@@ -321,13 +321,10 @@ $('#postSave').click(function(){
 	var replyImg = '';
 	var userName = $('#customerIn').val();
 	
-//	if(title != '' && text != ''){
-//	}
-	
 		if(modifyPageno != ''){
 			firebase.database().ref('qnaWrite/' + modifyPageno).update({
 				company: company,
-				file: uploadfile,
+				file: file,
 				status: status,
 				text: text,
 				title: title,
