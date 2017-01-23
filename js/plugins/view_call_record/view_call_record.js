@@ -524,7 +524,7 @@ $('#viewFile').children().remove();
 						'<div class="text-muted"><i class="fa fa-clock-o"></i>&ensp;' + snapshot1.val().AcceptDate + '</div>');
 			})
 		})
-		$('#replyButton').append('<a href="#/index/form_call_record_modify?no=' + viewPageno + '" target="_blank" class="btn btn-white btn-sm" title="Reply"><i class="fa fa-pencil"></i> 작성</a>' +
+		$('#replyButton').append('<a href="#/index/form_call_record_modify?no=' + viewPageno + '" target="_top" class="btn btn-white btn-sm" title="Reply"><i class="fa fa-pencil"></i> 작성</a>' +
 								 '<a id="replyDelete" class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Move to trash"><i class="fa fa-trash-o"></i> 삭제</a>');
 		firebase.database().ref("reply/" + viewPageno).on('value', function (snapshot1) {
 			

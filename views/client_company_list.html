@@ -45,8 +45,8 @@
                                                 <tr>
                                                     <th>회사명</th>
                                                     <th>사업자등록번호</th>
-                                                    <th>법인등록번호</th>
                                                     <th>예타구분</th>
+                                                    <th>cs책임자</th>
                                                 </tr>
                                             </thead>
                                             <tbody id="company_list">
@@ -93,18 +93,25 @@
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <h5>담당자 리스트</h5>
-                    
                 </div>
                 <div id="company_client_List_box" class="ibox-content">
-                    <table class="table table-striped table-hover">
+                    <table class="table table-stripped toggle-arrow-tiny">
                         <thead>
-                            <tr>
-                                <th>성명</th>
-                                <th>부서</th>
-                                <th>직위</th>
-                            </tr>
+                        <tr>
+                            <th>성명</th>
+                            <th>부서</th>
+                            <th>직위</th>
+                        </tr>
                         </thead>
-                        <tbody id="company_client_List"></tbody>
+                        <tbody id="company_client_List">
+                        </tbody>
+                        <tfoot style="display: none">
+                        <tr>
+                            <td colspan="5">
+                                <ul class="pagination pull-right"></ul>
+                            </td>
+                        </tr>
+                        </tfoot>
                     </table>
                     <a class="btn btn-default btn-rounded btn-block" id="company_client_load">5개 더보기</a>
                 </div>
@@ -136,6 +143,26 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-white" data-dismiss="modal">취소</button>
                 <button type="button" class="btn btn-primary" id="modalSave">확인</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal inmodal fade" id="myModal" tabindex="-1" role="dialog"  aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">회원 정보</h4>
+            </div>
+            <div class="modal-body">
+                <p id="email"></p>
+                <p id="extension"></p>
+                <p id="fax"></p>
+                <p id="phone"></p>
+                <p id="workPhone"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>

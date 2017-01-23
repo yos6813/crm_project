@@ -9,8 +9,8 @@ function companyList(snapshot) {
 		$('#company_list').append('<tr class="company_list1" value="' + snapshot.key + '"><a href="#/index/view_call_record?no=' + snapshot.key + '">' +
 			'<td>' + snapshot.val().name + '</td>' +
 			'<td>' + snapshot.val().corporate + '</td>' +
-			'<td>' + username + '</td>' +
 			'<td id="' + snapshot.key + '"></td>' +
+			'<td>' + username + '</td>' +
 			'</a></tr>');
 	
 		if (snapshot.val().sap == '1') {
@@ -49,20 +49,20 @@ function companyClientList(snapshot) {
 	$('#company_client_List_box').show();
 	firebase.database().ref('clients/').on('child_added', function (snapshot2) {
 		firebase.database().ref('clients/' + snapshot2.key).orderByChild('company').equalTo(snapshot).on('child_added', function (snapshot1) {
-			$('#company_client_List').append('<tr class="clientlist"  value="' + snapshot1.key + '">' +
-				'<td>' + snapshot1.val().clientName + '</td>' +
-				'<td>' + snapshot1.val().clientDepartment + '</td>' +
-				'<td>' + snapshot1.val().clientPosition + '</td>' +
-				'</tr>');
-
+			$('#company_client_List').append('<tr value="' + snapshot2.key + '">' + 
+											 '<td class="foo-cell">' + snapshot1.val().clientName + '</td>' +
+											 '<td>' + snapshot1.val().clientDepartment + '</td>' +
+											 '<td>' + snapshot1.val().clientPosition + '</td>' +
+											 '</tr>');
+			
 			var rowsShown = 5;
-			var rowsTotal = $('#company_client_List').children('.clientlist').size();
+			var rowsTotal = $('#company_client_List').children('tr').size();
 			if (rowsTotal > rowsShown) {
 				$('#company_client_load').show();
 			}
 			var numPages = Math.ceil(rowsTotal / rowsShown);
-			$('#company_client_List').children('.clientlist').hide();
-			$('#company_client_List').children('.clientlist').slice(0, rowsShown).show();
+			$('#company_client_List').children('tr').hide();
+			$('#company_client_List').children('tr').slice(0, rowsShown).show();
 			$('#company_client_load').bind('click', function () {
 				if (rowsTotal < rowsShown) {
 					$('#company_client_load').hide();
@@ -73,7 +73,7 @@ function companyClientList(snapshot) {
 				rowsShown++;
 				rowsShown++;
 				var endItem = rowsShown;
-				$('#company_client_List').children('.clientlist').css('opacity', '0.0').hide().slice(0, endItem).
+				$('#company_client_List').children('tr').css('opacity', '0.0').hide().slice(0, endItem).
 				css('display', 'table-row').animate({
 					opacity: 1
 				}, 300);
@@ -92,7 +92,6 @@ $(document).ready(function () {
 			})
 		}
 	})
-
 	$('#company_client_List_box').hide();
 	$('#company_client_load').hide();
 	firebase.database().ref('company/').on('child_added', function (snapshot) {
@@ -139,9 +138,7 @@ $(document).ready(function () {
 		})
 	})
 	
-	
 	$('#list').children().remove();
-//	firebase.database().ref('user-infos/').on('child_added', function (snapshot2) {
 		firebase.database().ref('users/').on('child_added', function (snapshot1) {
 			firebase.database().ref('accept/').orderByChild('AcceptUserId').equalTo(snapshot1.key).on('value', function(snapshot3){
 			$('#list').append('<tr><td><input type="radio" value="' + snapshot1.key + '" name="radioInline" ></td>' +
@@ -149,7 +146,6 @@ $(document).ready(function () {
 				'<td>' + snapshot1.val().username + '</td><td>' + snapshot3.numChildren() + '</td></tr>');
 			})
 		})
-//	})
 	$('#modalSave').click(function () {
 		firebase.database().ref('company/' + $(this).attr('value')).update({
 			officer: $('input[type=radio]:checked').val()
@@ -157,6 +153,23 @@ $(document).ready(function () {
 		$('#myModal6').modal('hide');
 		location.reload();
 	})
+})
+
+$(document).on('click', '#company_client_List tr', function(){
+	$('#email').text('');
+	$('#extension').text('');
+	$('#fax').text('');
+	$('#phone').text('');
+	$('#workPhone').text('');
+	console.log($(this).attr('value'));
+		firebase.database().ref('clients/' +  $(this).attr('value')).on('child_added', function(snapshot){
+			$('#email').text('이메일: ' +snapshot.val().clientEmail);
+			$('#extension').text('내선번호: ' + snapshot.val().clientExtension);
+			$('#fax').text('팩스: ' + snapshot.val().clientFax);
+			$('#phone').text('휴대전화: ' + snapshot.val().clientPhone);
+			$('#workPhone').text('업무전화: ' + snapshot.val().clientWorkPhone);
+		})
+		$('#myModal').modal();
 })
 
 $(document).on('click', '#companyModify', function(){
