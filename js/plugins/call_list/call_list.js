@@ -125,7 +125,9 @@ function postList(snapshot1) {
 						var rowsShown = parseInt($('#sizeSel option:selected').val());
 						var rowsTotal = $parent.children('.call_list').size();
 						var numPages = Math.ceil(rowsTotal / rowsShown);
-						
+						if(numPages >= 10){
+							$('#addList').show();
+						}
 						$parent.children('.call_list').hide();
 						$parent.children('.call_list').slice(0, rowsShown).show();
 						$('#pagination').bootpag({
@@ -146,11 +148,16 @@ function postList(snapshot1) {
 }
 
 $(document).on('click', '.call_list', function () {
-	var link = '#/index/view_call_record?no=' + $(this).attr('value');
-	window.open(link, '_blank');
+ if ( window._childwin )        // 새창이 띄워져 있을때
+    {
+        window._childwin.focus();
+    }
+ 	window._childwin = window.open('#/index/view_call_record?no=' + $(this).attr('value'), "all", '_blank');
+	return false;
 })
 
 $(document).ready(function () {
+	$('#addList').hide();
 	firebase.auth().onAuthStateChanged(function (user) {
 		if (user) {
 			firebase.database().ref('clients/' + user.uid).on('child_added', function (snapshot) {
@@ -172,14 +179,14 @@ $(document).ready(function () {
 		});
 	} else if (status != '' && pageType == '') {
 		$parent.children('.call_list').remove();
-		firebase.database().ref('qnaWrite/').orderByChild('status').equalTo(status).on('child_added', function (snapshot1) {
+		firebase.database().ref('qnaWrite/').orderByChild('status').equalTo(status).limitToFirst(100).on('child_added', function (snapshot1) {
 			if (snapshot1.val().status == status) {
 				postList(snapshot1);
 			}
 		});
 	} else if (status != '' && pageType != '') {
 		$parent.children('.call_list').remove();
-		firebase.database().ref('qnaWrite/').orderByChild('status').equalTo(status).on('child_added', function (snapshot1) {
+		firebase.database().ref('qnaWrite/').orderByChild('status').equalTo(status).limitToFirst(100).on('child_added', function (snapshot1) {
 			if (snapshot1.val().type == pageType) {
 				postList(snapshot1);
 			}
@@ -198,6 +205,7 @@ $(document).ready(function () {
 
 $(document).ready(function () {
 	$('#sizeSel').change(function () {
+		$('#addList').hide();
 		$parent.children('.call_list').remove();
 		/* 전체 리스트 */
 		firebase.database().ref("qnaWrite/").orderByChild('date').on("child_added", function (snapshot1) {
@@ -222,6 +230,7 @@ $(document).ready(function () {
 	})
 
 	$(document).on('change', '#typeSelect', function () {
+		$('#addList').hide();
 		$parent.children('.call_list').remove();
 		var select =  $(this).children("option:selected").text();
 		if (select == '전체') {
@@ -239,6 +248,7 @@ $(document).ready(function () {
 				}
 			});
 		} else {
+			$('#addList').hide();
 			pageType = select;
 			firebase.database().ref("qnaWrite/").orderByChild('type').equalTo(select).on('child_added', function (snapshot1) {
 				if(status == ''){
@@ -257,6 +267,7 @@ $(document).ready(function () {
 	})
 
 	$("#radio1").click(function () {
+		$('#addList').hide();
 		status = '';
 		$parent.children('.call_list').remove();
 		firebase.database().ref("qnaWrite/").orderByChild('date').on("child_added", function (snapshot1) {
@@ -275,6 +286,7 @@ $(document).ready(function () {
 	})
 
 	$('#radio2').click(function () {
+		$('#addList').hide();
 		status = '접수'
 			$parent.children('.call_list').remove();
 		firebase.database().ref('qnaWrite/').orderByChild('status').equalTo('접수').on('child_added', function (snapshot1) {
@@ -289,11 +301,12 @@ $(document).ready(function () {
 			}
 		});
 	})
-	
+	var datanum = 100;
 	$('#radio3').click(function () {
+		$('#addList').show();
 		status = '해결'
-			$parent.children('.call_list').remove();
-		firebase.database().ref('qnaWrite/').orderByChild('status').equalTo('해결').on('child_added', function (snapshot1) {
+		$parent.children('.call_list').remove();
+		firebase.database().ref('qnaWrite/').orderByChild('status').equalTo('해결').limitToFirst(datanum).on('child_added', function (snapshot1) {
 			if(pageType == ''){
 				location.hash = '#/index/call_list?status=해결';
 				postList(snapshot1);
@@ -305,7 +318,26 @@ $(document).ready(function () {
 			}
 		})
 	})
+	$('#addList').click(function(){
+		console.log($('.call_list').last().children('.title1').text());
+		datanum = datanum + 50;
+		firebase.database().ref('qnaWrite/').startAt(null, $('.call_list').last().attr('value')).limitToFirst(datanum).on('child_added', function(snapshot1){
+			console.log('click');
+			if(pageType == ''){
+				location.hash = '#/index/call_list?status=해결';
+				if(snapshot1.val().status == '해결'){
+					postList(snapshot1);
+				}
+			} else {
+				location.hash = '#/index/call_list?status=해결&type=' + pageType;
+				if(snapshot1.val().type == pageType){
+					postList(snapshot1);
+				}
+			}
+		})
+	})
 	$('#radio4').click(function () {
+		$('#addList').hide();
 		status = '보류'
 			$parent.children('.call_list').remove();
 		firebase.database().ref('qnaWrite/').orderByChild('status').equalTo('보류').on('child_added', function (snapshot1) {
@@ -321,6 +353,7 @@ $(document).ready(function () {
 		})
 	})
 	$('#radio5').click(function () {
+		$('#addList').hide();
 		status = '등록'
 			$parent.children('.call_list').remove();
 		firebase.database().ref('qnaWrite/').orderByChild('status').equalTo('등록').on('child_added', function (snapshot1) {
@@ -336,6 +369,7 @@ $(document).ready(function () {
 		})
 	})
 	$('#radio6').click(function () {
+		$('#addList').hide();
 		status = '검토중'
 			$parent.children('.call_list').remove();
 		firebase.database().ref('qnaWrite/').orderByChild('status').equalTo('검토중').on('child_added', function (snapshot1) {
@@ -370,6 +404,7 @@ $(document).ready(function () {
 $('.searchUl').hide();
 
 function typeSelect() {
+	$('#addList').hide();
 	switch($('#searchSelect option:selected').val()){
 	case 'title':
 		$('.searchUl li').remove();

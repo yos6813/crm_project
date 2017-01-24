@@ -55,8 +55,10 @@ $(document).ready(function(){
 			$('#title').val(snapshot.val().title);
 			$('#postText').summernote('code', snapshot.val().text);
 			$('#writeTypeSelect').val(snapshot.val().type);
-			$('#fileInput').text(snapshot.val().file);
 			$('#cusKey').text(snapshot.val().user);
+			if(snapshot.val().file != undefined){
+				$('#fileInput').append('<span class="fileName">' + snapshot.val().file + '</span>&nbsp;&nbsp;&nbsp;&nbsp;');
+			}
 			
 			
 			firebase.database().ref('clients/' + snapshot.val().user).orderByKey().on('child_added', function(snapshot1){
@@ -300,7 +302,7 @@ $('#postSave').click(function(){
 	
 	
 	for(var i=0; i<=$('#fileInput').children().length; i++){
-		if($('#fileInput').children().eq(i).text() != undefined && $('#fileInput').children().eq(i).text() != null){
+		if($('#fileInput').children().eq(i).text() != ''){
 			file.push($('#fileInput').children().eq(i).text());
 		}
 	}
