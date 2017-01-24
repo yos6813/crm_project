@@ -79,8 +79,8 @@ function postList(snapshot1) {
 												  '</td>' +
 												  '<td class="project-title">' + snapshot1.val().userName +
 												  '</td>' +
-												  '<td class="project-title"><span class="badge badge-info">' + snapshot5.numChildren() +
-												  '</span></td>' +
+												  '<td class="project-title"><h3 class="text-success">' + snapshot5.numChildren() +
+												  '</h3></td>' +
 												  '</tr>';
 							})
 							
@@ -123,7 +123,8 @@ function postList(snapshot1) {
 }
 
 $(document).on('click', '.call_list', function () {
-	location.hash = '#/index/view_call_record?no=' + $(this).attr('value');
+	var link = '#/index/view_call_record?no=' + $(this).attr('value');
+	window.open(link, '_blank');
 })
 
 $(document).ready(function () {
@@ -356,6 +357,7 @@ $('.searchUl').hide();
 function typeSelect() {
 	switch($('#searchSelect option:selected').val()){
 	case 'title':
+		$('.searchUl li').remove();
 		firebase.database().ref('qnaWrite/').orderByChild('date').on('child_added', function (snapshot1) {
 			if(status == '' && pageType == ''){
 				if(snapshot1.val().status != '해결'){
@@ -375,7 +377,9 @@ function typeSelect() {
 				}
 			}
 		})
+		break;
 	case 'text':
+		$('.searchUl li').remove();
 		firebase.database().ref('qnaWrite/').orderByChild('date').on('child_added', function (snapshot1) {
 			if(status == '' && pageType == ''){
 				if(snapshot1.val().status != '해결'){
@@ -395,7 +399,9 @@ function typeSelect() {
 				}
 			}
 		})
+		break;
 	case 'username':
+		$('.searchUl li').remove();
 		firebase.database().ref('qnaWrite/').orderByChild('officer').on('child_added', function (snapshot) {
 			firebase.database().ref('users/' + snapshot.val().officer).on('value', function(snapshot1){
 				if(status == '' && pageType == ''){
@@ -417,7 +423,9 @@ function typeSelect() {
 				}
 			})
 		})
+		break;
 	case 'company':
+		$('.searchUl li').remove();
 		firebase.database().ref('qnaWrite/').orderByChild('date').on('child_added', function (snapshot1) {
 			if(status == '' && pageType == ''){
 				if(snapshot1.val().status != '해결'){
@@ -437,6 +445,7 @@ function typeSelect() {
 				}
 			}
 		})
+		break;
 	}
 
 	var searchInput = [];

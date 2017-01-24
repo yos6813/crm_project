@@ -102,8 +102,8 @@ function postList(snapshot1) {
 							  '</td>' +
 							  '<td class="project-title">' + writeUser +
 							  '</td>' +
-							  '<td class="project-title"><span class="badge badge-info">' + snapshot5.numChildren() +
-							  '</span></td>' +
+							  '<td class="project-title"><h3 class="text-success">' + snapshot5.numChildren() +
+							  '</h3></td>' +
 							  '</tr>';
 						})
 						
@@ -146,7 +146,8 @@ function postList(snapshot1) {
 }
 
 $(document).on('click', '.call_list', function () {
-	location.hash = '#/index/view_call_record?no=' + $(this).attr('value');
+	var link = '#/index/view_call_record?no=' + $(this).attr('value');
+	window.open(link, '_blank');
 })
 
 $(document).ready(function () {
@@ -354,7 +355,7 @@ $(document).ready(function () {
 
 // 검색
 $(document).ready(function () {
-
+	typeSelect();
 	$('#searchInput').hideseek({
 		hidden_mode: true,
 	});
@@ -371,6 +372,7 @@ $('.searchUl').hide();
 function typeSelect() {
 	switch($('#searchSelect option:selected').val()){
 	case 'title':
+		$('.searchUl li').remove();
 		firebase.database().ref('qnaWrite/').on('child_added', function (snapshot1) {
 			if(status == '' && pageType == ''){
 				if(snapshot1.val().status != '해결'){
@@ -390,7 +392,9 @@ function typeSelect() {
 				}
 			}
 		})
+		break;
 	case 'text':
+		$('.searchUl li').remove();
 		firebase.database().ref('qnaWrite/').on('child_added', function (snapshot1) {
 			if(status == '' && pageType == ''){
 				if(snapshot1.val().status != '해결'){
@@ -410,7 +414,9 @@ function typeSelect() {
 				}
 			}
 		})
+		break;
 	case 'username':
+		$('.searchUl li').remove();
 		firebase.database().ref('qnaWrite/').on('child_added', function (snapshot) {
 			firebase.database().ref('users/' + snapshot.val().officer).on('value', function(snapshot1){
 				if(status == '' && pageType == ''){
@@ -432,7 +438,9 @@ function typeSelect() {
 				}
 			})
 		})
+		break;
 	case 'company':
+		$('.searchUl li').remove();
 		firebase.database().ref('qnaWrite/').on('child_added', function (snapshot1) {
 			if(status == '' && pageType == ''){
 				if(snapshot1.val().status != '해결'){
@@ -452,11 +460,13 @@ function typeSelect() {
 				}
 			}
 		})
+		break;
 	}
 
 	var searchInput = [];
 	var searchInput1 = [];
 	$('#searchBtn').click(function () {
+		console.log('click');
 		$parent.children('tr .call_list').remove();
 		searchInput = [];
 		searchInput1 = [];

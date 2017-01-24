@@ -337,7 +337,7 @@ $('#viewFile').children().remove();
 					firebase.storage().ref('files/' + data.val()).getDownloadURL().then(function (url) {
 						$('#viewFile').append('<div class="file-box">' +
 							'<div class="file">' +
-							'<a href="' + url + '">' +
+							'<a target="_blank" href="' + url + '">' +
 							'<span class="corner"></span>' +
 							'<div class="image">' +
 							'<img alt="file" class="img-responsive" src="' + url + '">' +
