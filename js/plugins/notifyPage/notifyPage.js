@@ -115,7 +115,7 @@ $(document).ready(function(){
 		firebase.database().ref('notify/').on('child_added', function(snapshot){
 			cNotifyList(snapshot);
 			$('#typeSelect').change(function(){
-				$('#notifyList').children('.notify_list').remove();
+				$('#notifyList').children('.cnotify_list').remove();
 				var select = $(this).children("option:selected").text();
 				if(select == '전체'){
 					firebase.database().ref("notify/").on("child_added", function(snapshot){
