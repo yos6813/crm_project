@@ -1,49 +1,51 @@
+/* 해당 담당자의 작성글 구성 */
 function clientPost(snapshot){
-		$('#client_posts_user_box').show();
-		$('#client_posts_user').children().remove();
-		firebase.database().ref('qnaWrite/').orderByChild('user').equalTo(snapshot).on('child_added', function(snapshot1){
-			$('#client_posts_user').each(function(){
-			var state;
-			if(snapshot1.val().status == '해결'){
-				state = 'label-default';
-			} else if(snapshot1.val().status == '접수'){
-				state = 'label-primary';
-			} else if(snapshot1.val().status == '등록'){
-				state = 'label-info';
-			} else if(snapshot1.val().status == '보류'){
-				state = 'label-warning';
-			}
-			$('#client_posts_user').append('<tr class="client_List" value="' + snapshot1.key + '">' +
-										   '<td><span class="label ' + state + '">' + snapshot1.val().status + '</span></td>' +
-										   '<td>' + snapshot1.val().title + '</td>' +
-										   '<td>' + snapshot1.val().date + '</td>' +
-										   '</tr>');
+	$('#client_posts_user_box').show();
+	$('#client_posts_user').children().remove();
+	firebase.database().ref('qnaWrite/').orderByChild('user').equalTo(snapshot).on('child_added', function(snapshot1){
+		$('#client_posts_user').each(function(){
+		var state;
+		if(snapshot1.val().status == '해결'){
+			state = 'label-default';
+		} else if(snapshot1.val().status == '접수'){
+			state = 'label-primary';
+		} else if(snapshot1.val().status == '등록'){
+			state = 'label-info';
+		} else if(snapshot1.val().status == '보류'){
+			state = 'label-warning';
+		}
+		$('#client_posts_user').append('<tr class="client_List" value="' + snapshot1.key + '">' +
+									   '<td><span class="label ' + state + '">' + snapshot1.val().status + '</span></td>' +
+									   '<td>' + snapshot1.val().title + '</td>' +
+									   '<td>' + snapshot1.val().date + '</td>' +
+									   '</tr>');
 		})
-			var rowsShown = 5;
-			var rowsTotal = $('#client_posts_user').children('.client_List').size();
-			if(rowsTotal > rowsShown){
-				$('#client_posts_load').show();
+		var rowsShown = 5;
+		var rowsTotal = $('#client_posts_user').children('.client_List').size();
+		if(rowsTotal > rowsShown){
+			$('#client_posts_load').show();
+		}
+		var numPages = Math.ceil(rowsTotal/rowsShown);
+		$('#client_posts_user').children('.client_List').hide();
+		$('#client_posts_user').children('.client_List').slice(0, rowsShown).show();
+		$('#client_posts_load').bind('click', function(){
+			if(rowsTotal < rowsShown){
+				$('#client_posts_load').hide();
 			}
-			var numPages = Math.ceil(rowsTotal/rowsShown);
-			$('#client_posts_user').children('.client_List').hide();
-			$('#client_posts_user').children('.client_List').slice(0, rowsShown).show();
-			$('#client_posts_load').bind('click', function(){
-				if(rowsTotal < rowsShown){
-					$('#client_posts_load').hide();
-				}
-				rowsShown ++;
-				rowsShown ++;
-				rowsShown ++;
-				rowsShown ++;
-				rowsShown ++;
-				console.log(rowsShown);
-				var endItem = rowsShown;
-				$('#client_posts_user').children('.client_List').css('opacity','0.0').hide().slice(0, endItem).
-				css('display','table-row').animate({opacity:1}, 300);
-			});
+			rowsShown ++;
+			rowsShown ++;
+			rowsShown ++;
+			rowsShown ++;
+			rowsShown ++;
+			console.log(rowsShown);
+			var endItem = rowsShown;
+			$('#client_posts_user').children('.client_List').css('opacity','0.0').hide().slice(0, endItem).
+			css('display','table-row').animate({opacity:1}, 300);
+		});
 	})
 }
 
+/* 담당자 리스트 구성 */
 function clientLi(snapshot){
 	firebase.database().ref('clients/' + snapshot.key).on('child_added', function(snapshot1){
 		firebase.database().ref('company/' + snapshot1.val().company).on('value', function(snapshot2){
@@ -64,23 +66,25 @@ function clientLi(snapshot){
 			$('#client_pagination').bootpag({
 				   total: numPages,
 				   maxVisible: 10
-				}).on('page', function(event, num){
-					var startItem = (num-1) * rowsShown;
-					var endItem = startItem + rowsShown;
-					$('#client_user').children('.clientList').css('opacity', '0.0').hide().slice(startItem, endItem).
-					css('display', 'table-row').animate({
-						opacity: 1
-					}, 300);
-				});
+			}).on('page', function(event, num){
+				var startItem = (num-1) * rowsShown;
+				var endItem = startItem + rowsShown;
+				$('#client_user').children('.clientList').css('opacity', '0.0').hide().slice(startItem, endItem).
+				css('display', 'table-row').animate({
+					opacity: 1
+				}, 300);
+			});
 		})
 	})
 }
 
+/* 클릭 시 해당 글의 뷰페이지로 이동 */
 $(document).on('click', '.client_List', function(){
 	location.hash = '#/index/view_call_record?no=' + $(this).attr('value');
 })
 
 $(document).ready(function(){
+	/* client 아이디로 로그인 시 client 페이지로 튕김 */
 	firebase.auth().onAuthStateChanged(function (user) {
 		if (user) {
 			firebase.database().ref('clients/' + firebase.auth().currentUser.uid).on('child_added',function(snapshot){
@@ -90,6 +94,8 @@ $(document).ready(function(){
 			})
 		}
 	})
+	
+	/* 리스트 구성 */
 	firebase.database().ref('clients/').on('child_added', function(snapshot){
 		clientLi(snapshot);
 	})
@@ -97,7 +103,7 @@ $(document).ready(function(){
 	$('#client_posts_user_box').hide();
 	$('#client_posts_load').hide();
 	
-	
+	/* 회원 클릭 시 해당 담당자의 정보 보여주기 */
 	$(document).on('click', '.clientList', function(){
 			clientPost($(this).attr('value'));
 			$('#infoModify').remove();
@@ -133,10 +139,12 @@ $(document).ready(function(){
 	})
 })
 
+/* 수정 버튼 클릭 이벤트 */
 $(document).on('click', '#infoModify', function(){
 	location.hash = '#/customer?no=' + $(this).attr('value');
 })
 
+/* 담당자 삭제 버튼 */
 $(document).on('click', '#infoDelete', function(){
 	swal({
         title: "정말 삭제하시겠습니까?",
@@ -159,6 +167,7 @@ $(document).on('click', '#infoDelete', function(){
 })
 
 $(document).ready(function(){
+	/* 담당자 검색 */
 	$('#search_client').click(function(){
 		$('#client_user').children('.clientList').remove();
 		firebase.database().ref("clients/").on("child_added", function(snapshot){

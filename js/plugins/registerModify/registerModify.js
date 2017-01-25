@@ -8,14 +8,13 @@ function getParameterByName(name) {
 var modifyPageno = getParameterByName('no');
 
 $(document).ready(function(){
-	
 	firebase.database().ref('user-infos/' + modifyPageno).on('child_added', function(snapshot){
 		firebase.database().ref('user-infos/' + modifyPageno + '/' + snapshot.key).on('value', function(snapshot1){
 			$('#modifyprofileImg').attr('src', snapshot1.val().picture); 
 			$('#modifyUsername').val(snapshot1.val().username);
 			$('#emailInput').val(snapshot1.val().email);
 			$('#departmentInputMo').val(snapshot1.val().department);
-			$('#jobInputMo').val(snapshot1.val().job);
+			$('#job').val(snapshot1.val().job);
 			$('#extensionMo').val(snapshot1.val().extension);
 			$('#callMo').val(snapshot1.val().call);
 			$('#phoneMo').val(snapshot1.val().phone);
@@ -24,6 +23,7 @@ $(document).ready(function(){
 			$('#nicknameMo').val(snapshot1.val().nickname);
 			$('#birthMo').val(snapshot1.val().birth);
 			$('#slack').val(snapshot1.val().slack);
+			
 		})
 	})
 })
@@ -69,29 +69,8 @@ function sample6_execDaumPostcode() {
     }).open();
 }
 
-//			firebase.database().ref("departments/").orderByKey().on("child_added", function(snapshot){
-//				snapshot.forEach(function(data){
-//					$('#departmentMo').append('<li><a value="' + data.val() + '">' + data.val()
-//							+ '</a></li>');
-//				})
-//				$('#departmentMo a').on('click', function(){
-//					$('#departmentInputMo').val($(this).attr('value'));
-//				})
-//			})
-			
-			/* 직책 */
-//			firebase.database().ref("jobs/").orderByKey().on("child_added", function(snapshot){
-//				snapshot.forEach(function(data){
-//					$('#job1').append('<li><a value="' + data.val() + '">' + data.val()
-//							+ '</a></li>');
-//				})
-//				$('#job1 a').on('click', function(){
-//					$('#job').val($(this).attr('value'));
-//				})
-//			})
 			
 /* add User */
-
 function writeUserData(userId, name, email, imageUrl) {
   firebase.database().ref('users/' + userId).set({
     username: name,
@@ -100,6 +79,7 @@ function writeUserData(userId, name, email, imageUrl) {
   });
 }
 
+/* 수정사항 저장 */
 $('#modifyBtn').click(function(){
 	firebase.database().ref('user-infos/' + modifyPageno).on('child_added', function(snapshot){
 		firebase.database().ref('user-infos/' + modifyPageno + '/' + snapshot.key).update({

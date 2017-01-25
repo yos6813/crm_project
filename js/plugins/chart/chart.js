@@ -1,13 +1,13 @@
+/* 1시간에 한번씩 새로고침 */
 function pagestart() {
-	window.setTimeout("pagereload()", 6000000);
+	window.setTimeout("pagereload()", 360000);
 }
-
 function pagereload() {
 	location.reload();
 }
 
 $(document).ready(function(){
-//	console.log(firebase.auth().currentUser.email);
+	/* client 아이디로 로그인 시 client 페이지로 튕김 */
 	firebase.auth().onAuthStateChanged(function(user) {
 		if(user){
 			firebase.database().ref('clients/' + user.uid).on('child_added',function(snapshot){
@@ -17,14 +17,18 @@ $(document).ready(function(){
 			})
 		}
 	})
+	
 	pagestart();
+	
+	/* 지난달 데이터 삭제 */
 	var todayMonth = new Date().getMonth() + 1;
 	if(todayMonth == '1'){
-		firebase.database().ref('timePosts/30').remove();
+		firebase.database().ref('timePosts/12').remove();
 	} else {
 		firebase.database().ref('timePosts/' + todayMonth - 1).remove();
 	}
 	
+	/* 도넛 차트 */
 	firebase.database().ref('qnaWrite/').orderByChild('status').equalTo('해결').on('value', function(snapshot1){
 		firebase.database().ref('qnaWrite/').orderByChild('status').equalTo('접수').on('value', function(snapshot2){
 			firebase.database().ref('qnaWrite/').orderByChild('status').equalTo('보류').on('value', function(snapshot3){
@@ -83,12 +87,13 @@ $(document).ready(function(){
 		})
 	})
 	
+	/* 일 별 집계 */
 	var dataSource = [];
 	var todayMonth = new Date().getMonth() + 1;
 	for(var j=0; j<=new Date().getHours(); j++){
 		firebase.database().ref('timePosts/' + todayMonth + '/' + new Date().getDate() + '/' + j).on('value', function(snapshot){
 			if(todayMonth == '1'){
-				firebase.database().ref('timePosts/30').remove();
+				firebase.database().ref('timePosts/12').remove();
 			} else {
 				firebase.database().ref('timePosts/' + todayMonth - 1).remove();
 			}
@@ -186,6 +191,7 @@ $(document).ready(function(){
 	var system5 = [];
 	var management5 = [];
 	
+	/* 글 분류 별 집계 */
 	for(var i=1; i<=5; i++){
 		$('#taxLaw' + i).click(function(){
 			var url = '#/index/call_list?status=' + $(this).prev().text() + '&type=' + $(this).parent().prev().children().text();
@@ -203,7 +209,6 @@ $(document).ready(function(){
 		})
 	}
 	
-//	firebase.database().ref('qnaWrite/').on('child_added', function(snapshot){
 		firebase.database().ref('qnaWrite/').orderByChild('status').equalTo('해결').on('child_added', function(snapshot1){
 			if(snapshot1.val().type == '세법'){
 				taxLaw.push(snapshot1.key);
@@ -215,14 +220,13 @@ $(document).ready(function(){
 				if(management != null){
 					$('#management3').text(management.length);
 				}
-			} else if (snapshot1.val().type == '시스템'){
+			} else {
 				system.push(snapshot1.key);
 				if(system != null){
 					$('#system3').text(system.length);
 				}
 			}
 		})
-//	})
 	
 		firebase.database().ref('qnaWrite/').orderByChild('status').equalTo('접수').on('child_added', function(snapshot1){
 			if(snapshot1.val().type == '세법'){
@@ -235,7 +239,7 @@ $(document).ready(function(){
 				if(management1 != null){
 					$('#management1').text(management1.length);
 				}
-			} else if (snapshot1.val().type == '시스템'){
+			} else {
 				system1.push(snapshot1.key);
 				if(system1 != null){
 					$('#system1').text(system1.length);
@@ -306,7 +310,7 @@ $(document).ready(function(){
 	})
 })
 
-
+/* 달 별 집계 */
 function MonthPosts(){
 	var todayMonth;
 	if(new Date().getMonth() == 12){

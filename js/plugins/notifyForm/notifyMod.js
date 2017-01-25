@@ -8,6 +8,7 @@ function getParameterByName(name) {
 var modifyNo = getParameterByName('no1');
 
 $(document).ready(function(){
+	/* 수정 정보 삽입 */
 	firebase.database().ref('notify/' + modifyNo).on('value', function(snapshot){
 		$("#writeTypeSelect").val(snapshot.val().notifyType);
 		$('#notifyText').summernote('code', snapshot.val().text);
@@ -20,13 +21,13 @@ $(document).ready(function(){
 	})
 })
 
+/* summernote 설정 */
 $('.summernote').summernote({
   height: 300,                 // set editor height
   minHeight: null,             // set minimum height of editor
   maxHeight: null,             // set maximum height of editor
   focus: true,                  // set focus to editable area after initializing summernote
     toolbar: [
-    // [groupName, [list of button]]
     ['style', ['bold', 'italic', 'underline', 'clear']],
     ['font', ['strikethrough', 'superscript', 'subscript']],
     ['fontsize', ['fontsize']],
@@ -77,6 +78,7 @@ function handleFileSelect(evt) {
 }
 	  document.getElementById('fileButton').addEventListener('change', handleFileSelect, false);
 
+/* 글 저장 */
 $('#Save').click(function(){
 	var notifyType = $("#writeTypeSelect").val();
 	var text = $('#notifyText').summernote('code');
@@ -101,6 +103,7 @@ $('#Save').click(function(){
 	location.hash = "#/index/notifyPage?no=1";
 })
 
+/* 작성 취소 */
 $('#Cancel').click(function(){
 	swal({
         title: "글 작성을 취소하시겠습니까?",

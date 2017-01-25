@@ -8,7 +8,7 @@ function getParameterByName(name) {
 var modifyPageno = getParameterByName('no');
 var modifyRPageno = getParameterByName('Rno');
 
-/* user post alert */
+/* add user post function */
 function writeAlert(uid, replyPhoto, replyUser, replyDay, replyTitle, replyPost, replyUserName, check){
 	var alertData = {
 			replyPhoto: replyPhoto,
@@ -26,6 +26,7 @@ function writeAlert(uid, replyPhoto, replyUser, replyDay, replyTitle, replyPost,
 	return firebase.database().ref().update(updates);
 }
 
+/* 작성 취소 */
 $('#replyCancel').click(function(){
 	swal({
         title: "글 작성을 취소하시겠습니까?",
@@ -41,6 +42,7 @@ $('#replyCancel').click(function(){
 })
 
 $(document).ready(function(){
+	/* client 아이디로 로그인 시 튕김 */
 	firebase.auth().onAuthStateChanged(function(user) {
 		if(user){
 			firebase.database().ref('clients/' + firebase.auth().currentUser.uid).on('child_added',function(snapshot){
@@ -53,6 +55,7 @@ $(document).ready(function(){
 	
 	$('#clientEmail').hide();
 	$('#clientTitle').hide();
+	/* 수정할 정보 구성 */
 	firebase.database().ref('qnaWrite/' + modifyPageno).on('value', function(snapshot){
 		$('#viewClient').text(snapshot.val().userName);
 		$('#viewCompany').text(snapshot.val().company);
@@ -85,7 +88,6 @@ $(document).ready(function(){
 })
 
 // 파일 업로드
-
 var auth = firebase.auth();
 var storageRef = firebase.storage().ref();
 var file = [];
@@ -134,13 +136,10 @@ function handleFileSelect(evt) {
 
   document.getElementById('fileButton').addEventListener('change', handleFileSelect, false);
 
-
-
-//$('#fileInput').hide();
-
 var postState = '';
 var postCusPhone = '';
 
+/* 수정 된 내용 저장 */
 $('#replySave').click(function(){
 	var today = new Date();
 	var uploadfile = [];
@@ -190,6 +189,7 @@ $('#replySave').click(function(){
 			});
 		})
 		
+		/* 해당 글의 history 저장 */
 		var historyType = '답변 작성';
 		var user = firebase.auth().currentUser;
 		var today = new Date();
@@ -211,7 +211,7 @@ $('#replySave').click(function(){
 		location.hash = '#/index/view_call_record?no=' + modifyPageno;
 });
 
-
+/* summernote 설정 */
 $('.summernote').summernote({
   height: 300,                 // set editor height
   minHeight: null,             // set minimum height of editor

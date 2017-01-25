@@ -15,11 +15,14 @@ firebase.database().ref("types/").orderByKey().endAt("type").on("child_added", f
 	})
 })
 
+/* 유형 선택 */
 $('#writeTypeSelect').change(function(){
 	var type = $(this).val();
 	$('#bigGroupli').children().remove();
 	$('#bigGroupli').hide();
 	$('#bigGroup').hide();
+	
+	/* 대분류, 소분류 */
 	firebase.database().ref('bigGroup/' + type).on('child_added', function(snapshot){
 		$('#bigGroupli').show();
 		$('#bigGroup').show();
@@ -46,6 +49,7 @@ $(document).ready(function(){
 	$('#bigGroupli').hide();
 	$('#bigGroup').hide();
 	if(modifyPageno != ''){
+		/* 수정페이지 */
 		firebase.database().ref('/qnaWrite/' + modifyPageno).on('value', function(snapshot){
 			$('#customerIn').val(snapshot.val().userName);
 			$('#bigGroupli').remove();
@@ -85,6 +89,7 @@ $(document).ready(function(){
 		})
 	}
 	
+	/* client autocomplete 구성 */
 	$('#client_search').hideseek({hidden_mode: true});
 	firebase.database().ref('clients/').orderByKey().on('child_added', function(snapshot1){
 		firebase.database().ref('clients/' + snapshot1.key).orderByKey().on('child_added', function(snapshot){
@@ -98,8 +103,9 @@ $(document).ready(function(){
 	$('.sap').hide();
 	$('.cloud').hide();
 	$('.onpremises').hide();
-
 	$('#cusKey').hide();
+	
+	/* client 선택 */
 	$(document).on('click', '.client_searchList a', function(){
 		$('.sap').hide();
 		$('.cloud').hide();
@@ -143,7 +149,6 @@ $(document).ready(function(){
 })
 
 // 글 등록
-
 function addPost(user, userEmail, bigGroup, smallGroup, title, text, file, date, type, status, company, userName, userId, replyName, officer, replyText, replyImg,
 		AcceptName,AcceptDate,AcceptUserId, division, writeUser){
 	var postData = {
@@ -154,7 +159,6 @@ function addPost(user, userEmail, bigGroup, smallGroup, title, text, file, date,
 			title: title,
 			text: text,
 			file: file,
-//			tag: tag,
 			date: date,
 			type: type,
 			status: status,
@@ -206,27 +210,12 @@ function addPost(user, userEmail, bigGroup, smallGroup, title, text, file, date,
 	return firebase.database().ref().update(updates);
 }
 
-// 태그 등록
-
-//function addtags(tag){
-//	var tagData = {
-//			tag: tag
-//	}
-//	
-//	var newTagKey = firebase.database().ref().child('tags').push().key;
-//	
-//	var updates = {};
-//	updates['/tags/' + newTagKey] = tagData;
-//	
-//	return firebase.database().ref().update(updates);
-//}
-
+/* 작성 취소 */
 $('#postCancel').click(function () {
         window.location.hash = '#/index/call_list'
 });
 
 // 파일 업로드
-
 var auth = firebase.auth();
 var storageRef = firebase.storage().ref();
 var file = [];
@@ -276,8 +265,6 @@ function handleFileSelect(evt) {
 	  document.getElementById('fileButton').addEventListener('change', handleFileSelect, false);
 
  // 글 저장
-
-	  
 $('#postSave').click(function(){
 	var title = $('#title').val();
 	var text = $('#postText').summernote('code');
@@ -286,7 +273,6 @@ $('#postSave').click(function(){
 	var type = $('#writeTypeSelect').val();
 	var today = new Date();
 	var date = today.getFullYear() + "." + (today.getMonth()+1) + "." + today.getDate() + " " + today.getHours() + ":" + today.getMinutes();
-//	var date = today.getFullYear() + (today.getMonth()+1) + today.getDate() + today.getHours() + today.getMinutes();
 	var user = $('#cusKey').text();
 	var file = [];
 	var bigGroup = $('#bigGroupli').val();
@@ -344,10 +330,6 @@ $('#postSave').click(function(){
 	
 	window.location.hash = 'index/call_list';
 })
-
-$('.tagsinput').tagsinput({
-    tagClass: 'label label-primary'
-});
 
 $('.summernote').summernote({
   height: 300,                 // set editor height

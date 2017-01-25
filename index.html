@@ -23,7 +23,6 @@
 
     <!-- Bootstrap and Fonts -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
-    
 
     <!-- Main Inspinia CSS files -->
     <link href="css/animate.css" rel="stylesheet">
@@ -90,22 +89,6 @@
     };
     firebase.initializeApp(config);
   </script>
-  
-  
-  <!-- 개발용 -->
- <!--<script>
-  // Initialize Firebase
-  var config = {
-    apiKey: "AIzaSyBSXRDrVzqppOGW-eZZN5IyHdeZcKjUxR8",
-    authDomain: "crmapp-32675.firebaseapp.com",
-    databaseURL: "https://crmapp-32675.firebaseio.com",
-    storageBucket: "crmapp-32675.appspot.com",
-    messagingSenderId: "805712434179"
-  };
-  firebase.initializeApp(config);
-</script>  -->
-
-
 <script>
 var comName = [];
 firebase.database().ref("company/").orderByKey().on("child_added", function(snapshot){
@@ -118,7 +101,6 @@ firebase.database().ref("company/").orderByKey().on("child_added", function(snap
 
 <!-- Typehead -->
 <script src="js/plugins/typeahead/bootstrap3-typeahead.min.js"></script>
-
 <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
   <script>
     var comName = [];
@@ -148,7 +130,6 @@ firebase.database().ref("company/").orderByKey().on("child_added", function(snap
     <script src="js/plugins/sweetalert/sweetalert.min.js"></script>
   <!-- SUMMERNOTE -->
   <script src="js/plugins/summernote/summernote.min.js"></script>
-  <script src="js/plugins/bootstrap-tagsinput/bootstrap-tagsinput.js"></script>
   <!-- Jasny -->
   <script src="js/plugins/jasny/jasny-bootstrap.min.js"></script>
   <!-- DevExtreme dependencies -->
@@ -159,5 +140,4 @@ firebase.database().ref("company/").orderByKey().on("child_added", function(snap
   <script type="text/javascript" src="https://cdn3.devexpress.com/jslib/15.1.11/js/dx.chartjs.js"></script>
   <script type="text/javascript" src="https://cdn3.devexpress.com/jslib/15.1.11/js/dx.all.js"></script>
 </body>
-
 </html>

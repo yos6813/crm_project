@@ -7,10 +7,8 @@ function getParameterByName(name) {
 
 var pageType = getParameterByName('type');
 var status = getParameterByName('status');
-var name = getParameterByName('%3F');
-var title = getParameterByName('title');
-var uid = getParameterByName('uid');
 
+/* 글 유형 드롭다운 리스트  */
 firebase.database().ref("types/").orderByKey().endAt("type").on("child_added", function (snapshot) {
 	var typeSel;
 	snapshot.forEach(function (data) {
@@ -20,8 +18,8 @@ firebase.database().ref("types/").orderByKey().endAt("type").on("child_added", f
 	$('#typeSelect').append(typeSel);
 })
 
+/* List Function */
 $parent = $('#postList');
-
 function postList(snapshot1) {
 	var tr;
 	if(snapshot1.val().division == 'client'){
@@ -125,17 +123,19 @@ function postList(snapshot1) {
 	}
 }
 
+/* 클릭 시 viewPage로 이동 */
 $(document).on('click', '.call_list', function () {
 	 if ( window._childwin )        // 새창이 띄워져 있을때
 	    {
 	        window._childwin.focus();
 	    }
-	 	window._childwin = window.open('#/index/view_call_record?no=' + $(this).attr('value'), "all", '_blank');
+	 	window._childwin = window.open('#/index/view_call_record?no=' + $(this).attr('value'), "all", 'height=' + screen.height + ',width=' + screen.width + 'fullscreen=yes');
 		return false;
 	})
 
 $(document).ready(function () {
 	$('#addList').hide();
+	/* client 아이디로 로그인 시 client 페이지로 튕김 */
 	firebase.auth().onAuthStateChanged(function (user) {
 		if (user) {
 			firebase.database().ref('clients/' + user.uid).on('child_added', function (snapshot) {
@@ -145,6 +145,8 @@ $(document).ready(function () {
 			})
 		}
 	})
+	
+	/* 리스트 구성 */
 	if (pageType != '' && status == '') {
 		$parent.children('.call_list').remove();
 		firebase.database().ref('qnaWrite/').orderByChild('type').equalTo(pageType).on('child_added', function (snapshot1) {
@@ -186,6 +188,7 @@ $(document).ready(function () {
 })
 
 $(document).ready(function () {
+	/* 리스트 열 개수 선택 */
 	$('#sizeSel').change(function () {
 		$('#addList').hide();
 		$parent.children('.call_list').remove();
@@ -211,6 +214,7 @@ $(document).ready(function () {
 		});
 	})
 
+	/* 글 유형 필터 */
 	$(document).on('change', '#typeSelect', function () {
 		$('#addList').hide();
 		$parent.children('.call_list').remove();
@@ -248,6 +252,7 @@ $(document).ready(function () {
 		}
 	})
 
+	/* 글 상태 필터 */
 	$("#radio1").click(function () {
 		$('#addList').hide();
 		status = '';
@@ -302,7 +307,7 @@ $(document).ready(function () {
 		})
 	})
 
-	$('#addList').click(function(){
+	$('#addList').click(function(){ //리스트 더보기 버튼 클릭
 		console.log($('.call_list').last().children('.title1').text());
 		datanum = datanum + 50;
 		firebase.database().ref('qnaWrite/').startAt(null, $('.call_list').last().attr('value')).limitToFirst(datanum).on('child_added', function(snapshot1){
@@ -374,7 +379,7 @@ $(document).ready(function () {
 	})
 })
 
-// 검색
+/* 검색 */
 $(document).ready(function () {
 	typeSelect();
 

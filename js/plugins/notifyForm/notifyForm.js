@@ -1,10 +1,10 @@
+/* summernote 설정 */
 $('.summernote').summernote({
   height: 300,                 // set editor height
   minHeight: null,             // set minimum height of editor
   maxHeight: null,             // set maximum height of editor
   focus: true,                  // set focus to editable area after initializing summernote
     toolbar: [
-    // [groupName, [list of button]]
     ['style', ['bold', 'italic', 'underline', 'clear']],
     ['font', ['strikethrough', 'superscript', 'subscript']],
     ['fontsize', ['fontsize']],
@@ -63,6 +63,7 @@ function handleFileSelect(evt) {
 }
 	  document.getElementById('fileButton').addEventListener('change', handleFileSelect, false);
 
+/* 공지사항 저장 function */
 function addnotify(notifyType, title, text, file, date){
 	
 		var notifyData = {
@@ -81,6 +82,7 @@ function addnotify(notifyType, title, text, file, date){
 	return firebase.database().ref().update(updates);
 }
 
+/* 글 저장 */
 $('#Save').click(function(){
 	var notifyType = $("#writeTypeSelect").val();
 	var text = $('#notifyText').summernote('code');
@@ -100,6 +102,7 @@ $('#Save').click(function(){
 	location.hash = "#/index/notifyPage?no=1";
 })
 
+/* 작성 취소 */
 $('#Cancel').click(function(){
 	swal({
         title: "글 작성을 취소하시겠습니까?",
@@ -121,6 +124,7 @@ $('#Cancel').click(function(){
 })
 
 $(document).ready(function(){
+	/* 미로그인 시 로그인 페이지로 튕김 */
 	firebase.auth().onAuthStateChanged(function(user) {
 		if(!user){
 			window.location.hash = '#/login';
@@ -128,9 +132,14 @@ $(document).ready(function(){
 	})
 	
 	var user = firebase.auth().currentUser;
-	firebase.database().ref('clients/' + user.uid).on('child_added',function(snapshot){
-		if(snapshot.val().grade == '0'){
-			window.location.hash = '#/clientLogin';
+	/* client 아이디로 로그인 시 client 페이지로 튕김 */
+	firebase.auth().onAuthStateChanged(function (user) {
+		if (user) {
+			firebase.database().ref('clients/' + user.uid).on('child_added',function(snapshot){
+				if(snapshot.val().grade == '0'){
+					window.location.hash = '#/clientLogin';
+				}
+			})
 		}
 	})
 	

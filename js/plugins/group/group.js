@@ -1,3 +1,4 @@
+/* 대분류 저장 function */
 function addbigGroup(type, bGroup) {
 	var bGroupData = {
 		bGroup: bGroup
@@ -11,6 +12,7 @@ function addbigGroup(type, bGroup) {
 	return firebase.database().ref().update(updates);
 }
 
+/* 소분류 저장 function */
 function addsmallGroup(type, sGroup, bigGroup) {
 	var sGroupData = {
 		sGroup: sGroup
@@ -51,12 +53,18 @@ $('#addSmallGroup').click(function(){
 })
 
 $(document).ready(function(){
-	firebase.database().ref('clients/' + firebase.auth().currentUser.uid).on('child_added',function(snapshot){
-		if(snapshot.val().grade == '0'){
-			window.location.hash = '#/clientLogin';
+	/* client 아이디로 로그인 시 client 페이지로 튕김 */
+	firebase.auth().onAuthStateChanged(function (user) {
+		if (user) {
+			firebase.database().ref('clients/' + firebase.auth().currentUser.uid).on('child_added',function(snapshot){
+				if(snapshot.val().grade == '0'){
+					window.location.hash = '#/clientLogin';
+				}
+			})
 		}
 	})
 	
+	/* 타입별 대분류 */
 	var type = $('#typeSelect').val();
 	firebase.database().ref('bigGroup/' + type).on('child_added', function(snapshot){
 		snapshot.forEach(function(data){
@@ -142,6 +150,7 @@ $(document).on('click', '.modifybGroupB', function(){
 	location.reload();
 })
 
+/* 글 유형 선택 */
 $('#typeSelect').change(function(){
 	$('#bigGroup').children().remove();
 	$('#smallGroup').children().remove();

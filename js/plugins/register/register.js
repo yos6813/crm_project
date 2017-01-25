@@ -15,7 +15,6 @@ firebase.auth().onAuthStateChanged(function(user) {
 })
 
 /* add User */
-
 function writeUserData(userId, name, email, imageUrl) {
   firebase.database().ref('users/' + userId).set({
     username: name,
@@ -24,8 +23,7 @@ function writeUserData(userId, name, email, imageUrl) {
   });
 }
 
-/* Register Form */
-
+/* add info */
 function writeUserInfo(uid, job, userImg, username, email, nickname, extension, phone, call, slack, grade){
 	var infoData = {
 		uid: uid,

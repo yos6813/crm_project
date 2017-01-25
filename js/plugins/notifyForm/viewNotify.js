@@ -9,7 +9,7 @@ var type = getParameterByName('no1');
 var no = getParameterByName('no');
 
 $(document).ready(function(){
-	
+	/* 미로그인 시 로그인 페이지로 튕김 */
 	firebase.auth().onAuthStateChanged(function(user) {
 		if(!user){
 			window.location.hash = '#/clientLogin';
@@ -18,6 +18,7 @@ $(document).ready(function(){
 	
 	$('#patch').hide();
 	$('#notice').hide();
+	/* 유형 드롭다운 */
 	if(type != ''){
 		$('#viewButton').append('<a href="#/index/notifyMod?no1=' + type + '" class="btn btn-white btn-sm"><i class="fa fa-pencil"></i> 수정</a>' +
 		'<a id="delete" class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Move to trash"><i class="fa fa-trash-o"></i> 삭제</a>');
@@ -36,6 +37,7 @@ $(document).ready(function(){
 			$('#notice').show();
 		}
 		
+		/* 첨부파일 */
 		firebase.database().ref('notify/' + type + '/file').on('value', function(snapshot){
 			firebase.database().ref('notify/' + type).on('value', function(snapshot2){
 				snapshot.forEach(function(data){
@@ -65,6 +67,7 @@ $(document).ready(function(){
 		})
 	})
 	
+	/* 글 삭제 */
 	$(document).on('click','#delete', function(){
 		var postRef = firebase.database().ref('notify/' + type);
 		
@@ -89,7 +92,7 @@ $(document).ready(function(){
 		
 	});
 	} else {
-		/* 고객 페이지 */
+	/* 고객 페이지 */
 	firebase.database().ref('notify/' + no).on('value', function(snapshot){
 		$("#viewText").append(snapshot.val().text);
 		$('#viewTitle').text(snapshot.val().title);
@@ -103,6 +106,7 @@ $(document).ready(function(){
 			$('#notice').show();
 		}
 		
+		/* 첨부파일 */
 		firebase.database().ref('notify/' + no + '/file').on('value', function(snapshot){
 			firebase.database().ref('notify/' + no).on('value', function(snapshot1){
 				snapshot.forEach(function(data){
@@ -132,6 +136,7 @@ $(document).ready(function(){
 		})
 	})
 	
+	/* 글 삭제 */
 	$(document).on('click','#delete', function(){
 		location.reload();
 		var postRef = firebase.database().ref('notify/' + no);
@@ -154,9 +159,6 @@ $(document).ready(function(){
 	            swal("취소", "error");
 	        }
 	    });
-		
 	});
 	}
-	
-	
 })

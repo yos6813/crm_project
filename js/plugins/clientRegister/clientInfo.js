@@ -58,8 +58,6 @@ $(document).ready(function(){
 			})
 		}
 	})
-//	$('#clientEmail').val(firebase.auth().currentUser.email);
-	
 })
 
 	

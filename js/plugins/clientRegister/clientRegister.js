@@ -2,6 +2,7 @@ function handleSignUp() {
   var clientEmail = $('#clientEmail').val();
   var password = $('#pw').val();
   
+  /* 에러 시 실행 */
   firebase.auth().createUserWithEmailAndPassword(clientEmail, password).catch(function(error) {
 	  if(error){
 	      var errorCode = error.code;

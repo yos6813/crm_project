@@ -1,3 +1,4 @@
+/* 회사 리스트 구성 */
 function companyList(snapshot) {
 	var username = '';
 	firebase.database().ref('users/' + snapshot.val().officer).on('value', function (snapshot1) {
@@ -31,19 +32,20 @@ function companyList(snapshot) {
 		$('#company_list').children('.company_list1').hide();
 		$('#company_list').children('.company_list1').slice(0, rowsShown).show();
 		$('#company_pagination').bootpag({
-			   total: numPages,
-			   maxVisible: 10
-			}).on('page', function(event, num){
-				var startItem = (num-1) * rowsShown;
-				var endItem = startItem + rowsShown;
-				$('#company_list').children('.company_list1').css('opacity', '0.0').hide().slice(startItem, endItem).
-				css('display', 'table-row').animate({
-					opacity: 1
-				}, 300);
-			});
+		   total: numPages,
+		   maxVisible: 10
+		}).on('page', function(event, num){
+			var startItem = (num-1) * rowsShown;
+			var endItem = startItem + rowsShown;
+			$('#company_list').children('.company_list1').css('opacity', '0.0').hide().slice(startItem, endItem).
+			css('display', 'table-row').animate({
+				opacity: 1
+			}, 300);
+		});
 	});
 }
 
+/* 회사 담당자 리스트 구성 */
 function companyClientList(snapshot) {
 	$('#company_client_List').children().remove();
 	$('#company_client_List_box').show();
@@ -83,6 +85,7 @@ function companyClientList(snapshot) {
 }
 
 $(document).ready(function () {
+	/* client 아이디로 로그인 시 client 페이지로 튕김 */
 	firebase.auth().onAuthStateChanged(function (user) {
 		if (user) {
 			firebase.database().ref('clients/' + firebase.auth().currentUser.uid).on('child_added', function (snapshot) {
@@ -92,11 +95,16 @@ $(document).ready(function () {
 			})
 		}
 	})
+	
 	$('#company_client_List_box').hide();
 	$('#company_client_load').hide();
+	
+	/* company list load */
 	firebase.database().ref('company/').on('child_added', function (snapshot) {
 		companyList(snapshot);
 	})
+	
+	/* 회사 리스트 클릭 이벤트 */
 	$(document).on('click', '.company_list1', function () {
 		var comType;
 		$('#company_Type').children().remove();
@@ -139,13 +147,19 @@ $(document).ready(function () {
 	})
 	
 	$('#list').children().remove();
-		firebase.database().ref('users/').on('child_added', function (snapshot1) {
-			firebase.database().ref('accept/').orderByChild('AcceptUserId').equalTo(snapshot1.key).on('value', function(snapshot3){
-			$('#list').append('<tr><td><input type="radio" value="' + snapshot1.key + '" name="radioInline" ></td>' +
-				'<td><img alt="image" class="img-circle" src="' + snapshot1.val().picture + '"></td>' +
-				'<td>' + snapshot1.val().username + '</td><td>' + snapshot3.numChildren() + '</td></tr>');
-			})
+	/* 책임자 지정 모달 구성 */
+	firebase.database().ref('users/').on('child_added', function (snapshot1) {
+		firebase.database().ref('accept/').orderByChild('AcceptUserId').equalTo(snapshot1.key).on('value', function(snapshot3){
+		$('#list').append('<tr><td><input type="radio" value="' + snapshot1.key + '" name="radioInline" ></td>' +
+			'<td><img alt="image" class="img-circle" src="' + snapshot1.val().profile_picture + '"></td>' +
+			'<td>' + snapshot1.val().username + '</td><td>' + snapshot3.numChildren() + '</td></tr>');
 		})
+	})
+	$('img').error(function(){
+		$(this).attr('src', '../../img/photo.png');
+	})
+	
+	/* 모달 내 저장버튼 클릭 이벤트 */
 	$('#modalSave').click(function () {
 		firebase.database().ref('company/' + $(this).attr('value')).update({
 			officer: $('input[type=radio]:checked').val()
@@ -155,28 +169,30 @@ $(document).ready(function () {
 	})
 })
 
+/* 담당자 리스트 구성 */
 $(document).on('click', '#company_client_List tr', function(){
 	$('#email').text('');
 	$('#extension').text('');
 	$('#fax').text('');
 	$('#phone').text('');
 	$('#workPhone').text('');
-	console.log($(this).attr('value'));
-		firebase.database().ref('clients/' +  $(this).attr('value')).on('child_added', function(snapshot){
-			$('#email').text('이메일: ' +snapshot.val().clientEmail);
-			$('#extension').text('내선번호: ' + snapshot.val().clientExtension);
-			$('#fax').text('팩스: ' + snapshot.val().clientFax);
-			$('#phone').text('휴대전화: ' + snapshot.val().clientPhone);
-			$('#workPhone').text('업무전화: ' + snapshot.val().clientWorkPhone);
-		})
-		$('#myModal').modal();
+	firebase.database().ref('clients/' +  $(this).attr('value')).on('child_added', function(snapshot){
+		$('#email').text('이메일: ' +snapshot.val().clientEmail);
+		$('#extension').text('내선번호: ' + snapshot.val().clientExtension);
+		$('#fax').text('팩스: ' + snapshot.val().clientFax);
+		$('#phone').text('휴대전화: ' + snapshot.val().clientPhone);
+		$('#workPhone').text('업무전화: ' + snapshot.val().clientWorkPhone);
+	})
+	$('#myModal').modal();
 })
 
+/* 회사 정보 수정 페이지로 이동 */
 $(document).on('click', '#companyModify', function(){
 	location.hash = '#/company?no=' + $(this).attr('value');
 })
 
 $(document).ready(function () {
+	/* 회사 검색 */
 	$('#search_company').click(function () {
 		$('#company_list').children('.company_list1').remove();
 		firebase.database().ref("company/").on("child_added", function (snapshot) {

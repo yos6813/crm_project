@@ -8,13 +8,14 @@ function getParameterByName(name) {
 var email = getParameterByName('no');
 
 $(document).ready(function(){
-	
+	/* 미로그인 시 로그인 페이지로 튕김 */
 	firebase.auth().onAuthStateChanged(function(user) {
 		if(!user){
 			window.location.hash = '#/clientLogin';
 		}
 	})
 	
+	/* 유저 글 리스트 로드 */
 	firebase.database().ref('qnaWrite/').orderByChild('user').equalTo(email).on('child_added', function(snapshot){
 		var state;
 		if(snapshot.val().status == '해결'){
@@ -42,6 +43,7 @@ $(document).ready(function(){
 	})
 })
 
+/* 리스트 클릭 시 해당 글의 뷰페이지로 이동 */
 $(document).on('click', '.call_list', function(){
 	location.hash = '#/cIndex/view_qna?no=' + $(this).attr('value') + '&email=' + firebase.auth().currentUser.email;
 })

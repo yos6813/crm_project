@@ -8,6 +8,7 @@ function getParameterByName(name) {
 var writeType = getParameterByName('type');
 var no = getParameterByName('no');
 
+/* summernote 설정 */
 $('.summernote').summernote({
   height: 300,                 // set editor height
   minHeight: null,             // set minimum height of editor
@@ -28,6 +29,7 @@ var auth = firebase.auth();
 var storageRef = firebase.storage().ref();
 var file = [];
 
+/* 첨부파일 저장 */
 function handleFileSelect(evt) {
   evt.stopPropagation();
   evt.preventDefault();
@@ -69,8 +71,11 @@ function handleFileSelect(evt) {
 	  }
   }
 }
-	  document.getElementById('fileButton').addEventListener('change', handleFileSelect, false);
+
+/* 파일 저장 버튼 이벤트 핸들러 */
+document.getElementById('fileButton').addEventListener('change', handleFileSelect, false);
 	 
+/* post save function */
 function postAdd(user, officer, userEmail, bigGroup, smallGroup, title, text, file, tag, date, type, status, company, userId, userName, replyDate, replyName, replyText, replyImg
 				 , division, writeUser){
 	var postData = {
@@ -92,12 +97,6 @@ function postAdd(user, officer, userEmail, bigGroup, smallGroup, title, text, fi
 			writeUser: writeUser
 	}
 	
-//	var acceptData = {
-//			AcceptDate: AcceptDate,
-//			AcceptUserId: AcceptUserId,
-//			AcceptName: AcceptName,
-//		};
-	
 	var replyData = {
 			userId: userId,
 			replyDate: replyDate,
@@ -118,7 +117,6 @@ function postAdd(user, officer, userEmail, bigGroup, smallGroup, title, text, fi
 	updates['/qnaWrite/' + newPostKey] = postData;
 	updates['/timePosts/' + todayMonth + '/' + new Date().getDate() + '/' + new Date().getHours() + '/' + newPostKey] = postData;
 	updates['/monthPosts/' + new Date().getFullYear() + '/' + todayMonth + '/' +new Date().getDate() + '/' + newPostKey] = postData;
-//	updates['/accept/' + newPostKey] = acceptData;
 	updates['/reply/' + newPostKey] = replyData;
 	
 	return firebase.database().ref().update(updates);
@@ -130,6 +128,8 @@ $(document).ready(function(){
 	
 	$('#bigGroup').hide();
 	$('#bigGroupli').hide();
+	
+	/* 로그인을 하지 않았을 시 로그인 페이지로 튕김 */
 	firebase.auth().onAuthStateChanged(function(user) {
 		if(!user){
 			window.location.hash = '#/clientLogin';
@@ -148,7 +148,7 @@ $(document).ready(function(){
 		$('#writeType').text('운용')
 		
 		
-		/* 저장 버튼 */
+	/* 저장 버튼 */
 	$('#qnaSave').click(function(){
 		var user = firebase.auth().currentUser.uid;
 		firebase.database().ref('clients/' + user).on('child_added', function(snapshot){
@@ -160,7 +160,6 @@ $(document).ready(function(){
 				var tag = [];
 				var today = new Date();
 				var date = today.getFullYear() + "." + (today.getMonth()+1) + "." + today.getDate() + " " + today.getHours() + ":" + today.getMinutes();
-//				var date = today.getFullYear() + (today.getMonth()+1) + today.getDate() + today.getHours() + today.getMinutes();
 				var status = '등록';
 				var company = snapshot1.val().name;
 				var userName = snapshot.val().clientName;
@@ -168,9 +167,6 @@ $(document).ready(function(){
 				var bigGroup = '';
 				var smallGroup = '';
 				var userEmail = firebase.auth().currentUser.email;
-//				var AcceptName = firebase.auth().currentUser.displayName;
-//				var AcceptDate = today.getFullYear() + "." + (today.getMonth()+1) + "." + today.getDate() + " " + today.getHours() + ":" + today.getMinutes();
-//				var AcceptUserId = firebase.auth().currentUser.uid;
 				var division = 'client';
 				var writeUser = firebase.auth().currentUser.uid;
 				
@@ -207,6 +203,7 @@ $(document).ready(function(){
 				});
 				location.hash = '#/cIndex/qnaList?no=' + user;
 				
+				/* 책임자 슬랙으로 알림 전송 */
 				var types = "<http://yeta.center/#/index/call_list|문의 글 리스트 가기>";
 				var url;
 				var channel;
@@ -221,22 +218,6 @@ $(document).ready(function(){
 				if(snapshot1.val().officer != undefined){
 					firebase.database().ref('user-infos/' + snapshot1.val().officer).on('child_added', function(snapshot5){
 						console.log(snapshot5.val().slack);
-//						payload = {
-//								"attachments":[
-//									{
-////										"channel": "@" + snapshot5.val().slack,
-//										"fallback":type + " 문의 등록",
-//										"pretext":type + " 문의 등록",
-//										"title": types,
-////										"title_link": "http://yeta.center/#/index/call_list?name=" + userName + "&title=" +  title,
-//										"color":"#D00000",
-//										"fields":[{
-//											"value": "이름: " + userName + "\n" + "제목: " + title + "\n" + types,
-//											"short":false
-//										}]
-//									}
-//								]
-//						}
 						payload2={
 								"channel": "@" + snapshot5.val().slack,
 								"username": "YETA2016",
@@ -245,12 +226,9 @@ $(document).ready(function(){
 									"short":false
 								}]
 						}
-//						console.log(payload);
-//						sendToSlack_(url,payload);
 						sendToSlack_(url,payload2);
 					})
 				} else {
-//					console.log('test2');
 					payload = {
 						"attachments":[
 							{
@@ -273,12 +251,14 @@ $(document).ready(function(){
 	})
 	
 	var type = $('#writeType').text();
+	/* 대분류 구성 */
 	firebase.database().ref('bigGroup/' + type).on('child_added', function(snapshot){
 		$('#bigGroupli').show();
 		$('#bigGroup').show();
 			$('#bigGroupli').append('<option value="' + snapshot.val().bGroup + '">' + snapshot.val().bGroup + '</option>');
 	})
 	
+	/* 대분류 선택 시 하위 소분류 구성 */
 	$(document).on('change', '#bigGroupli', function(){
 		var type = $('#writeType').text();
 		$('#smallGroupli').children().remove();
@@ -292,8 +272,7 @@ $(document).ready(function(){
 	})
 })
 
-
-
+/* webhook function */
 function sendToSlack_(url,payload) {
 	$.ajax({
         url: url,

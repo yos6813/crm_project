@@ -7,6 +7,7 @@ function getParameterByName(name) {
 
 var viewPageno = getParameterByName('no');
 
+/* add history function */
 function history(historyType, user, date, historytext){
 	var historyData = {
 			historyType: historyType,
@@ -37,13 +38,15 @@ function sendToSlack_(url,payload) {
 }
 
 $(document).ready(function () {
+	/* 긴급 상태 일 시 체크 */
 	firebase.database().ref('qnaWrite/' + viewPageno).on('value', function(snapshot){
 		if(snapshot.val().warn == '긴급'){
 			$('#checkbox6').prop('checked', true);
 		}
 	})
-	$('#mail').hide();
 	
+	$('#mail').hide();
+	/* 답변이 작성되지 않았을 시 메일 전송버튼 숨김 */
 	firebase.database().ref('reply/' + viewPageno).on('value', function(snapshot){
 		if(snapshot.val().replyText == ''){
 			$('#mail').hide();
@@ -52,6 +55,7 @@ $(document).ready(function () {
 		}
 	})
 	
+	/* 긴급 체크박스 */
 	$('#checkbox6').change(function(){
 		if($(this).is(":checked")){
 			firebase.database().ref('qnaWrite/' + viewPageno).update({
@@ -64,6 +68,7 @@ $(document).ready(function () {
 		}
 	})
 	
+	/* client 아이디로 로그인 시 client 페이지로 튕김 */
 	firebase.auth().onAuthStateChanged(function (user) {
 		if (user) {
 			firebase.database().ref('clients/' + user.uid).on('child_added', function (snapshot) {
@@ -74,6 +79,7 @@ $(document).ready(function () {
 		}
 	})
 	
+	/* slack 보내기 모달 구성 */
 	$('#list1').children('.userlist').remove();
 	firebase.database().ref('users/').on('child_added', function (snapshot1) {
 		if(snapshot1.val().username != undefined){
@@ -89,6 +95,7 @@ $(document).ready(function () {
 		}
 	})
 	
+	/* 책임자 지정 모달 구성 */
 	$('#list').children().remove();
 	firebase.database().ref('users/').on('child_added', function (snapshot1) {
 		firebase.database().ref('accept/').orderByChild('AcceptUserId').equalTo(snapshot1.key).on('value', function(snapshot3){
@@ -103,6 +110,8 @@ $(document).ready(function () {
 			}
 		})
 	})
+	
+	/* slack 모달 저장 버튼 */
 	$('#modalSave').click(function(){
 		var historytext;
 			if($('input[type=radio]:checked').val() == 'tech'){
@@ -148,10 +157,13 @@ $(document).ready(function () {
 				$('#myModal6').modal('hide');
 			})
 		})
+		
 		var historyType = 'slack공유';
 		var user = firebase.auth().currentUser.uid;
 		var today = new Date();
 		var date = today.getFullYear() + "." + (today.getMonth()+1) + "." + today.getDate() + " " + today.getHours() + ":" + today.getMinutes();
+
+		/* history 구성 */
 		firebase.database().ref('history/' + viewPageno).push({
 			historyType: historyType,
 			user: user,
@@ -160,30 +172,30 @@ $(document).ready(function () {
 		})		
 	})
 		
-		$('#modalSave1').click(function(){
-			firebase.database().ref('qnaWrite/' + viewPageno).update({
-				officer: $('input[type=radio]:checked').val()
-			})
-			$('#myModal5').modal('hide');
-			location.reload();
-			
-			firebase.database().ref('users/' + $('input[type=radio]:checked').val()).on('value', function(snapshot){
-				var historyType = '책임자변경';
-				var user = firebase.auth().currentUser.uid;
-				var today = new Date();
-				var date = today.getFullYear() + "." + (today.getMonth()+1) + "." + today.getDate() + " " + today.getHours() + ":" + today.getMinutes();
-				var historytext = snapshot.val().username + '로 책임자변경';
-				firebase.database().ref('history/' + viewPageno).push({
-					historyType: historyType,
-					user: user,
-					date: date,
-					historytext: historytext
-				})	
-			})
+	/* 책임자 지정 */
+	$('#modalSave1').click(function(){
+		firebase.database().ref('qnaWrite/' + viewPageno).update({
+			officer: $('input[type=radio]:checked').val()
 		})
+		$('#myModal5').modal('hide');
+		location.reload();
+		
+		firebase.database().ref('users/' + $('input[type=radio]:checked').val()).on('value', function(snapshot){
+			var historyType = '책임자변경';
+			var user = firebase.auth().currentUser.uid;
+			var today = new Date();
+			var date = today.getFullYear() + "." + (today.getMonth()+1) + "." + today.getDate() + " " + today.getHours() + ":" + today.getMinutes();
+			var historytext = snapshot.val().username + '로 책임자변경';
+			firebase.database().ref('history/' + viewPageno).push({
+				historyType: historyType,
+				user: user,
+				date: date,
+				historytext: historytext
+			})	
+		})
+	})
 	
-
-	
+	/* 수정 내용 구성 */
 	firebase.database().ref('qnaWrite/' + viewPageno).on('value', function (snapshot) {
 		$('#viewTitle').text(snapshot.val().title);
 		$('#viewCustomer').text(snapshot.val().userName);
@@ -232,6 +244,7 @@ $('#viewType3').hide();
 $('#viewEtc').hide();
 $('#viewType4').hide();
 
+/* history 리스트 */
 function history(){
 	var html;
 	firebase.database().ref('history/' + viewPageno).on('child_added', function(snapshot){
@@ -254,6 +267,7 @@ function history(){
 
 $(document).ready(function () {
 	history();
+	/* 상태 변경 */
 	firebase.database().ref('qnaWrite/' + viewPageno + '/status').on('value', function (snapshot) {
 		switch(snapshot.val()){
 		case '해결':
@@ -305,6 +319,7 @@ $(document).ready(function () {
 		}
 	})
 
+	/* 유형별 글 유형 나타내기  */
 	firebase.database().ref('qnaWrite/' + viewPageno + '/type').on('value', function (snapshot) {
 		if (snapshot.val() == '세법') {
 			$('#viewTaxLaw').show();
@@ -318,6 +333,7 @@ $(document).ready(function () {
 		}
 	})
 
+	/* 글 정보 보여주기 */
 	firebase.database().ref('qnaWrite/' + viewPageno + '/text').on('value', function (snapshot) {
 		$('#viewText').append(snapshot.val());
 	})
@@ -361,6 +377,7 @@ $('#viewFile').children().remove();
 		}
 	})
 	
+	/* 메일 보내기 */
 	$('#mail').click(function(){
 		firebase.database().ref('qnaWrite/' + viewPageno).on('value', function (snapshot) {
 			firebase.database().ref('users/' + snapshot.val().officer).on('value', function(snapshot2){
@@ -392,6 +409,7 @@ $('#viewFile').children().remove();
 		})
 	})
 	
+	/* 파일 보이기 */
 	$('#replyFile').children('file-box').remove();
 	firebase.database().ref('reply/' + viewPageno + '/replyFile').on('value', function (snapshot) {
 		firebase.database().ref('reply/' + viewPageno).on('value', function (snapshot1) {
@@ -421,8 +439,8 @@ $('#viewFile').children().remove();
 			})
 		})
 	})
-
-
+	
+	/* 상태 선택 */
 	$('#acceptSel1').change(function () {
 		var user = firebase.auth().currentUser;
 		var img = user.photoURL;
@@ -506,6 +524,7 @@ $('#viewFile').children().remove();
 
 
 	$(document).ready(function () {
+		/* 콜, 웹 표시 */
 		firebase.database().ref("qnaWrite/" + viewPageno).on('value', function (snapshot) {
 			$('#writeTime').text(snapshot.val().date);
 			if(snapshot.val().division == "call"){
@@ -518,14 +537,19 @@ $('#viewFile').children().remove();
 				})
 			}
 		})
+		
+		/* 접수자 */
 		firebase.database().ref("qnaWrite/" + viewPageno).on('value', function (snapshot) {
 			firebase.database().ref('accept/' + viewPageno).on('value', function(snapshot1){
 				$('#viewAccept').append('<div class="text-muted">접수자: <i class="fa fa-user"></i>&ensp;' + snapshot1.val().AcceptName + '</div>' +
 						'<div class="text-muted"><i class="fa fa-clock-o"></i>&ensp;' + snapshot1.val().AcceptDate + '</div>');
 			})
 		})
+		/* 답변 버튼 */
 		$('#replyButton').append('<a href="#/index/form_call_record_modify?no=' + viewPageno + '" target="_top" class="btn btn-white btn-sm" title="Reply"><i class="fa fa-pencil"></i> 작성</a>' +
 								 '<a id="replyDelete" class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Move to trash"><i class="fa fa-trash-o"></i> 삭제</a>');
+		
+		/* 답변 보이기 */
 		firebase.database().ref("reply/" + viewPageno).on('value', function (snapshot1) {
 			
 			if (snapshot1.val().replyName != '') {
@@ -545,6 +569,7 @@ $('#viewFile').children().remove();
 		})
 	})
 
+	/* 댓글 */
 	function addComment(commentImg, commentDate, commentName, comment, post) {
 		var commentData = {
 			commentImg: commentImg,
@@ -562,6 +587,7 @@ $('#viewFile').children().remove();
 		return firebase.database().ref().update(updates);
 	}
 
+	/* 댓글 작성 */
 	$('#uploadComment').click(function () {
 		var user = firebase.auth().currentUser;
 		var commentImg = user.photoURL;
@@ -582,6 +608,7 @@ $('#viewFile').children().remove();
 	})
 
 	$(document).ready(function () {
+		/* 댓글 불러오기 */
 		firebase.database().ref("comment/").orderByChild('post').equalTo(viewPageno).on('child_added', function (snapshot) {
 			firebase.database().ref("comment/" + snapshot.key).on('value', function (snapshot1) {
 				$('#commentArea').append('<a class="pull-left">' +
@@ -598,9 +625,11 @@ $('#viewFile').children().remove();
 		});
 	})
 
+	/* 글 수정 버튼 */
 	$('#viewButton').append('<a href="#/index/form_call_record?no=' + viewPageno + '" id="viewModify" class="btn btn-white btn-sm" title="Reply"><i class="fa fa-pencil"></i> 수정</a>' +
 		'<a id="viewDelete" class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Move to trash"><i class="fa fa-trash-o"></i> 삭제</a>');
 
+	/* 답변 삭제 */
 	$(document).on('click', '#replyDelete', function () {
 		swal({
 				title: "정말 삭제하시겠습니까?",
@@ -624,6 +653,7 @@ $('#viewFile').children().remove();
 			});
 	});
 	
+	/* 글 삭제 */
 	$(document).on('click', '#viewDelete', function () {
 		swal({
 				title: "정말 삭제하시겠습니까?",

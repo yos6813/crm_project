@@ -13,6 +13,7 @@ function getParameterByName(name) {
 
 var no = getParameterByName('no');
 
+/* 로그인 확인 */
 function userAlert(user){
 	firebase.database().ref('userAlert/').limitToFirst(5).on('child_added', function(snapshot){
 		firebase.database().ref('userAlert/' + snapshot.key  + '/' + user.uid).on('value', function(snapshot2){
@@ -77,6 +78,7 @@ $('img').error(function(){
 })
 
 $(document).ready(function () {
+	/* 로그인 */
 	$('#login').click(function(){
 		var provider = new firebase.auth.GoogleAuthProvider();
 		firebase.auth().signInWithPopup(provider);
@@ -175,6 +177,7 @@ $(document).ready(function () {
 	
 });
 
+/* 로그아웃(관리자) */
 function logout(){
 	firebase.auth().signOut();
 	window.location.hash = '#/login';
@@ -182,12 +185,13 @@ function logout(){
 	$('#navUserEMail').text('');
 }
 
+/* 로그아웃(고객) */
 function Clogout(){
 	firebase.auth().signOut();
 	window.location.hash = '#/clientLogin';
-//	location.reload();
 }
 
+/* 시스템 문의 */
 function systemBtn(){
 	window.location.hash = '#/cIndex/postWrite?type=system';
 	location.reload();
@@ -198,6 +202,7 @@ function systemBtn(){
 	})
 }
 
+/* 운용 문의 */
 function managementBtn(){
 	window.location.hash = '#/cIndex/postWrite?type=management';
 	location.reload();
@@ -208,6 +213,7 @@ function managementBtn(){
 	})
 }
 
+/* 세법 문의 */
 function taxLawBtn(){
 	window.location.hash = '#/cIndex/postWrite?type=taxLaw';
 	location.reload();
@@ -218,8 +224,8 @@ function taxLawBtn(){
 	})
 }
 
+/* 문의 리스트 */
 function qnaList(){
-//	location.reload();
 	window.location.hash = '#/cIndex/qnaList?no=' + firebase.auth().currentUser.uid;
 	firebase.auth().onAuthStateChanged(function(user) {
 		if(!user){
@@ -228,8 +234,8 @@ function qnaList(){
 	})
 }
 
+/* 공지사항 리스트 */
 function notifyPage(){
-//	location.reload();
 	window.location.hash = '#/cIndex/notifyPage';
 	firebase.auth().onAuthStateChanged(function(user) {
 		if(!user){
@@ -238,20 +244,18 @@ function notifyPage(){
 	})
 }
 
+/* 리스트 새로고침 */
 function reload1(){
 	window.location.hash = '#/index/call_list';
-//	location.reload();
 	$('href').fadeIn('slow');
 }
 
 function reload2(){
 	window.location.hash = '#/index/webQnAlist';
-//	location.reload();
 	$('href').fadeIn('slow');
 }
 
 function reload3(){
 	window.location.hash = '#/index/callQnAlist';
-//	location.reload();
 	$('href').fadeIn('slow');
 }

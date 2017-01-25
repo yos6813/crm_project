@@ -4,13 +4,12 @@ function getParameterByName(name) {
 	results = regex.exec(location.hash);
 	return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
-
 var key = getParameterByName('no');
 
+/* addClient function */
 function addClient(clientLicense, company, clientEmail, clientName, clientAddress, clientPosition,
 		   clientDepartment, clientWorkPhone, clientPhone, clientExtension, clientFax, grade){
 	var clientData = {
-//		uid:uid,
 		clientLicense: clientLicense,
 		company: company,
 		clientEmail: clientEmail,
@@ -34,8 +33,7 @@ function addClient(clientLicense, company, clientEmail, clientName, clientAddres
 	return firebase.database().ref().update(updates);
 }
 
-
-
+/* client 저장 */
 $('#customerAdd').click(function(){
 	var company = '';
 	var clientName = $('#customerName').val();
@@ -46,10 +44,10 @@ $('#customerAdd').click(function(){
 	var clientExtension = $('#clientExtension').val();
 	var clientPhone = $('.mobilePhone').val();
 	var clientFax = $('.fax').val();
-//	var uid = firebase.auth().currentUser.uid;
 	var clientEmail = $('.email').val();
 	var clientAddress = '';
 	
+	/* hash에 key가 있을 시 */
 	if(key != ''){
 		firebase.database().ref('company/').orderByChild('name').equalTo($('#cusCompany').val()).on('child_added', function(snapshot){
 			clientLicense = snapshot.val().corporate;
@@ -81,11 +79,13 @@ $('#customerAdd').click(function(){
 })
 
 var comName = [];
+/* 회사 autocomplete 구성 */
 firebase.database().ref("company/").on("child_added", function(snapshot){
 	comName.push(snapshot.val().name);
 	$(".typeahead_2").typeahead({ source: comName});
 });
 
+/* hash에 key가 있을 시 */
 $(document).ready(function(){
 	if(key != ''){
 		firebase.database().ref('clients/' + key).on('child_added', function(snapshot){

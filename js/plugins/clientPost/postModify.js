@@ -7,13 +7,13 @@ function getParameterByName(name) {
 
 var no = getParameterByName('no');
 
+/* summernote 설정 */
 $('.summernote').summernote({
   height: 300,                 // set editor height
   minHeight: null,             // set minimum height of editor
   maxHeight: null,             // set maximum height of editor
   focus: true,                  // set focus to editable area after initializing summernote
     toolbar: [
-    // [groupName, [list of button]]
     ['style', ['bold', 'italic', 'underline', 'clear']],
     ['font', ['strikethrough', 'superscript', 'subscript']],
     ['fontsize', ['fontsize']],
@@ -26,6 +26,8 @@ $('.summernote').summernote({
 $(document).ready(function(){
 	$('#smallGroup').hide();
 	$('#smallGroupli').hide();
+	
+	/* 해당 글 정보 input에 삽입 */
 	firebase.database().ref('qnaWrite/' + no).on('value', function(snapshot){
 		if(snapshot.val().smallGroup != ''){
 			$('#smallGroup').show();
@@ -57,6 +59,7 @@ var auth = firebase.auth();
 var storageRef = firebase.storage().ref();
 var file = [];
 
+/* 첨부파일 저장 */
 function handleFileSelect(evt) {
   evt.stopPropagation();
   evt.preventDefault();
@@ -97,7 +100,11 @@ function handleFileSelect(evt) {
 	  }
   }
 }
-	  document.getElementById('fileButton').addEventListener('change', handleFileSelect, false);
+
+/* 파일 이벤트 핸들러 */	  
+document.getElementById('fileButton').addEventListener('change', handleFileSelect, false);
+	
+/* 글 저장 */
 $('#modifySave').click(function(){
 		var user = firebase.auth().currentUser.uid;
 		firebase.database().ref('clients/' + user).on('child_added', function(snapshot){
@@ -157,7 +164,7 @@ $('#modifySave').click(function(){
 		})
 	})
 
-
+/* 대분류 구성 */
 $(document).on('change', '#bigGroupli', function(){
 	$('#smallGroupli').children().remove();
 	$('#smallGroupli').hide();

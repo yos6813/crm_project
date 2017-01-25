@@ -7,11 +7,8 @@
  *
  */
 function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
-//    $urlRouterProvider.otherwise("login");
-//    $urlRouterProvider.otherwise("clientLogin");
 
     $ocLazyLoadProvider.config({
-        // Set to true if you want to see what and when is dynamically loaded
         debug: false
     });
 
@@ -358,13 +355,6 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
                 pageTitle: '메일 테스트'
             }
         })
-//        .state('verifyEmail', {
-//            url: "/verifyEmail",
-//            templateUrl: "views/verifyEmail.html",
-//            data: {
-//                pageTitle: '이메일 인증'
-//            }
-//        })
 }
 angular
     .module('inspinia')

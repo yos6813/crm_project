@@ -9,6 +9,7 @@ var no = getParameterByName('no');
 var email = getParameterByName('email');
 
 $(document).ready(function(){
+	/* 하단 리스트 구성 */
 	firebase.database().ref('qnaWrite/').orderByChild('userEmail').equalTo(email).on('child_added', function(snapshot){
 		var state;
 		if(snapshot.val().status == '해결'){
@@ -35,21 +36,25 @@ $(document).ready(function(){
 				'<td class="project-title">' + snapshot.val().date + '</td></tr>');
 	})
 	
+	/* 뷰페이지로 이동 */
 	$(document).on('click', '.call_list', function(){
 		location.hash = '#/cIndex/view_qna?no=' + $(this).attr('value') + '&email=' + firebase.auth().currentUser.email;
 		location.reload();
 	})
 	
 	$('#replyBox').hide();
+	/* 미로그인 시 로그인 페이지로 튕김 */
 	firebase.auth().onAuthStateChanged(function(user) {
 		if(!user){
 			window.location.hash = '#/clientLogin';
 		}
 	})
 	
+	/* 수정, 삭제 버튼 */
 	$('#viewButton').append('<a href="#/cIndex/postModify?no=' + no + '" id="qnamodify" class="btn btn-white btn-sm" title="Reply"><i class="fa fa-pencil"></i> 수정</a>' +
 	'<a id="qnadelete" class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="Move to trash"><i class="fa fa-trash-o"></i> 삭제</a>');
 	
+	/* 글 삭제 */
 	$(document).on('click', '#qnadelete', function(){
 		var today = new Date();
 		var year = today.getFullYear();
@@ -83,6 +88,7 @@ $(document).ready(function(){
 		});
 	});
 	
+	/* 뷰페이지 구성 */
 	firebase.database().ref('qnaWrite/' + no).on('value', function(snapshot){
 		$('#viewTitle').text(snapshot.val().title);
 		$('#viewText').append(snapshot.val().text);
@@ -100,7 +106,6 @@ $(document).ready(function(){
 				firebase.database().ref('reply/' + no).on('value', function(snapshot1){
 					snapshot.forEach(function(data){
 					if(data.val() == ''&& snapshot.val().length <= 1){
-//						$('#replyFile').children().remove();
 						$('#replyFile').append('<div class="file-box"><small>no file</small></div>');
 					} else {
 							firebase.storage().ref('files/' + data.val()).getDownloadURL().then(function(url){
@@ -126,11 +131,11 @@ $(document).ready(function(){
 			})
 		})
 		
+		/* 첨부파일 */
 		firebase.database().ref('qnaWrite/' + no + '/file').on('value', function(snapshot){
 			firebase.database().ref('qnaWrite/' + no).on('value', function(snapshot1){
 				snapshot.forEach(function(data){
 				if(data.val() == '' && snapshot.val().length <= 1){
-//					$('#viewFile').children().remove();
 					$('#viewFile').append('<div class="file-box"><small>no file</small></div>');
 				} else {
 						firebase.storage().ref('files/' + data.val()).getDownloadURL().then(function(url){
@@ -157,10 +162,3 @@ $(document).ready(function(){
 	})
 	
 })
-//$(document).on('click','#qnadelete', function(){
-//	var postRef = firebase.database().ref('qnaWrite/' + no);
-//	postRef.remove();
-//	
-//	location.hash = '#/cIndex/qnaList?no=' + firebase.auth().currentUser.uid;
-//	location.reload();
-//});

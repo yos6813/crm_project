@@ -7,63 +7,39 @@ function getParameterByName(name) {
 
 var cType = getParameterByName('no');
 
+/* 고객 페이지 공지사항 리스트 생성 */
 function cNotifyList(snapshot){
-	/* 리스트 생성 */
 	$('#notifyList').append('<tr class="cnotify_list" value="' + snapshot.key + '">' + 
-//			'<a href="#/cIndex/view_notify?no='+ snapshot.key +'">' +
-			'<td class="project-category">' +
-			'<span>' + snapshot.val().notifyType + '</span>' +
-			'</td>' +
-			'<td class="title project-title">' +
-			snapshot.val().title +
-			'</td>' +
-			'<td class="project-title">' + snapshot.val().date +
-//			 '</a>' +
-			'</td></tr>');
-
-	/* 페이지 */
-//	$('#nav a').remove();
-//	var rowsShown = 10;
-//	var rowsTotal = $('#notifyList').children('.notify_list').size();
-//	var numPages = Math.ceil(rowsTotal/rowsShown);
-//	for(i = 0;i < numPages;i++) {
-//	var pageNum = i + 1;
-//	$('#nav').append('<li><a rel="'+i+'">'+pageNum+'</a></li>');
-//	}
-//	$('#notifyList').children('.notify_list').hide();
-//	$('#notifyList').children('.notify_list').slice(0, rowsShown).show();
-//	$('#nav a:first').addClass('active');
-//	$('#nav a').bind('click', function(){
-//	
-//	$('#nav a').removeClass('active');
-//	$(this).addClass('active');
-//	var currPage = $(this).attr('rel');
-//	var startItem = currPage * rowsShown;
-//	var endItem = startItem + rowsShown;
-//	$('#notifyList').children('.notify_list').css('opacity','0.0').hide().slice(startItem, endItem).
-//	css('display','table-row').animate({opacity:1}, 300);
-//	});
+							'<td class="project-category">' +
+							'<span>' + snapshot.val().notifyType + '</span>' +
+							'</td>' +
+							'<td class="title project-title">' +
+							snapshot.val().title +
+							'</td>' +
+							'<td class="project-title">' + snapshot.val().date +
+							'</td></tr>');
+	
 	var rowsShown = 10;
 	var rowsTotal = $('#notifyList').children('.notify_list').size();
 	var numPages = Math.ceil(rowsTotal / rowsShown);
-	
+
 	$('#notifyList').children('.notify_list').hide();
 	$('#notifyList').children('.notify_list').slice(0, rowsShown).show();
 	$('#pagination').bootpag({
-		   total: numPages,
-		   maxVisible: 10
-		}).on('page', function(event, num){
-			var startItem = (num-1) * rowsShown;
-			var endItem = startItem + rowsShown;
-			$('#notifyList').children('.notify_list').css('opacity', '0.0').hide().slice(startItem, endItem).
-			css('display', 'table-row').animate({
-				opacity: 1
-			}, 300);
-		});
+	   total: numPages,
+	   maxVisible: 10
+	}).on('page', function(event, num){
+		var startItem = (num-1) * rowsShown;
+		var endItem = startItem + rowsShown;
+		$('#notifyList').children('.notify_list').css('opacity', '0.0').hide().slice(startItem, endItem).
+		css('display', 'table-row').animate({
+			opacity: 1
+		}, 300);
+	});
 }
 
+/* 관리자 페이지 공지사항 리스트 생성 */
 function notifyList(snapshot){
-	/* 리스트 생성 */
 	$('#notifyList').append('<tr class="notify_list" value="' + snapshot.key + '">' +
 			'<td class="project-category">' +
 			'<span>' + snapshot.val().notifyType + '</span>' +
@@ -95,10 +71,12 @@ function notifyList(snapshot){
 		});
 }
 
+/* 뷰페이지 이동(관리자) */
 $(document).on('click', '.notify_list', function(){
 	location.hash = '#/index/view_notify?no1=' + $(this).attr('value');
 })
 
+/* 뷰페이지 이동(고객) */
 $(document).on('click', '.cnotify_list', function(){
 	location.hash = '#/cIndex/view_notify?no=' + $(this).attr('value');
 })
@@ -113,6 +91,7 @@ $(document).ready(function(){
 	$('#writebtn').hide();
 	$('#notifyList').children('.notify_list').remove();
 	
+	/* 관리자 */
 	if(cType != ''){
 		$('#writebtn').show();
 		firebase.database().ref('notify/').on('child_added', function(snapshot){
@@ -132,6 +111,7 @@ $(document).ready(function(){
 			})
 		})
 	} else {
+		/* 고객 */
 		firebase.database().ref('notify/').on('child_added', function(snapshot){
 			cNotifyList(snapshot);
 			$('#typeSelect').change(function(){
